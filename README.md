@@ -2,6 +2,27 @@
 
 Install a complete Claude + Codex instruction hierarchy into any repository without writing files from scratch.
 
+Built to make AI-assisted software delivery consistent and reliable, this pack standardizes planning, testing, review, and handoff workflows for both Codex and Claude.
+It was created by reviewing and distilling hundreds of pages of guides and best-practice references (captured under `docs/references/`) into practical, reusable templates.
+
+## What Each File Does
+
+### Project-level files
+- `AGENTS.md`: Codex operating contract for the repo; defines scope, execution standards, and routing behavior.
+- `CLAUDE.md`: Claude operating contract for the repo; mirrors delivery and safety expectations for Claude workflows.
+- `.agent/PLAN.md`: Working plan template to define objective, milestones, risks, and acceptance criteria.
+- `.agent/CONTEXT.md`: Active context capture for assumptions, constraints, and key facts discovered during execution.
+- `.agent/TASKS.md`: Action checklist to track in-progress, done, blocked, and unconfirmed work items.
+- `.agent/REVIEW.md`: Structured review rubric focused on correctness, regressions, and security findings.
+- `.agent/TEST.md`: Validation contract with TDD/eval evidence requirements and security test checklist.
+- `.agent/HANDOFF.md`: Session baton-pass template so another agent can resume work with minimal loss of context.
+- `.claude/history.md`: Ongoing session memory log for timeline, decisions, and next steps.
+
+### Optional global files
+- `~/.codex/AGENTS.md`: User-level Codex defaults that apply across repositories.
+- `~/.claude/CLAUDE.md`: User-level Claude defaults that apply across repositories.
+- `~/.claude/agents/*.md`: Reusable specialist agents available to Claude sessions.
+
 This repository includes:
 - Project-level instruction files (`AGENTS.md`, `CLAUDE.md`, `.agent/*`, `.claude/history.md`).
 - Optional global instruction files (`~/.codex/AGENTS.md`, `~/.claude/CLAUDE.md`, `~/.claude/agents/*.md`).
