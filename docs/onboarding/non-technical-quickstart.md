@@ -23,6 +23,16 @@ Example:
 ./scripts/install-project.sh ~/Documents/my-new-project
 ```
 
+Already inside the target repo:
+
+```bash
+/path/to/agent-starter-pack/scripts/install-project.sh .
+```
+
+Notes:
+- The installer auto-detects likely command defaults from repo files when possible.
+- If needed, override with flags such as `--test`, `--lint`, `--typecheck`, and `--build`.
+
 ## Step 3 (Optional): Install global files for your user account
 
 ```bash

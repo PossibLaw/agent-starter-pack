@@ -53,6 +53,12 @@ Run `<LINT_COMMAND> && <TYPECHECK_COMMAND> && <TEST_COMMAND>` before handoff.
 - Quality or risk review → `@review-agent`
 - Test suite generation → `@test-generator`
 
+## TDD and Eval Contract
+- For code changes, use TDD when feasible: start with a failing test/eval, implement the minimum code to pass, then refactor while checks stay green.
+- Never assume eval inputs, acceptance criteria, fixtures, or expected outputs; mark unknowns as `UNCONFIRMED` and resolve with a targeted user question.
+- For any new or changed behavior, provide an end-user eval walkthrough before implementation using plain language plus Given/When/Then, including happy path, edge case, and failure/security case.
+- Minimize user friction: infer likely test/eval commands and fixtures from repository signals first; ask the user only targeted follow-ups for unresolved unknowns.
+
 ## Boundary Rules
 Always do:
 - Keep edits scoped to requested files.

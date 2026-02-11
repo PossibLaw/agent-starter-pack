@@ -18,6 +18,12 @@ If two rules conflict, follow the higher layer.
 - State assumptions explicitly and label unknowns as `UNCONFIRMED`.
 - Use exact file paths and concrete commands in recommendations.
 
+## TDD and Evals
+- For code changes, use TDD when feasible: begin with a failing test/eval, implement the minimum change to pass, then refactor with checks still passing.
+- Never assume eval inputs, acceptance criteria, fixtures, or expected outputs; mark gaps as `UNCONFIRMED` and resolve with one targeted follow-up question when needed.
+- For new or changed behavior, present an end-user eval walkthrough before implementation in plain language using Given/When/Then with at least: happy path, edge case, and failure/security case.
+- Minimize user friction: infer likely test/eval commands and fixtures from repository signals first (e.g., manifest files, lockfiles, CI config).
+
 ## Safety Boundaries
 Always do:
 - Protect secrets and redact sensitive values.

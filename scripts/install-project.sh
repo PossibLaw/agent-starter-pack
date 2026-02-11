@@ -28,7 +28,6 @@ fi
 
 TARGET_DIR="$1"
 shift
-
 if [[ ! -d "$TARGET_DIR" ]]; then
   echo "BLOCKED: target directory does not exist: $TARGET_DIR"
   exit 1
@@ -51,7 +50,112 @@ TEST_COMMAND="UNCONFIRMED"
 LINT_COMMAND="UNCONFIRMED"
 TYPECHECK_COMMAND="UNCONFIRMED"
 BUILD_COMMAND="UNCONFIRMED"
+DETECTED_STACK="UNCONFIRMED"
+USER_PRIMARY_COMMAND=""
+USER_TEST_COMMAND=""
+USER_LINT_COMMAND=""
+USER_TYPECHECK_COMMAND=""
+USER_BUILD_COMMAND=""
 DRY_RUN=0
+
+detect_node_pm() {
+  local dir="$1"
+  local pkg="$dir/package.json"
+
+  if [[ -f "$pkg" ]]; then
+    if grep -q '"packageManager"[[:space:]]*:[[:space:]]*"pnpm@' "$pkg"; then
+      echo "pnpm"
+      return
+    fi
+    if grep -q '"packageManager"[[:space:]]*:[[:space:]]*"yarn@' "$pkg"; then
+      echo "yarn"
+      return
+    fi
+    if grep -q '"packageManager"[[:space:]]*:[[:space:]]*"bun@' "$pkg"; then
+      echo "bun"
+      return
+    fi
+  fi
+
+  if [[ -f "$dir/pnpm-lock.yaml" ]]; then
+    echo "pnpm"
+    return
+  fi
+  if [[ -f "$dir/yarn.lock" ]]; then
+    echo "yarn"
+    return
+  fi
+  if [[ -f "$dir/bun.lockb" || -f "$dir/bun.lock" ]]; then
+    echo "bun"
+    return
+  fi
+
+  echo "npm"
+}
+
+detect_defaults() {
+  local dir="$1"
+
+  if [[ -f "$dir/package.json" ]]; then
+    local pm
+    pm="$(detect_node_pm "$dir")"
+    DETECTED_STACK="node"
+    case "$pm" in
+      yarn)
+        PRIMARY_COMMAND="yarn dev"
+        TEST_COMMAND="yarn test"
+        LINT_COMMAND="yarn lint"
+        TYPECHECK_COMMAND="yarn typecheck"
+        BUILD_COMMAND="yarn build"
+        ;;
+      bun)
+        PRIMARY_COMMAND="bun run dev"
+        TEST_COMMAND="bun test"
+        LINT_COMMAND="bun run lint"
+        TYPECHECK_COMMAND="bun run typecheck"
+        BUILD_COMMAND="bun run build"
+        ;;
+      *)
+        PRIMARY_COMMAND="${pm} run dev"
+        TEST_COMMAND="${pm} test"
+        LINT_COMMAND="${pm} run lint"
+        TYPECHECK_COMMAND="${pm} run typecheck"
+        BUILD_COMMAND="${pm} run build"
+        ;;
+    esac
+    return
+  fi
+
+  if [[ -f "$dir/pyproject.toml" || -f "$dir/requirements.txt" || -f "$dir/requirements-dev.txt" || -f "$dir/Pipfile" ]]; then
+    DETECTED_STACK="python"
+    PRIMARY_COMMAND="UNCONFIRMED"
+    TEST_COMMAND="pytest -q"
+    LINT_COMMAND="ruff check ."
+    TYPECHECK_COMMAND="mypy ."
+    BUILD_COMMAND="python -m build"
+    return
+  fi
+
+  if [[ -f "$dir/go.mod" ]]; then
+    DETECTED_STACK="go"
+    PRIMARY_COMMAND="go run ."
+    TEST_COMMAND="go test ./..."
+    LINT_COMMAND="golangci-lint run"
+    TYPECHECK_COMMAND="go vet ./..."
+    BUILD_COMMAND="go build ./..."
+    return
+  fi
+
+  if [[ -f "$dir/Cargo.toml" ]]; then
+    DETECTED_STACK="rust"
+    PRIMARY_COMMAND="cargo run"
+    TEST_COMMAND="cargo test"
+    LINT_COMMAND="cargo clippy --all-targets --all-features -- -D warnings"
+    TYPECHECK_COMMAND="cargo check --all-targets --all-features"
+    BUILD_COMMAND="cargo build"
+    return
+  fi
+}
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -64,23 +168,23 @@ while [[ $# -gt 0 ]]; do
       shift 2
       ;;
     --primary)
-      PRIMARY_COMMAND="${2:-}"
+      USER_PRIMARY_COMMAND="${2:-}"
       shift 2
       ;;
     --test)
-      TEST_COMMAND="${2:-}"
+      USER_TEST_COMMAND="${2:-}"
       shift 2
       ;;
     --lint)
-      LINT_COMMAND="${2:-}"
+      USER_LINT_COMMAND="${2:-}"
       shift 2
       ;;
     --typecheck)
-      TYPECHECK_COMMAND="${2:-}"
+      USER_TYPECHECK_COMMAND="${2:-}"
       shift 2
       ;;
     --build)
-      BUILD_COMMAND="${2:-}"
+      USER_BUILD_COMMAND="${2:-}"
       shift 2
       ;;
     --dry-run)
@@ -98,6 +202,32 @@ while [[ $# -gt 0 ]]; do
       ;;
   esac
 done
+
+# Infer commands to reduce setup friction.
+detect_defaults "$TARGET_DIR"
+
+# Explicit CLI flags always win.
+if [[ -n "${USER_PRIMARY_COMMAND// }" ]]; then
+  PRIMARY_COMMAND="$USER_PRIMARY_COMMAND"
+fi
+if [[ -n "${USER_TEST_COMMAND// }" ]]; then
+  TEST_COMMAND="$USER_TEST_COMMAND"
+fi
+if [[ -n "${USER_LINT_COMMAND// }" ]]; then
+  LINT_COMMAND="$USER_LINT_COMMAND"
+fi
+if [[ -n "${USER_TYPECHECK_COMMAND// }" ]]; then
+  TYPECHECK_COMMAND="$USER_TYPECHECK_COMMAND"
+fi
+if [[ -n "${USER_BUILD_COMMAND// }" ]]; then
+  BUILD_COMMAND="$USER_BUILD_COMMAND"
+fi
+
+if [[ -z "${PRIMARY_COMMAND// }" ]]; then PRIMARY_COMMAND="UNCONFIRMED"; fi
+if [[ -z "${TEST_COMMAND// }" ]]; then TEST_COMMAND="UNCONFIRMED"; fi
+if [[ -z "${LINT_COMMAND// }" ]]; then LINT_COMMAND="UNCONFIRMED"; fi
+if [[ -z "${TYPECHECK_COMMAND// }" ]]; then TYPECHECK_COMMAND="UNCONFIRMED"; fi
+if [[ -z "${BUILD_COMMAND// }" ]]; then BUILD_COMMAND="UNCONFIRMED"; fi
 
 copy_with_backup() {
   local src="$1"
@@ -158,6 +288,7 @@ fi
 echo ""
 echo "DONE: project files installed into $TARGET_DIR"
 echo "Resolved values:"
+echo "  DETECTED_STACK=$DETECTED_STACK"
 echo "  PROJECT_NAME=$PROJECT_NAME"
 echo "  TEAM_OR_OWNER=$TEAM_OR_OWNER"
 echo "  PRIMARY_COMMAND=$PRIMARY_COMMAND"
@@ -165,3 +296,8 @@ echo "  TEST_COMMAND=$TEST_COMMAND"
 echo "  LINT_COMMAND=$LINT_COMMAND"
 echo "  TYPECHECK_COMMAND=$TYPECHECK_COMMAND"
 echo "  BUILD_COMMAND=$BUILD_COMMAND"
+
+if [[ "$PRIMARY_COMMAND" == "UNCONFIRMED" || "$TEST_COMMAND" == "UNCONFIRMED" || "$LINT_COMMAND" == "UNCONFIRMED" || "$TYPECHECK_COMMAND" == "UNCONFIRMED" || "$BUILD_COMMAND" == "UNCONFIRMED" ]]; then
+  echo ""
+  echo "WARNING: one or more commands are UNCONFIRMED. Update .agent/TEST.md before marking work DONE."
+fi

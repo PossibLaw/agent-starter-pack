@@ -15,7 +15,13 @@ cd PossibLaw-Agent-Starter-Pack
 ./scripts/install-project.sh /path/to/your/repo
 ```
 
-With optional command placeholders:
+If you are already inside the target repo, call the installer by path:
+
+```bash
+/path/to/agent-starter-pack/scripts/install-project.sh .
+```
+
+`install-project.sh` now auto-detects likely commands from repo signals (`package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`, lockfiles). Use overrides only when you want explicit values:
 
 ```bash
 ./scripts/install-project.sh /path/to/your/repo \

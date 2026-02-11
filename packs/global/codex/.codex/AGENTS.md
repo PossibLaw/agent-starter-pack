@@ -37,6 +37,10 @@ Load only when needed:
 - Return `BLOCKED` with reason and next step when stuck.
 - During review tasks, enforce `.agent/REVIEW.md` Security Review Mode and checklist.
 - During test/validation tasks, enforce `.agent/TEST.md` security checks for auth, data access, input handling, API, and deployment/runtime changes.
+- For code changes, use TDD when feasible: start with a failing test/eval, implement the minimal change, then refactor with tests still passing.
+- Never assume eval inputs, acceptance criteria, or expected outputs. Mark gaps as `UNCONFIRMED` and resolve with a targeted user question before execution.
+- For new or changed behavior, walk the user through an eval plan in plain language before implementation (at minimum: happy path, edge case, and failure/security case with observable expected results).
+- Minimize user friction: infer likely test/eval commands and fixtures from repository signals first; ask the user only targeted follow-ups for unresolved unknowns.
 
 ## Safety
 - Never expose secrets in output.

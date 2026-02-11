@@ -45,6 +45,12 @@ When resuming prior work, read `.claude/history.md` first.
 - For review tasks, apply `.agent/REVIEW.md` Security Review Mode and complete the required security checklist.
 - For validation/test tasks, run `.agent/TEST.md` security checks when work touches auth, data access, input handling, API surface, or deployment/runtime settings.
 
+## TDD and Eval Contract
+- For code changes, use TDD when feasible: start with a failing test/eval, implement the minimum code to pass, then refactor while checks stay green.
+- Never assume eval inputs, acceptance criteria, fixtures, or expected outputs; mark unknowns as `UNCONFIRMED` and resolve with a targeted user question.
+- For any new or changed behavior, provide an end-user eval walkthrough before implementation using plain language plus Given/When/Then, including happy path, edge case, and failure/security case.
+- Minimize user friction: infer likely test/eval commands and fixtures from repository signals first; ask the user only targeted follow-ups for unresolved unknowns.
+
 ## Boundary Rules
 Always do:
 - Keep edits within requested scope.
