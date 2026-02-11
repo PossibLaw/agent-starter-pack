@@ -10,7 +10,7 @@ This repository includes:
 ## Quick Start (Project Files)
 
 ```bash
-git clone <YOUR_GITHUB_REPO_URL>
+git clone https://github.com/PossibLaw/agent-starter-pack.git
 cd PossibLaw-Agent-Starter-Pack
 ./scripts/install-project.sh /path/to/your/repo
 ```
@@ -98,4 +98,3 @@ docs/
 ## Notes
 - Launch support is macOS + Linux.
 - If you need Windows support, use manual copy steps in `docs/onboarding/non-technical-quickstart.md`.
-- Replace `<YOUR_GITHUB_REPO_URL>` once the repository is published.

@@ -7,7 +7,7 @@
 ## Step 1: Download this pack
 
 ```bash
-git clone <YOUR_GITHUB_REPO_URL>
+git clone https://github.com/PossibLaw/agent-starter-pack.git
 cd PossibLaw-Agent-Starter-Pack
 ```
 
