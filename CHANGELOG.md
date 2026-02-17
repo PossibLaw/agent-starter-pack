@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 2026-02-17
+- Added optional `.agent/LEARNINGS.md` template to project pack for opt-in learning capture.
+- Added explicit `Learning Mode` controls (`OFF`, `CAPTURE`, `APPLY`) to project `AGENTS.md`, `CLAUDE.md`, and `.agent/PLAN.md`.
+- Added `scripts/set-learning-mode.sh` helper command to toggle learning mode quickly in `.agent/PLAN.md`.
+- Updated `scripts/install-project.sh` and `scripts/verify-pack.sh` to install and validate learning artifacts.
+- Updated docs (`README.md`, `docs/architecture/file-purpose-map.md`) to document default-off learning workflow and activation.
+
 ## 2026-02-11
 - Initial starter-pack structure created.
 - Added combined Claude + Codex project/global packs.

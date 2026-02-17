@@ -10,6 +10,7 @@ Codex project instruction file for <PROJECT_NAME>.
    - Test request → `.agent/TEST.md`
    - Review request → `.agent/REVIEW.md`
    - Handoff, resume, or parallel worktree → `.agent/HANDOFF.md` or `.claude/history.md`
+   - Learning request, or `Learning Mode` = `CAPTURE`/`APPLY` → `.agent/LEARNINGS.md`
 4. If more repo context is needed, read `.claude/history.md` next — not the whole repo.
 5. Global continuity stays in `~/.codex/AGENTS.md`. Repo continuity is optional and on-demand.
 
@@ -25,6 +26,17 @@ After completing work, append a summary to `.claude/history.md`:
 - Current state and next steps.
 
 When resuming prior work, read `.claude/history.md` first.
+
+## Optional Learning Loop (Default OFF)
+- Default: `Learning Mode` is `OFF`.
+- Turn on for a task by either:
+  - setting `Learning Mode` in `.agent/PLAN.md`, or
+  - explicit user instruction (`Learning Mode: CAPTURE` or `Learning Mode: APPLY`).
+- Mode behavior:
+  - `OFF`: no learning entries and no skill/plugin updates.
+  - `CAPTURE`: append observations to `.agent/LEARNINGS.md` only.
+  - `APPLY`: capture observations and propose specific skill/plugin/instruction updates.
+- This is additive. Do not replace `.claude/history.md` or `.agent/HANDOFF.md`.
 
 ## Roles
 - `@orchestrator` — Plan, route, and synthesize outcomes.

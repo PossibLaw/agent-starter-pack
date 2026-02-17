@@ -278,6 +278,7 @@ copy_with_backup "$PACK_ROOT/.agent/TASKS.md" "$TARGET_DIR/.agent/TASKS.md"
 copy_with_backup "$PACK_ROOT/.agent/REVIEW.md" "$TARGET_DIR/.agent/REVIEW.md"
 copy_with_backup "$PACK_ROOT/.agent/TEST.md" "$TARGET_DIR/.agent/TEST.md"
 copy_with_backup "$PACK_ROOT/.agent/HANDOFF.md" "$TARGET_DIR/.agent/HANDOFF.md"
+copy_with_backup "$PACK_ROOT/.agent/LEARNINGS.md" "$TARGET_DIR/.agent/LEARNINGS.md"
 
 if [[ "$DRY_RUN" -eq 0 ]]; then
   replace_placeholders "$TARGET_DIR/AGENTS.md"

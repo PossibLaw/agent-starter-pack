@@ -10,6 +10,7 @@ REQUIRED_FILES=(
   "scripts/install-project.sh"
   "scripts/install-global.sh"
   "scripts/verify-pack.sh"
+  "scripts/set-learning-mode.sh"
   "packs/project/AGENTS.md"
   "packs/project/CLAUDE.md"
   "packs/project/.claude/history.md"
@@ -19,6 +20,7 @@ REQUIRED_FILES=(
   "packs/project/.agent/REVIEW.md"
   "packs/project/.agent/TEST.md"
   "packs/project/.agent/HANDOFF.md"
+  "packs/project/.agent/LEARNINGS.md"
   "packs/global/codex/.codex/AGENTS.md"
   "packs/global/claude/.claude/CLAUDE.md"
 )
@@ -51,7 +53,7 @@ for rel in "${FORBIDDEN_PATTERNS[@]}"; do
   fi
 done
 
-for script in "$REPO_ROOT/scripts/install-project.sh" "$REPO_ROOT/scripts/install-global.sh" "$REPO_ROOT/scripts/verify-pack.sh"; do
+for script in "$REPO_ROOT/scripts/install-project.sh" "$REPO_ROOT/scripts/install-global.sh" "$REPO_ROOT/scripts/verify-pack.sh" "$REPO_ROOT/scripts/set-learning-mode.sh"; do
   if [[ ! -x "$script" ]]; then
     echo "BLOCKED: script is not executable: ${script#$REPO_ROOT/}"
     exit 1

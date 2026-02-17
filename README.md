@@ -16,6 +16,7 @@ It was created by reviewing and distilling hundreds of pages of guides and best-
 - `.agent/REVIEW.md`: Structured review rubric focused on correctness, regressions, and security findings.
 - `.agent/TEST.md`: Validation contract with TDD/eval evidence requirements and security test checklist.
 - `.agent/HANDOFF.md`: Session baton-pass template so another agent can resume work with minimal loss of context.
+- `.agent/LEARNINGS.md`: Optional learning log (default off) for capturing reusable observations and proposed skill/plugin/instruction improvements.
 - `.claude/history.md`: Ongoing session memory log for timeline, decisions, and next steps.
 
 ### Optional global files
@@ -82,6 +83,9 @@ Install only one tool:
 - `.agent/REVIEW.md`
 - `.agent/TEST.md`
 - `.agent/HANDOFF.md`
+- `.agent/LEARNINGS.md`
+
+`Learning Mode` defaults to `OFF`. Turn it on per task by setting `Learning Mode: CAPTURE` or `Learning Mode: APPLY` in `.agent/PLAN.md` (or by explicit prompt instruction).
 
 ### Global-level home folder (optional)
 - `~/.codex/AGENTS.md`
@@ -100,6 +104,18 @@ Install only one tool:
 ./scripts/verify-pack.sh
 ```
 
+## Learning Mode Helper
+
+Set learning mode in a repo's `.agent/PLAN.md` without manual edits:
+
+```bash
+# from inside target repo
+/path/to/agent-starter-pack/scripts/set-learning-mode.sh CAPTURE
+
+# explicit target repo path
+/path/to/agent-starter-pack/scripts/set-learning-mode.sh /path/to/your/repo OFF
+```
+
 ## Repository Layout
 
 ```text
@@ -111,6 +127,7 @@ scripts/
   install-project.sh
   install-global.sh
   verify-pack.sh
+  set-learning-mode.sh
 docs/
   references/              # Full source docs
   architecture/

@@ -13,6 +13,16 @@
 - Tooling:
 - Environment:
 
+## Learning Mode
+- Mode: `OFF` (default)
+- Allowed values:
+  - `OFF`: do not update learning artifacts.
+  - `CAPTURE`: append observations to `.agent/LEARNINGS.md` at task end.
+  - `APPLY`: capture observations and propose updates to skills/plugins/instructions.
+- Activation:
+  - Set mode in this file for the current task, or
+  - Explicitly request mode in the user prompt.
+
 ## Assumptions
 - [ASSUMPTION]
 

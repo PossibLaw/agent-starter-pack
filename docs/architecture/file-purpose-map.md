@@ -9,6 +9,7 @@
 - `.agent/REVIEW.md`: review + security checklist.
 - `.agent/TEST.md`: validation matrix and security checks.
 - `.agent/HANDOFF.md`: baton pass template.
+- `.agent/LEARNINGS.md`: optional learning log for reusable observations and improvement proposals.
 - `.claude/history.md`: cross-session memory log.
 
 ## Global Pack (`packs/global`)
@@ -20,3 +21,4 @@
 - `scripts/install-project.sh`: installs project hierarchy into any repo.
 - `scripts/install-global.sh`: optional global hierarchy installer.
 - `scripts/verify-pack.sh`: structural and safety checks.
+- `scripts/set-learning-mode.sh`: updates `.agent/PLAN.md` learning mode (`OFF`, `CAPTURE`, `APPLY`).
