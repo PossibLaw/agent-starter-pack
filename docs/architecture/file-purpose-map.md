@@ -22,3 +22,7 @@
 - `scripts/install-global.sh`: optional global hierarchy installer.
 - `scripts/verify-pack.sh`: structural and safety checks.
 - `scripts/set-learning-mode.sh`: updates `.agent/PLAN.md` learning mode (`OFF`, `CAPTURE`, `APPLY`).
+- `scripts/install-project.ps1`: Windows PowerShell installer for project hierarchy.
+- `scripts/install-global.ps1`: Windows PowerShell installer for global files.
+- `scripts/verify-pack.ps1`: Windows PowerShell structural and safety checks.
+- `scripts/set-learning-mode.ps1`: Windows PowerShell learning mode updater.

@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2026-02-19
+- Added native Windows PowerShell script variants for project install, global install, pack verification, and learning mode updates.
+- Added `--preserve-progress` mode to project installers (`.sh` and `.ps1`) so existing repos can refresh starter-pack files without overwriting progress artifacts.
+- Updated verification scripts to require both Bash and PowerShell entrypoints.
+- Updated GitHub Actions verification workflow to run on both Linux and Windows.
+- Added `.gitattributes` line-ending rules for `.sh` and `.ps1` scripts.
+- Updated onboarding and architecture docs to document Windows usage via PowerShell.
+
 ## 2026-02-17
 - Added optional `.agent/LEARNINGS.md` template to project pack for opt-in learning capture.
 - Added explicit `Learning Mode` controls (`OFF`, `CAPTURE`, `APPLY`) to project `AGENTS.md`, `CLAUDE.md`, and `.agent/PLAN.md`.

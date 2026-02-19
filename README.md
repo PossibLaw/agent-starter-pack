@@ -31,6 +31,8 @@ This repository includes:
 
 ## Quick Start (Project Files)
 
+### macOS + Linux
+
 ```bash
 git clone https://github.com/PossibLaw/agent-starter-pack.git
 cd PossibLaw-Agent-Starter-Pack
@@ -43,7 +45,21 @@ If you are already inside the target repo, call the installer by path:
 /path/to/agent-starter-pack/scripts/install-project.sh .
 ```
 
-`install-project.sh` now auto-detects likely commands from repo signals (`package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`, lockfiles). Use overrides only when you want explicit values:
+### Windows (PowerShell 7+)
+
+```powershell
+git clone https://github.com/PossibLaw/agent-starter-pack.git
+cd PossibLaw-Agent-Starter-Pack
+pwsh -File .\scripts\install-project.ps1 C:\path\to\your\repo
+```
+
+If you are already inside the target repo, call the installer by path:
+
+```powershell
+pwsh -File C:\path\to\agent-starter-pack\scripts\install-project.ps1 .
+```
+
+The project installer auto-detects likely commands from repo signals (`package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`, lockfiles). Use overrides only when you want explicit values:
 
 ```bash
 ./scripts/install-project.sh /path/to/your/repo \
@@ -56,6 +72,39 @@ If you are already inside the target repo, call the installer by path:
   --build "pnpm build"
 ```
 
+```powershell
+pwsh -File .\scripts\install-project.ps1 C:\path\to\your\repo `
+  --name "your-project" `
+  --owner "your-team" `
+  --primary "pnpm dev" `
+  --test "pnpm test" `
+  --lint "pnpm lint" `
+  --typecheck "pnpm typecheck" `
+  --build "pnpm build"
+```
+
+### Update an Existing Repo Without Overwriting Progress Files
+
+Use `--preserve-progress` when a repo already has starter-pack files and you want to keep existing progress artifacts (for example `.claude/history.md`, `.agent/HANDOFF.md`, `.agent/TASKS.md`).
+
+```bash
+./scripts/install-project.sh /path/to/your/repo --preserve-progress
+```
+
+```powershell
+pwsh -File .\scripts\install-project.ps1 C:\path\to\your\repo --preserve-progress
+```
+
+If you are already inside the target repo:
+
+```bash
+/path/to/agent-starter-pack/scripts/install-project.sh . --preserve-progress
+```
+
+```powershell
+pwsh -File C:\path\to\agent-starter-pack\scripts\install-project.ps1 . --preserve-progress
+```
+
 ## Optional Global Setup
 
 Install Codex and Claude global files:
@@ -64,11 +113,20 @@ Install Codex and Claude global files:
 ./scripts/install-global.sh --codex --claude
 ```
 
+```powershell
+pwsh -File .\scripts\install-global.ps1 --codex --claude
+```
+
 Install only one tool:
 
 ```bash
 ./scripts/install-global.sh --codex
 ./scripts/install-global.sh --claude
+```
+
+```powershell
+pwsh -File .\scripts\install-global.ps1 --codex
+pwsh -File .\scripts\install-global.ps1 --claude
 ```
 
 ## What Gets Added
@@ -104,6 +162,10 @@ Install only one tool:
 ./scripts/verify-pack.sh
 ```
 
+```powershell
+pwsh -File .\scripts\verify-pack.ps1
+```
+
 ## Learning Mode Helper
 
 Set learning mode in a repo's `.agent/PLAN.md` without manual edits:
@@ -114,6 +176,14 @@ Set learning mode in a repo's `.agent/PLAN.md` without manual edits:
 
 # explicit target repo path
 /path/to/agent-starter-pack/scripts/set-learning-mode.sh /path/to/your/repo OFF
+```
+
+```powershell
+# from inside target repo
+pwsh -File C:\path\to\agent-starter-pack\scripts\set-learning-mode.ps1 CAPTURE
+
+# explicit target repo path
+pwsh -File C:\path\to\agent-starter-pack\scripts\set-learning-mode.ps1 C:\path\to\your\repo OFF
 ```
 
 ## Repository Layout
@@ -128,6 +198,10 @@ scripts/
   install-global.sh
   verify-pack.sh
   set-learning-mode.sh
+  install-project.ps1
+  install-global.ps1
+  verify-pack.ps1
+  set-learning-mode.ps1
 docs/
   references/              # Full source docs
   architecture/
@@ -140,5 +214,4 @@ docs/
 - `docs/references/claude-agents-README.md`
 
 ## Notes
-- Launch support is macOS + Linux.
-- If you need Windows support, use manual copy steps in `docs/onboarding/non-technical-quickstart.md`.
+- Launch support is macOS, Linux, and Windows (PowerShell 7+).
