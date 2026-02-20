@@ -57,6 +57,7 @@ pwsh -File C:\path\to\agent-starter-pack\scripts\install-project.ps1 .
 Notes:
 - The installer auto-detects likely command defaults from repo files when possible.
 - If needed, override with flags such as `--test`, `--lint`, `--typecheck`, and `--build`.
+- The installer updates target `.gitignore` so `.claude/history.md` and `.agent/*.md` continuity files remain local by default.
 
 If this repo already had the starter pack and you want to keep progress files (like `.claude/history.md`, `.agent/HANDOFF.md`, `.agent/TASKS.md`), run:
 

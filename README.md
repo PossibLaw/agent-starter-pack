@@ -15,9 +15,9 @@ It was created by reviewing and distilling hundreds of pages of guides and best-
 - `.agent/TASKS.md`: Action checklist to track in-progress, done, blocked, and unconfirmed work items.
 - `.agent/REVIEW.md`: Structured review rubric focused on correctness, regressions, and security findings.
 - `.agent/TEST.md`: Validation contract with TDD/eval evidence requirements and security test checklist.
-- `.agent/HANDOFF.md`: Session baton-pass template so another agent can resume work with minimal loss of context.
+- `.agent/HANDOFF.md`: Session baton-pass template for local continuity between agent sessions.
 - `.agent/LEARNINGS.md`: Optional learning log (default off) for capturing reusable observations and proposed skill/plugin/instruction improvements.
-- `.claude/history.md`: Ongoing session memory log for timeline, decisions, and next steps.
+- `.claude/history.md`: Ongoing local session memory log for timeline, decisions, and next steps.
 
 ### Optional global files
 - `~/.codex/AGENTS.md`: User-level Codex defaults that apply across repositories.
@@ -83,6 +83,8 @@ pwsh -File .\scripts\install-project.ps1 C:\path\to\your\repo `
   --build "pnpm build"
 ```
 
+The project installer also adds local-continuity ignore rules to the target repo `.gitignore` so `.claude/history.md` and `.agent/*.md` state files stay local by default.
+
 ### Update an Existing Repo Without Overwriting Progress Files
 
 Use `--preserve-progress` when a repo already has starter-pack files and you want to keep existing progress artifacts (for example `.claude/history.md`, `.agent/HANDOFF.md`, `.agent/TASKS.md`).
@@ -142,6 +144,7 @@ pwsh -File .\scripts\install-global.ps1 --claude
 - `.agent/TEST.md`
 - `.agent/HANDOFF.md`
 - `.agent/LEARNINGS.md`
+- `.gitignore` updates for local continuity files (`.claude/history.md` and `.agent/*.md`)
 
 `Learning Mode` defaults to `OFF`. Turn it on per task by setting `Learning Mode: CAPTURE` or `Learning Mode: APPLY` in `.agent/PLAN.md` (or by explicit prompt instruction).
 

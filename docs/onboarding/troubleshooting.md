@@ -25,5 +25,10 @@
   - `./scripts/install-project.sh /path/to/repo --preserve-progress`
   - `pwsh -File .\scripts\install-project.ps1 C:\path\to\repo --preserve-progress`
 
+## Continuity files are still showing up in `git status`
+- New installs auto-add `.gitignore` rules for `.claude/history.md` and `.agent/*.md`.
+- If these files were already tracked in git, untrack them once:
+  - `git rm --cached .claude/history.md .agent/PLAN.md .agent/CONTEXT.md .agent/TASKS.md .agent/REVIEW.md .agent/TEST.md .agent/HANDOFF.md .agent/LEARNINGS.md`
+
 ## Windows users
 - Use the PowerShell script variants in `scripts/*.ps1`.

@@ -1,4 +1,12 @@
 .DS_Store
 *.bak.*
-HANDOFF.md
+
+# Local agent continuity files (keep local; do not commit)
 .claude/history.md
+.agent/PLAN.md
+.agent/CONTEXT.md
+.agent/TASKS.md
+.agent/REVIEW.md
+.agent/TEST.md
+.agent/HANDOFF.md
+.agent/LEARNINGS.md

@@ -55,6 +55,17 @@ $userBuildCommand = ""
 $dryRun = $false
 $preserveProgress = $false
 
+$progressRelativePaths = @(
+  ".claude/history.md",
+  ".agent/PLAN.md",
+  ".agent/CONTEXT.md",
+  ".agent/TASKS.md",
+  ".agent/REVIEW.md",
+  ".agent/TEST.md",
+  ".agent/HANDOFF.md",
+  ".agent/LEARNINGS.md"
+)
+
 $index = 1
 while ($index -lt $args.Count) {
   $arg = [string]$args[$index]
@@ -259,17 +270,7 @@ function Normalize-OrUnconfirmed {
 
 function Is-ProgressRelativePath {
   param([string]$RelativePath)
-  switch ($RelativePath) {
-    ".claude/history.md" { return $true }
-    ".agent/PLAN.md" { return $true }
-    ".agent/CONTEXT.md" { return $true }
-    ".agent/TASKS.md" { return $true }
-    ".agent/REVIEW.md" { return $true }
-    ".agent/TEST.md" { return $true }
-    ".agent/HANDOFF.md" { return $true }
-    ".agent/LEARNINGS.md" { return $true }
-    default { return $false }
-  }
+  return $progressRelativePaths -contains $RelativePath
 }
 
 function Copy-WithBackup {
@@ -331,6 +332,94 @@ function Replace-Placeholders {
   Set-Content -LiteralPath $FilePath -Value $content -NoNewline
 }
 
+function Ensure-ProgressIgnored {
+  $gitignorePath = Join-Path $targetDirResolved ".gitignore"
+  $header = "# Local agent continuity files (keep local; do not commit)"
+  $added = $false
+
+  if ($dryRun) {
+    if (-not (Test-Path -LiteralPath $gitignorePath -PathType Leaf)) {
+      Write-Host "DRY_RUN create: $gitignorePath"
+    }
+    $existingDryRun = if (Test-Path -LiteralPath $gitignorePath -PathType Leaf) {
+      @(Get-Content -LiteralPath $gitignorePath)
+    } else {
+      @()
+    }
+    if (-not ($existingDryRun -contains $header)) {
+      Write-Host "DRY_RUN append: $gitignorePath :: $header"
+    }
+    foreach ($path in $progressRelativePaths) {
+      if (-not ($existingDryRun -contains $path)) {
+        Write-Host "DRY_RUN append: $gitignorePath :: $path"
+      }
+    }
+    return
+  }
+
+  if (-not (Test-Path -LiteralPath $gitignorePath -PathType Leaf)) {
+    New-Item -ItemType File -Path $gitignorePath -Force | Out-Null
+    Write-Host "Created: $gitignorePath"
+  }
+
+  $existing = @(Get-Content -LiteralPath $gitignorePath)
+  if (-not ($existing -contains $header)) {
+    if ((Get-Item -LiteralPath $gitignorePath).Length -gt 0) {
+      Add-Content -LiteralPath $gitignorePath -Value ""
+    }
+    Add-Content -LiteralPath $gitignorePath -Value $header
+    $added = $true
+    $existing = @(Get-Content -LiteralPath $gitignorePath)
+  }
+
+  foreach ($path in $progressRelativePaths) {
+    if ($existing -contains $path) {
+      continue
+    }
+    Add-Content -LiteralPath $gitignorePath -Value $path
+    $added = $true
+    $existing += $path
+  }
+
+  if ($added) {
+    Write-Host "Updated: $gitignorePath (local continuity rules)"
+  } else {
+    Write-Host "Unchanged: $gitignorePath (local continuity rules already present)"
+  }
+}
+
+function Warn-IfProgressFilesTracked {
+  if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
+    return
+  }
+
+  $null = & git -C $targetDirResolved rev-parse --is-inside-work-tree 2>$null
+  if ($LASTEXITCODE -ne 0) {
+    return
+  }
+
+  $tracked = New-Object System.Collections.Generic.List[string]
+  foreach ($path in $progressRelativePaths) {
+    $null = & git -C $targetDirResolved ls-files --error-unmatch -- $path 2>$null
+    if ($LASTEXITCODE -eq 0) {
+      $tracked.Add($path)
+    }
+  }
+
+  if ($tracked.Count -eq 0) {
+    return
+  }
+
+  $quoted = $tracked | ForEach-Object { "'$_'" }
+  Write-Host ""
+  Write-Host "WARNING: local continuity files are tracked in git and can still be committed:"
+  foreach ($path in $tracked) {
+    Write-Host "  - $path"
+  }
+  Write-Host "To keep local copies but untrack them, run:"
+  Write-Host ("  git -C `"$targetDirResolved`" rm --cached " + ($quoted -join " "))
+}
+
 Detect-Defaults -Dir $targetDirResolved
 
 if (-not [string]::IsNullOrWhiteSpace($userPrimaryCommand)) { $primaryCommand = $userPrimaryCommand }
@@ -368,6 +457,7 @@ foreach ($file in $filesToCopy) {
     $copiedTestTemplate = $wasCopied
   }
 }
+Ensure-ProgressIgnored
 
 if (-not $dryRun) {
   Replace-Placeholders -FilePath (Join-Path $targetDirResolved "AGENTS.md")
@@ -389,6 +479,7 @@ Write-Host "  TEST_COMMAND=$testCommand"
 Write-Host "  LINT_COMMAND=$lintCommand"
 Write-Host "  TYPECHECK_COMMAND=$typecheckCommand"
 Write-Host "  BUILD_COMMAND=$buildCommand"
+Warn-IfProgressFilesTracked
 
 if (
   $primaryCommand -eq "UNCONFIRMED" -or

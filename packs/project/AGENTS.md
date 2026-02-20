@@ -19,13 +19,25 @@ Codex project instruction file for <PROJECT_NAME>.
 - Ignore `CLAUDE.md` and `.claude/agents/` unless user explicitly requests cross-agent sync.
 
 ## Session Memory
-After completing work, append a summary to `.claude/history.md`:
+After completing work, append a summary to `.claude/history.md` (local-only, gitignored):
 - Date and task title.
 - Files changed.
 - Key decisions (with status).
 - Current state and next steps.
 
 When resuming prior work, read `.claude/history.md` first.
+
+## Local Continuity Files (Do Not Commit)
+- Keep these files local and out of commits/PRs:
+  - `.claude/history.md`
+  - `.agent/PLAN.md`
+  - `.agent/CONTEXT.md`
+  - `.agent/TASKS.md`
+  - `.agent/REVIEW.md`
+  - `.agent/TEST.md`
+  - `.agent/HANDOFF.md`
+  - `.agent/LEARNINGS.md`
+- If any are already tracked, untrack them with `git rm --cached <path>`.
 
 ## Optional Learning Loop (Default OFF)
 - Default: `Learning Mode` is `OFF`.

@@ -60,6 +60,17 @@ USER_BUILD_COMMAND=""
 DRY_RUN=0
 PRESERVE_PROGRESS=0
 
+PROGRESS_REL_FILES=(
+  ".claude/history.md"
+  ".agent/PLAN.md"
+  ".agent/CONTEXT.md"
+  ".agent/TASKS.md"
+  ".agent/REVIEW.md"
+  ".agent/TEST.md"
+  ".agent/HANDOFF.md"
+  ".agent/LEARNINGS.md"
+)
+
 detect_node_pm() {
   local dir="$1"
   local pkg="$dir/package.json"
@@ -161,14 +172,12 @@ detect_defaults() {
 
 is_progress_rel_file() {
   local rel="$1"
-  case "$rel" in
-    .claude/history.md|.agent/PLAN.md|.agent/CONTEXT.md|.agent/TASKS.md|.agent/REVIEW.md|.agent/TEST.md|.agent/HANDOFF.md|.agent/LEARNINGS.md)
+  for progress_rel in "${PROGRESS_REL_FILES[@]}"; do
+    if [[ "$rel" == "$progress_rel" ]]; then
       return 0
-      ;;
-    *)
-      return 1
-      ;;
-  esac
+    fi
+  done
+  return 1
 }
 
 while [[ $# -gt 0 ]]; do
@@ -285,6 +294,87 @@ copy_with_backup() {
   fi
 }
 
+ensure_progress_ignored() {
+  local gitignore="$TARGET_DIR/.gitignore"
+  local header="# Local agent continuity files (keep local; do not commit)"
+  local rel
+  local added=0
+
+  if [[ "$DRY_RUN" -eq 1 ]]; then
+    if [[ ! -e "$gitignore" ]]; then
+      echo "DRY_RUN create: $gitignore"
+    fi
+    if [[ ! -f "$gitignore" ]] || ! grep -Fxq "$header" "$gitignore"; then
+      echo "DRY_RUN append: $gitignore :: $header"
+    fi
+    for rel in "${PROGRESS_REL_FILES[@]}"; do
+      if [[ ! -f "$gitignore" ]] || ! grep -Fxq "$rel" "$gitignore"; then
+        echo "DRY_RUN append: $gitignore :: $rel"
+      fi
+    done
+    return 0
+  fi
+
+  if [[ ! -e "$gitignore" ]]; then
+    touch "$gitignore"
+    echo "Created: $gitignore"
+  fi
+
+  if ! grep -Fxq "$header" "$gitignore"; then
+    if [[ -s "$gitignore" ]]; then
+      printf "\n" >>"$gitignore"
+    fi
+    printf "%s\n" "$header" >>"$gitignore"
+    added=1
+  fi
+
+  for rel in "${PROGRESS_REL_FILES[@]}"; do
+    if grep -Fxq "$rel" "$gitignore"; then
+      continue
+    fi
+    printf "%s\n" "$rel" >>"$gitignore"
+    added=1
+  done
+
+  if [[ "$added" -eq 1 ]]; then
+    echo "Updated: $gitignore (local continuity rules)"
+  else
+    echo "Unchanged: $gitignore (local continuity rules already present)"
+  fi
+}
+
+warn_if_progress_files_tracked() {
+  local rel
+  local tracked=()
+  local quoted=()
+
+  if ! git -C "$TARGET_DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    return 0
+  fi
+
+  for rel in "${PROGRESS_REL_FILES[@]}"; do
+    if git -C "$TARGET_DIR" ls-files --error-unmatch "$rel" >/dev/null 2>&1; then
+      tracked+=("$rel")
+    fi
+  done
+
+  if [[ "${#tracked[@]}" -eq 0 ]]; then
+    return 0
+  fi
+
+  for rel in "${tracked[@]}"; do
+    quoted+=("$(printf '%q' "$rel")")
+  done
+
+  echo ""
+  echo "WARNING: local continuity files are tracked in git and can still be committed:"
+  for rel in "${tracked[@]}"; do
+    echo "  - $rel"
+  done
+  echo "To keep local copies but untrack them, run:"
+  echo "  git -C \"$TARGET_DIR\" rm --cached ${quoted[*]}"
+}
+
 replace_placeholders() {
   local file="$1"
   PROJECT_NAME="$PROJECT_NAME" \
@@ -312,6 +402,7 @@ copy_with_backup "$PACK_ROOT/.agent/REVIEW.md" "$TARGET_DIR/.agent/REVIEW.md" ".
 copy_with_backup "$PACK_ROOT/.agent/TEST.md" "$TARGET_DIR/.agent/TEST.md" ".agent/TEST.md"
 copy_with_backup "$PACK_ROOT/.agent/HANDOFF.md" "$TARGET_DIR/.agent/HANDOFF.md" ".agent/HANDOFF.md"
 copy_with_backup "$PACK_ROOT/.agent/LEARNINGS.md" "$TARGET_DIR/.agent/LEARNINGS.md" ".agent/LEARNINGS.md"
+ensure_progress_ignored
 
 if [[ "$DRY_RUN" -eq 0 ]]; then
   replace_placeholders "$TARGET_DIR/AGENTS.md"
@@ -333,6 +424,7 @@ echo "  TEST_COMMAND=$TEST_COMMAND"
 echo "  LINT_COMMAND=$LINT_COMMAND"
 echo "  TYPECHECK_COMMAND=$TYPECHECK_COMMAND"
 echo "  BUILD_COMMAND=$BUILD_COMMAND"
+warn_if_progress_files_tracked
 
 if [[ "$PRIMARY_COMMAND" == "UNCONFIRMED" || "$TEST_COMMAND" == "UNCONFIRMED" || "$LINT_COMMAND" == "UNCONFIRMED" || "$TYPECHECK_COMMAND" == "UNCONFIRMED" || "$BUILD_COMMAND" == "UNCONFIRMED" ]]; then
   echo ""
