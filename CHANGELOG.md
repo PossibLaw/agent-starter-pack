@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 2026-02-20
+- Added bootstrap installers (`scripts/bootstrap-project.sh` and `scripts/bootstrap-project.ps1`) that clone the starter pack to a temporary directory and install into the current repo by default.
+- Updated project installers (`scripts/install-project.sh` and `scripts/install-project.ps1`) so target path is optional and defaults to `.`.
+- Added explicit placeholder-path validation with actionable hints when users leave `/path/to/your/repo` or `C:\path\to\your\repo` unchanged.
+- Updated onboarding docs to use no-placeholder quick-start commands and preserve-progress bootstrap examples.
+- Updated verification scripts to require bootstrap installer entrypoints.
+
 ## 2026-02-19
 - Added native Windows PowerShell script variants for project install, global install, pack verification, and learning mode updates.
 - Added `--preserve-progress` mode to project installers (`.sh` and `.ps1`) so existing repos can refresh starter-pack files without overwriting progress artifacts.

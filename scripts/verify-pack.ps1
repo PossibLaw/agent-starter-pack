@@ -8,10 +8,12 @@ $repoRoot = (Resolve-Path -LiteralPath (Join-Path $scriptDir "..")).Path
 $requiredFiles = @(
   "README.md",
   "CHANGELOG.md",
+  "scripts/bootstrap-project.sh",
   "scripts/install-project.sh",
   "scripts/install-global.sh",
   "scripts/verify-pack.sh",
   "scripts/set-learning-mode.sh",
+  "scripts/bootstrap-project.ps1",
   "scripts/install-project.ps1",
   "scripts/install-global.ps1",
   "scripts/verify-pack.ps1",

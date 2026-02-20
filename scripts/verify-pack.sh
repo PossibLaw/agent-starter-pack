@@ -7,10 +7,12 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 REQUIRED_FILES=(
   "README.md"
   "CHANGELOG.md"
+  "scripts/bootstrap-project.sh"
   "scripts/install-project.sh"
   "scripts/install-global.sh"
   "scripts/verify-pack.sh"
   "scripts/set-learning-mode.sh"
+  "scripts/bootstrap-project.ps1"
   "scripts/install-project.ps1"
   "scripts/install-global.ps1"
   "scripts/verify-pack.ps1"
@@ -57,7 +59,7 @@ for rel in "${FORBIDDEN_PATTERNS[@]}"; do
   fi
 done
 
-for script in "$REPO_ROOT/scripts/install-project.sh" "$REPO_ROOT/scripts/install-global.sh" "$REPO_ROOT/scripts/verify-pack.sh" "$REPO_ROOT/scripts/set-learning-mode.sh"; do
+for script in "$REPO_ROOT/scripts/bootstrap-project.sh" "$REPO_ROOT/scripts/install-project.sh" "$REPO_ROOT/scripts/install-global.sh" "$REPO_ROOT/scripts/verify-pack.sh" "$REPO_ROOT/scripts/set-learning-mode.sh"; do
   if [[ ! -x "$script" ]]; then
     echo "BLOCKED: script is not executable: ${script#$REPO_ROOT/}"
     exit 1

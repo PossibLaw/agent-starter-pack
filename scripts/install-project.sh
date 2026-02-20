@@ -6,7 +6,7 @@ usage() {
 Install project-level agent files into a target repository.
 
 Usage:
-  install-project.sh /path/to/target-repo [options]
+  install-project.sh [target-repo] [options]
 
 Options:
   --name <project_name>
@@ -22,15 +22,20 @@ Options:
 USAGE
 }
 
-if [[ $# -lt 1 ]]; then
-  usage
-  exit 1
+TARGET_DIR="."
+if [[ $# -gt 0 && "$1" != -* ]]; then
+  TARGET_DIR="$1"
+  shift
 fi
 
-TARGET_DIR="$1"
-shift
 if [[ ! -d "$TARGET_DIR" ]]; then
+  if [[ "$TARGET_DIR" == "/path/to/your/repo" || "$TARGET_DIR" == "C:\\path\\to\\your\\repo" ]]; then
+    echo "BLOCKED: target directory is still a placeholder: $TARGET_DIR"
+    echo "Hint: run from inside your target repo with '.' as the target."
+    exit 1
+  fi
   echo "BLOCKED: target directory does not exist: $TARGET_DIR"
+  echo "Hint: run from inside your target repo with '.' as the target."
   exit 1
 fi
 
@@ -180,34 +185,51 @@ is_progress_rel_file() {
   return 1
 }
 
+require_option_value() {
+  local option_name="$1"
+  local option_value="${2:-}"
+  if [[ -z "${option_value// }" || "$option_value" == --* ]]; then
+    echo "BLOCKED: missing value for $option_name"
+    usage
+    exit 1
+  fi
+}
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --name)
-      PROJECT_NAME="${2:-}"
+      require_option_value "$1" "${2:-}"
+      PROJECT_NAME="$2"
       shift 2
       ;;
     --owner)
-      TEAM_OR_OWNER="${2:-}"
+      require_option_value "$1" "${2:-}"
+      TEAM_OR_OWNER="$2"
       shift 2
       ;;
     --primary)
-      USER_PRIMARY_COMMAND="${2:-}"
+      require_option_value "$1" "${2:-}"
+      USER_PRIMARY_COMMAND="$2"
       shift 2
       ;;
     --test)
-      USER_TEST_COMMAND="${2:-}"
+      require_option_value "$1" "${2:-}"
+      USER_TEST_COMMAND="$2"
       shift 2
       ;;
     --lint)
-      USER_LINT_COMMAND="${2:-}"
+      require_option_value "$1" "${2:-}"
+      USER_LINT_COMMAND="$2"
       shift 2
       ;;
     --typecheck)
-      USER_TYPECHECK_COMMAND="${2:-}"
+      require_option_value "$1" "${2:-}"
+      USER_TYPECHECK_COMMAND="$2"
       shift 2
       ;;
     --build)
-      USER_BUILD_COMMAND="${2:-}"
+      require_option_value "$1" "${2:-}"
+      USER_BUILD_COMMAND="$2"
       shift 2
       ;;
     --preserve-progress)

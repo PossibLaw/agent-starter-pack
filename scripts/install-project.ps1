@@ -7,7 +7,7 @@ function Show-Usage {
 Install project-level agent files into a target repository.
 
 Usage:
-  install-project.ps1 /path/to/target-repo [options]
+  install-project.ps1 [target-repo] [options]
 
 Options:
   --name <project_name>
@@ -36,15 +36,26 @@ function Resolve-RequiredOptionValue {
     exit 1
   }
 
-  return [string]$Arguments[$CurrentIndex + 1]
+  $value = [string]$Arguments[$CurrentIndex + 1]
+  if ([string]::IsNullOrWhiteSpace($value) -or $value.StartsWith("--")) {
+    Write-Host "BLOCKED: missing value for $OptionName"
+    Show-Usage
+    exit 1
+  }
+
+  return $value
 }
 
-if ($args.Count -lt 1) {
-  Show-Usage
-  exit 1
+$targetDir = "."
+$index = 0
+if ($args.Count -gt 0) {
+  $firstArg = [string]$args[0]
+  if (-not $firstArg.StartsWith("-")) {
+    $targetDir = $firstArg
+    $index = 1
+  }
 }
 
-$targetDir = [string]$args[0]
 $projectNameOverride = ""
 $teamOrOwnerOverride = ""
 $userPrimaryCommand = ""
@@ -66,7 +77,6 @@ $progressRelativePaths = @(
   ".agent/LEARNINGS.md"
 )
 
-$index = 1
 while ($index -lt $args.Count) {
   $arg = [string]$args[$index]
   switch ($arg) {
@@ -132,7 +142,13 @@ while ($index -lt $args.Count) {
 }
 
 if (-not (Test-Path -LiteralPath $targetDir -PathType Container)) {
+  if ($targetDir -eq "/path/to/your/repo" -or $targetDir -eq "C:\path\to\your\repo") {
+    Write-Host "BLOCKED: target directory is still a placeholder: $targetDir"
+    Write-Host "Hint: run from inside your target repo with '.' as the target."
+    exit 1
+  }
   Write-Host "BLOCKED: target directory does not exist: $targetDir"
+  Write-Host "Hint: run from inside your target repo with '.' as the target."
   exit 1
 }
 
