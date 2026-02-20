@@ -35,7 +35,7 @@ This repository includes:
 
 ```bash
 git clone https://github.com/PossibLaw/agent-starter-pack.git
-cd PossibLaw-Agent-Starter-Pack
+cd agent-starter-pack
 ./scripts/install-project.sh /path/to/your/repo
 ```
 
@@ -49,8 +49,14 @@ If you are already inside the target repo, call the installer by path:
 
 ```powershell
 git clone https://github.com/PossibLaw/agent-starter-pack.git
-cd PossibLaw-Agent-Starter-Pack
+cd agent-starter-pack
 pwsh -File .\scripts\install-project.ps1 C:\path\to\your\repo
+```
+
+Tip: `git clone` uses the repository name (`agent-starter-pack`) as the folder unless you pass a custom destination, for example:
+
+```bash
+git clone https://github.com/PossibLaw/agent-starter-pack.git PossibLaw-Agent-Starter-Pack
 ```
 
 If you are already inside the target repo, call the installer by path:
