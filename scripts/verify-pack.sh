@@ -68,8 +68,17 @@ for script in "$REPO_ROOT/scripts/bootstrap-project.sh" "$REPO_ROOT/scripts/inst
   fi
 done
 
+has_rg=0
+if command -v rg >/dev/null 2>&1; then
+  has_rg=1
+fi
+
 allowed_placeholders='<(PROJECT_NAME|TEAM_OR_OWNER|PRIMARY_COMMAND|TEST_COMMAND|LINT_COMMAND|TYPECHECK_COMMAND|BUILD_COMMAND)>'
-unexpected="$(rg -n '<[A-Z_]+>' "$REPO_ROOT/packs" | rg -v "$allowed_placeholders" || true)"
+if [[ "$has_rg" -eq 1 ]]; then
+  unexpected="$(rg -n '<[A-Z_]+>' "$REPO_ROOT/packs" | rg -v "$allowed_placeholders" || true)"
+else
+  unexpected="$(grep -RInE -I --exclude-dir='.*' --exclude='.*' -- '<[A-Z_]+>' "$REPO_ROOT/packs" | grep -Ev -- "$allowed_placeholders" || true)"
+fi
 if [[ -n "$unexpected" ]]; then
   echo "BLOCKED: unexpected placeholder(s) found:"
   echo "$unexpected"
@@ -80,7 +89,15 @@ require_text() {
   local file="$1"
   local pattern="$2"
   local message="$3"
-  if ! rg -q --fixed-strings "$pattern" "$file"; then
+  if [[ "$has_rg" -eq 1 ]]; then
+    if ! rg -q --fixed-strings "$pattern" "$file"; then
+      echo "BLOCKED: $message"
+      exit 1
+    fi
+    return 0
+  fi
+
+  if ! grep -Fq -- "$pattern" "$file"; then
     echo "BLOCKED: $message"
     exit 1
   fi
