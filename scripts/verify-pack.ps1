@@ -20,6 +20,8 @@ $requiredFiles = @(
   "scripts/set-learning-mode.ps1",
   "packs/project/AGENTS.md",
   "packs/project/CLAUDE.md",
+  "packs/project/docs/vendor/README.md",
+  "packs/project/docs/vendor/supabase.md",
   "packs/project/.claude/history.md",
   "packs/project/.agent/PLAN.md",
   "packs/project/.agent/CONTEXT.md",
@@ -97,5 +99,24 @@ if ($unexpected.Count -gt 0) {
   $unexpected | ForEach-Object { Write-Host $_ }
   exit 1
 }
+
+function Require-Text {
+  param(
+    [string]$FilePath,
+    [string]$Pattern,
+    [string]$Message
+  )
+
+  $content = Get-Content -LiteralPath $FilePath -Raw
+  if (-not $content.Contains($Pattern)) {
+    Write-Host "BLOCKED: $Message"
+    exit 1
+  }
+}
+
+Require-Text -FilePath (Join-Path $repoRoot "packs/project/CLAUDE.md") -Pattern "## Vendor References" -Message "missing vendor section in packs/project/CLAUDE.md"
+Require-Text -FilePath (Join-Path $repoRoot "packs/project/AGENTS.md") -Pattern "## Vendor References" -Message "missing vendor section in packs/project/AGENTS.md"
+Require-Text -FilePath (Join-Path $repoRoot "packs/global/claude/.claude/CLAUDE.md") -Pattern "For vendor setup/API/security guidance, verify against official vendor docs and cite source date." -Message "missing vendor recency rule in packs/global/claude/.claude/CLAUDE.md"
+Require-Text -FilePath (Join-Path $repoRoot "packs/global/codex/.codex/AGENTS.md") -Pattern "For vendor setup/API/security guidance, verify against official vendor docs and cite source date." -Message "missing vendor recency rule in packs/global/codex/.codex/AGENTS.md"
 
 Write-Host "DONE: verification passed"

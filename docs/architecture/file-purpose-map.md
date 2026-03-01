@@ -3,6 +3,8 @@
 ## Project Pack (`packs/project`)
 - `AGENTS.md`: Codex startup and execution contract for a repo.
 - `CLAUDE.md`: Claude startup and execution contract for a repo.
+- `docs/vendor/README.md`: rules for using local vendor docs as authoritative defaults.
+- `docs/vendor/supabase.md`: Supabase-specific integration and security reference.
 - `.agent/PLAN.md`: planning artifact template.
 - `.agent/CONTEXT.md`: working context and decisions template.
 - `.agent/TASKS.md`: task board with status markers.

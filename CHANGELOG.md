@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 2026-03-01
+- Enforced repo-root validation and state-file path constraints in project templates (`packs/project/CLAUDE.md`, `packs/project/AGENTS.md`) and global templates (`packs/global/claude/.claude/CLAUDE.md`, `packs/global/codex/.codex/AGENTS.md`).
+- Added explicit `BLOCKED + ask` behavior when repo root is unresolved, ambiguous, or inside OS temp directories.
+- Standardized required state artifact write paths to `${REPO_ROOT}/.agent/PLAN.md`, `${REPO_ROOT}/.agent/HANDOFF.md`, and `${REPO_ROOT}/.claude/history.md` for both Claude and Codex contracts.
+- Added vendor documentation support in the project pack (`packs/project/docs/vendor/README.md`, `packs/project/docs/vendor/supabase.md`) with metadata and official-source requirements.
+- Added vendor routing rules to project templates and explicit vendor recency verification rules to global templates.
+- Updated project installers (`scripts/install-project.sh`, `scripts/install-project.ps1`) and verification scripts (`scripts/verify-pack.sh`, `scripts/verify-pack.ps1`) to include and enforce vendor documentation artifacts.
+- Updated docs (`README.md`, `docs/architecture/file-purpose-map.md`) to document the `docs/vendor/` extension pattern and Supabase as the initial vendor guide.
+
 ## 2026-02-20
 - Added bootstrap installers (`scripts/bootstrap-project.sh` and `scripts/bootstrap-project.ps1`) that clone the starter pack to a temporary directory and install into the current repo by default.
 - Updated project installers (`scripts/install-project.sh` and `scripts/install-project.ps1`) so target path is optional and defaults to `.`.

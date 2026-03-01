@@ -416,6 +416,8 @@ fi
 
 copy_with_backup "$PACK_ROOT/AGENTS.md" "$TARGET_DIR/AGENTS.md" "AGENTS.md"
 copy_with_backup "$PACK_ROOT/CLAUDE.md" "$TARGET_DIR/CLAUDE.md" "CLAUDE.md"
+copy_with_backup "$PACK_ROOT/docs/vendor/README.md" "$TARGET_DIR/docs/vendor/README.md" "docs/vendor/README.md"
+copy_with_backup "$PACK_ROOT/docs/vendor/supabase.md" "$TARGET_DIR/docs/vendor/supabase.md" "docs/vendor/supabase.md"
 copy_with_backup "$PACK_ROOT/.claude/history.md" "$TARGET_DIR/.claude/history.md" ".claude/history.md"
 copy_with_backup "$PACK_ROOT/.agent/PLAN.md" "$TARGET_DIR/.agent/PLAN.md" ".agent/PLAN.md"
 copy_with_backup "$PACK_ROOT/.agent/CONTEXT.md" "$TARGET_DIR/.agent/CONTEXT.md" ".agent/CONTEXT.md"

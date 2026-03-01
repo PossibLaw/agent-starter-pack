@@ -453,6 +453,8 @@ $buildCommand = Normalize-OrUnconfirmed -Value $buildCommand
 $filesToCopy = @(
   @{ Source = "AGENTS.md"; Destination = "AGENTS.md" },
   @{ Source = "CLAUDE.md"; Destination = "CLAUDE.md" },
+  @{ Source = "docs/vendor/README.md"; Destination = "docs/vendor/README.md" },
+  @{ Source = "docs/vendor/supabase.md"; Destination = "docs/vendor/supabase.md" },
   @{ Source = ".claude/history.md"; Destination = ".claude/history.md" },
   @{ Source = ".agent/PLAN.md"; Destination = ".agent/PLAN.md" },
   @{ Source = ".agent/CONTEXT.md"; Destination = ".agent/CONTEXT.md" },

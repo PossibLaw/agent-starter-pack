@@ -10,6 +10,8 @@ It was created by reviewing and distilling hundreds of pages of guides and best-
 ### Project-level files
 - `AGENTS.md`: Codex operating contract for the repo; defines scope, execution standards, and routing behavior.
 - `CLAUDE.md`: Claude operating contract for the repo; mirrors delivery and safety expectations for Claude workflows.
+- `docs/vendor/README.md`: Vendor-doc contract; defines how agents should use local vendor references over model memory.
+- `docs/vendor/supabase.md`: Initial vendor reference guide (Supabase) with key usage, env patterns, and security reminders.
 - `.agent/PLAN.md`: Working plan template to define objective, milestones, risks, and acceptance criteria.
 - `.agent/CONTEXT.md`: Active context capture for assumptions, constraints, and key facts discovered during execution.
 - `.agent/TASKS.md`: Action checklist to track in-progress, done, blocked, and unconfirmed work items.
@@ -171,6 +173,8 @@ pwsh -File .\scripts\install-global.ps1 --claude
 - `.agent/TEST.md`
 - `.agent/HANDOFF.md`
 - `.agent/LEARNINGS.md`
+- `docs/vendor/README.md`
+- `docs/vendor/supabase.md`
 - `.gitignore` updates for local continuity files (`.claude/history.md` and `.agent/*.md`)
 
 `Learning Mode` defaults to `OFF`. Turn it on per task by setting `Learning Mode: CAPTURE` or `Learning Mode: APPLY` in `.agent/PLAN.md` (or by explicit prompt instruction).
@@ -179,6 +183,11 @@ pwsh -File .\scripts\install-global.ps1 --claude
 - `~/.codex/AGENTS.md`
 - `~/.claude/CLAUDE.md`
 - `~/.claude/agents/*.md`
+
+## Vendor Docs Workflow
+- Keep project-curated vendor integration guidance in `docs/vendor/<vendor>.md`.
+- Include `Last verified: YYYY-MM-DD` and official source links in each vendor file.
+- Agents should read `docs/vendor/` first for vendor/API/security setup work, then verify against current official docs when recency matters.
 
 ## Safety and Rollback
 - Existing destination files are backed up before overwrite.
@@ -221,6 +230,7 @@ pwsh -File C:\path\to\agent-starter-pack\scripts\set-learning-mode.ps1 C:\path\t
 ```text
 packs/
   project/                 # Repo-level files
+    docs/vendor/           # Local vendor integration references
   global/claude/           # ~/.claude curated files
   global/codex/            # ~/.codex curated files
 scripts/

@@ -19,6 +19,8 @@ REQUIRED_FILES=(
   "scripts/set-learning-mode.ps1"
   "packs/project/AGENTS.md"
   "packs/project/CLAUDE.md"
+  "packs/project/docs/vendor/README.md"
+  "packs/project/docs/vendor/supabase.md"
   "packs/project/.claude/history.md"
   "packs/project/.agent/PLAN.md"
   "packs/project/.agent/CONTEXT.md"
@@ -73,5 +75,20 @@ if [[ -n "$unexpected" ]]; then
   echo "$unexpected"
   exit 1
 fi
+
+require_text() {
+  local file="$1"
+  local pattern="$2"
+  local message="$3"
+  if ! rg -q --fixed-strings "$pattern" "$file"; then
+    echo "BLOCKED: $message"
+    exit 1
+  fi
+}
+
+require_text "$REPO_ROOT/packs/project/CLAUDE.md" "## Vendor References" "missing vendor section in packs/project/CLAUDE.md"
+require_text "$REPO_ROOT/packs/project/AGENTS.md" "## Vendor References" "missing vendor section in packs/project/AGENTS.md"
+require_text "$REPO_ROOT/packs/global/claude/.claude/CLAUDE.md" "For vendor setup/API/security guidance, verify against official vendor docs and cite source date." "missing vendor recency rule in packs/global/claude/.claude/CLAUDE.md"
+require_text "$REPO_ROOT/packs/global/codex/.codex/AGENTS.md" "For vendor setup/API/security guidance, verify against official vendor docs and cite source date." "missing vendor recency rule in packs/global/codex/.codex/AGENTS.md"
 
 echo "DONE: verification passed"
