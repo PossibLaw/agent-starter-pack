@@ -14,6 +14,7 @@ Codex project instruction file for <PROJECT_NAME>.
    - Handoff, resume, or parallel worktree → `.agent/HANDOFF.md` or `.claude/history.md`
    - Learning request, or `Learning Mode` = `CAPTURE`/`APPLY` → `.agent/LEARNINGS.md`
    - Vendor/integration setup or API config → `docs/vendor/`
+   - Evals/help defining “done” → `docs/workflows/evals.md`
 4. If more repo context is needed, read `.claude/history.md` next — not the whole repo.
 5. Global continuity stays in `~/.codex/AGENTS.md`. Repo continuity is optional and on-demand.
 
@@ -94,6 +95,7 @@ When resuming prior work, read `${REPO_ROOT}/.claude/history.md` first.
 - Never assume eval inputs, acceptance criteria, fixtures, or expected outputs; mark unknowns as `UNCONFIRMED` and resolve with a targeted user question.
 - For any new or changed behavior, provide an end-user eval walkthrough before implementation using plain language plus Given/When/Then, including happy path, edge case, and failure/security case.
 - Minimize user friction: infer likely test/eval commands and fixtures from repository signals first; ask the user only targeted follow-ups for unresolved unknowns.
+- If an eval plan is missing or vague, follow `docs/workflows/evals.md` and propose a minimal 3-eval set (happy, edge, failure/security) before implementation.
 
 ## Boundary Rules
 Always do:

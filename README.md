@@ -12,6 +12,7 @@ It was created by reviewing and distilling hundreds of pages of guides and best-
 - `CLAUDE.md`: Claude operating contract for the repo; mirrors delivery and safety expectations for Claude workflows.
 - `docs/vendor/README.md`: Vendor-doc contract; defines how agents should use local vendor references over model memory.
 - `docs/vendor/supabase.md`: Initial vendor reference guide (Supabase) with key usage, env patterns, and security reminders.
+- `docs/workflows/evals.md`: Evals-driven development guide to define “done” and iterate safely (with extra guidance for LLM features).
 - `.agent/PLAN.md`: Working plan template to define objective, milestones, risks, and acceptance criteria.
 - `.agent/CONTEXT.md`: Active context capture for assumptions, constraints, and key facts discovered during execution.
 - `.agent/TASKS.md`: Action checklist to track in-progress, done, blocked, and unconfirmed work items.
@@ -168,6 +169,7 @@ pwsh -File .\scripts\install-global.ps1 --claude
 - `.agent/LEARNINGS.md`
 - `docs/vendor/README.md`
 - `docs/vendor/supabase.md`
+- `docs/workflows/evals.md`
 - `.gitignore` updates for local continuity files (`.claude/history.md` and `.agent/*.md`)
 
 `Learning Mode` defaults to `OFF`. Turn it on per task by setting `Learning Mode: CAPTURE` or `Learning Mode: APPLY` in `.agent/PLAN.md` (or by explicit prompt instruction).

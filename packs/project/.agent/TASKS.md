@@ -9,7 +9,7 @@
 ## Active Tasks
 | ID | Task | Owner | Status | Depends On | Blocker |
 | --- | --- | --- | --- | --- | --- |
-| T1 | Confirm objective and acceptance criteria | | IN_PROGRESS | | |
+| T1 | Confirm objective, acceptance criteria, and evals | | IN_PROGRESS | | |
 
 ## Backlog
 | ID | Task | Priority | Status |

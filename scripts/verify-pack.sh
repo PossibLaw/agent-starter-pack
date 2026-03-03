@@ -21,6 +21,7 @@ REQUIRED_FILES=(
   "packs/project/CLAUDE.md"
   "packs/project/docs/vendor/README.md"
   "packs/project/docs/vendor/supabase.md"
+  "packs/project/docs/workflows/evals.md"
   "packs/project/.claude/history.md"
   "packs/project/.agent/PLAN.md"
   "packs/project/.agent/CONTEXT.md"

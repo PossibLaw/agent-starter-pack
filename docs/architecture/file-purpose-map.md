@@ -5,6 +5,7 @@
 - `CLAUDE.md`: Claude startup and execution contract for a repo.
 - `docs/vendor/README.md`: rules for using local vendor docs as authoritative defaults.
 - `docs/vendor/supabase.md`: Supabase-specific integration and security reference.
+- `docs/workflows/evals.md`: evals-driven development guide (define “done”, design evals, and iterate safely).
 - `.agent/PLAN.md`: planning artifact template.
 - `.agent/CONTEXT.md`: working context and decisions template.
 - `.agent/TASKS.md`: task board with status markers.

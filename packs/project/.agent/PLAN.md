@@ -13,6 +13,18 @@
 - Tooling:
 - Environment:
 
+## Evals (Definition of Done)
+Before implementation, define how we will verify success.
+
+Minimum coverage for any behavior change:
+- Happy path
+- Edge/boundary
+- Failure/security case
+
+If this work involves an LLM/agent/RAG system, also define:
+- Trace source (real vs synthetic)
+- Target failure categories (if known)
+
 ## Learning Mode
 - Mode: `OFF` (default)
 - Allowed values:
