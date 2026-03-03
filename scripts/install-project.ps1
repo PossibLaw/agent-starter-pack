@@ -507,5 +507,12 @@ if (
   $buildCommand -eq "UNCONFIRMED"
 ) {
   Write-Host ""
-  Write-Host "WARNING: one or more commands are UNCONFIRMED. Update .agent/TEST.md before marking work DONE."
+  Write-Host "WARNING: one or more commands are UNCONFIRMED."
+  Write-Host "Why this happens:"
+  Write-Host "  - The installer infers commands by detecting project signals (for example: package.json, pyproject.toml, go.mod, Cargo.toml, lockfiles)."
+  Write-Host "  - No supported signals were detected, so safe defaults remain UNCONFIRMED (common in a brand-new/empty repo)."
+  Write-Host "How to fix:"
+  Write-Host "  - Initialize your project (add the relevant config files) and re-run this installer, OR"
+  Write-Host "  - Re-run with explicit overrides: --primary/--test/--lint/--typecheck/--build, OR"
+  Write-Host "  - Edit Commands in: $targetDirResolved/.agent/TEST.md and $targetDirResolved/CLAUDE.md"
 }

@@ -452,5 +452,12 @@ warn_if_progress_files_tracked
 
 if [[ "$PRIMARY_COMMAND" == "UNCONFIRMED" || "$TEST_COMMAND" == "UNCONFIRMED" || "$LINT_COMMAND" == "UNCONFIRMED" || "$TYPECHECK_COMMAND" == "UNCONFIRMED" || "$BUILD_COMMAND" == "UNCONFIRMED" ]]; then
   echo ""
-  echo "WARNING: one or more commands are UNCONFIRMED. Update .agent/TEST.md before marking work DONE."
+  echo "WARNING: one or more commands are UNCONFIRMED."
+  echo "Why this happens:"
+  echo "  - The installer infers commands by detecting project signals (for example: package.json, pyproject.toml, go.mod, Cargo.toml, lockfiles)."
+  echo "  - No supported signals were detected, so safe defaults remain UNCONFIRMED (common in a brand-new/empty repo)."
+  echo "How to fix:"
+  echo "  - Initialize your project (add the relevant config files) and re-run this installer, OR"
+  echo "  - Re-run with explicit overrides: --primary/--test/--lint/--typecheck/--build, OR"
+  echo "  - Edit Commands in: $TARGET_DIR/.agent/TEST.md and $TARGET_DIR/CLAUDE.md"
 fi

@@ -33,10 +33,26 @@ This repository includes:
 
 ## Quick Start (Project Files)
 
+### Pick the Right Mode
+
+- Brand new repo: run quick start as-is (no `--preserve-progress`). This creates all starter-pack files.
+- Existing repo, keep progress/history/handoff: add `--preserve-progress`.
+- Existing repo, intentionally reset progress/history/handoff to fresh templates: run without `--preserve-progress`.
+
+If you run the installer in a brand-new/empty repo (no detectable stack files yet), you may see a warning that commands are `UNCONFIRMED`. This is expected—either initialize the project and re-run, pass explicit `--primary/--test/--lint/--typecheck/--build` overrides, or edit `.agent/TEST.md` and `CLAUDE.md`.
+
 ### macOS + Linux (run from inside your target repo)
+
+Brand new repo:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/PossibLaw/agent-starter-pack/main/scripts/bootstrap-project.sh | bash -s -- .
+```
+
+Existing repo (preserve progress files):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/PossibLaw/agent-starter-pack/main/scripts/bootstrap-project.sh | bash -s -- . --preserve-progress
 ```
 
 If you prefer not to execute a remote script directly:
@@ -49,10 +65,21 @@ rm -rf /tmp/agent-starter-pack
 
 ### Windows (PowerShell 7+, run from inside your target repo)
 
+Brand new repo:
+
 ```powershell
 $bootstrap = Join-Path $env:TEMP "bootstrap-project.ps1"
 irm https://raw.githubusercontent.com/PossibLaw/agent-starter-pack/main/scripts/bootstrap-project.ps1 -OutFile $bootstrap
 pwsh -File $bootstrap .
+Remove-Item $bootstrap -Force
+```
+
+Existing repo (preserve progress files):
+
+```powershell
+$bootstrap = Join-Path $env:TEMP "bootstrap-project.ps1"
+irm https://raw.githubusercontent.com/PossibLaw/agent-starter-pack/main/scripts/bootstrap-project.ps1 -OutFile $bootstrap
+pwsh -File $bootstrap . --preserve-progress
 Remove-Item $bootstrap -Force
 ```
 
@@ -101,40 +128,6 @@ pwsh -File .\scripts\install-project.ps1 C:\code\my-app `
 ```
 
 The project installer also adds local-continuity ignore rules to the target repo `.gitignore` so `.claude/history.md` and `.agent/*.md` state files stay local by default.
-
-### Pick the Right Mode
-
-- Brand new repo: run quick start as-is (no flags). This creates all starter-pack files.
-- Existing repo, keep progress/history/handoff: use `--preserve-progress`.
-- Existing repo, intentionally reset progress/history/handoff to fresh templates: run without `--preserve-progress`.
-
-Intentional full reset example (run from inside target repo):
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/PossibLaw/agent-starter-pack/main/scripts/bootstrap-project.sh | bash -s -- .
-```
-
-```powershell
-$bootstrap = Join-Path $env:TEMP "bootstrap-project.ps1"
-irm https://raw.githubusercontent.com/PossibLaw/agent-starter-pack/main/scripts/bootstrap-project.ps1 -OutFile $bootstrap
-pwsh -File $bootstrap .
-Remove-Item $bootstrap -Force
-```
-
-### Update an Existing Repo Without Overwriting Progress Files
-
-Use `--preserve-progress` when a repo already has starter-pack files and you want to keep existing progress artifacts (for example `.claude/history.md`, `.agent/HANDOFF.md`, `.agent/TASKS.md`).
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/PossibLaw/agent-starter-pack/main/scripts/bootstrap-project.sh | bash -s -- . --preserve-progress
-```
-
-```powershell
-$bootstrap = Join-Path $env:TEMP "bootstrap-project.ps1"
-irm https://raw.githubusercontent.com/PossibLaw/agent-starter-pack/main/scripts/bootstrap-project.ps1 -OutFile $bootstrap
-pwsh -File $bootstrap . --preserve-progress
-Remove-Item $bootstrap -Force
-```
 
 ## Optional Global Setup
 

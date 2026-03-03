@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-03-03
+- Improved installer warning messaging when command inference leaves `UNCONFIRMED` values (`scripts/install-project.sh`, `scripts/install-project.ps1`) with explicit “why” and remediation steps.
+- Clarified `.agent/TEST.md` guidance to treat `UNCONFIRMED` commands the same as placeholders (`packs/project/.agent/TEST.md`).
+- Moved “Pick the Right Mode” guidance to the top of the quick start and documented the `UNCONFIRMED` warning (`README.md`).
+
 ## 2026-03-01
 - Enforced repo-root validation and state-file path constraints in project templates (`packs/project/CLAUDE.md`, `packs/project/AGENTS.md`) and global templates (`packs/global/claude/.claude/CLAUDE.md`, `packs/global/codex/.codex/AGENTS.md`).
 - Added explicit `BLOCKED + ask` behavior when repo root is unresolved, ambiguous, or inside OS temp directories.

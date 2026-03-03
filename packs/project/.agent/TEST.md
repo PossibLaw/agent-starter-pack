@@ -20,7 +20,7 @@ Do not assume eval criteria, fixtures, or expected outputs; mark unknowns as `UN
 - `<TYPECHECK_COMMAND>`
 - `<TEST_COMMAND>`
 - `rg -n "UNCONFIRMED|BLOCKED|TODO" AGENTS.md CLAUDE.md .agent`
-- If commands are placeholders, first derive likely commands from repository signals (for example: `package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`, lockfiles, CI config) and record the source used.
+- If commands are placeholders or `UNCONFIRMED`, first derive likely commands from repository signals (for example: `package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`, lockfiles, CI config) and record the source used.
 - Return `BLOCKED` only if commands remain unresolved after repository analysis; then ask one targeted user question.
 
 ## TDD Evidence (Required For Code Changes)
