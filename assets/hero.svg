@@ -1,0 +1,191 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="620" viewBox="0 0 800 620">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&amp;display=swap');
+
+      .bg { fill: #0a1929; }
+      .border-box {
+        fill: none;
+        stroke: #cc1d8a;
+        stroke-width: 2;
+        rx: 8;
+      }
+      .title {
+        font-family: 'Share Tech Mono', 'Courier New', monospace;
+        font-size: 52px;
+        font-weight: bold;
+        fill: #cc1d8a;
+        letter-spacing: 6px;
+        filter: url(#glow);
+      }
+      .subtitle {
+        font-family: 'Share Tech Mono', 'Courier New', monospace;
+        font-size: 13px;
+        fill: #7eb8da;
+      }
+      .tagline {
+        font-family: 'Share Tech Mono', 'Courier New', monospace;
+        font-size: 11.5px;
+        fill: #5a8fb0;
+      }
+      .section-header {
+        font-family: 'Share Tech Mono', 'Courier New', monospace;
+        font-size: 16px;
+        fill: #cc1d8a;
+        font-weight: bold;
+        letter-spacing: 2px;
+      }
+      .col-header {
+        font-family: 'Share Tech Mono', 'Courier New', monospace;
+        font-size: 12px;
+        fill: #cc1d8a;
+        font-weight: bold;
+      }
+      .cell-file {
+        font-family: 'Share Tech Mono', 'Courier New', monospace;
+        font-size: 11.5px;
+        fill: #e8b4d4;
+      }
+      .cell-desc {
+        font-family: 'Share Tech Mono', 'Courier New', monospace;
+        font-size: 11.5px;
+        fill: #7eb8da;
+      }
+      .prompt-char {
+        font-family: 'Share Tech Mono', 'Courier New', monospace;
+        font-size: 13px;
+        fill: #cc1d8a;
+      }
+      .prompt-text {
+        font-family: 'Share Tech Mono', 'Courier New', monospace;
+        font-size: 13px;
+        fill: #5a8fb0;
+      }
+      .divider { stroke: #1e3a5f; stroke-width: 1; }
+      .table-line { stroke: #1e3a5f; stroke-width: 0.5; }
+    </style>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="scanlines" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="transparent"/>
+      <stop offset="50%" stop-color="transparent"/>
+      <stop offset="50%" stop-color="rgba(0,0,0,0.03)"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0.03)"/>
+    </linearGradient>
+    <pattern id="scan" width="100%" height="4" patternUnits="userSpaceOnUse">
+      <rect width="100%" height="4" fill="url(#scanlines)"/>
+    </pattern>
+    <radialGradient id="vignette" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="transparent"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0.35)"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect class="bg" width="800" height="620" rx="10"/>
+
+  <!-- Border -->
+  <rect class="border-box" x="8" y="8" width="784" height="604" rx="8"/>
+
+  <!-- Inner border accent -->
+  <rect x="14" y="14" width="772" height="592" rx="6" fill="none" stroke="#132c49" stroke-width="1"/>
+
+  <!-- Title -->
+  <text class="title" x="400" y="68" text-anchor="middle">POSSIBLAW</text>
+
+  <!-- Subtitle -->
+  <text class="subtitle" x="400" y="95" text-anchor="middle">Agent Starter Pack</text>
+
+  <!-- Tagline lines -->
+  <text class="tagline" x="400" y="120" text-anchor="middle">AI-assisted delivery made consistent. Planning, testing, review, handoff.</text>
+  <text class="tagline" x="400" y="137" text-anchor="middle">Built for solo devs and small teams shipping with Claude + Codex.</text>
+
+  <!-- Divider -->
+  <line class="divider" x1="40" y1="155" x2="760" y2="155"/>
+
+  <!-- Section: What's Inside -->
+  <text class="section-header" x="40" y="180">What's Inside</text>
+
+  <!-- Table header line -->
+  <line class="table-line" x1="40" y1="190" x2="760" y2="190"/>
+
+  <!-- Column headers -->
+  <text class="col-header" x="50" y="208">File</text>
+  <text class="col-header" x="260" y="208">Purpose</text>
+
+  <!-- Header underline -->
+  <line class="table-line" x1="40" y1="216" x2="760" y2="216"/>
+
+  <!-- Row 1 -->
+  <text class="cell-file" x="50" y="236">CLAUDE.md</text>
+  <text class="cell-desc" x="260" y="236">Claude operating contract — scope, safety, execution</text>
+  <line class="table-line" x1="40" y1="246" x2="760" y2="246"/>
+
+  <!-- Row 2 -->
+  <text class="cell-file" x="50" y="266">AGENTS.md</text>
+  <text class="cell-desc" x="260" y="266">Codex operating contract — routing, standards</text>
+  <line class="table-line" x1="40" y1="276" x2="760" y2="276"/>
+
+  <!-- Row 3 -->
+  <text class="cell-file" x="50" y="296">.agent/PLAN.md</text>
+  <text class="cell-desc" x="260" y="296">Working plan — objective, milestones, risks</text>
+  <line class="table-line" x1="40" y1="306" x2="760" y2="306"/>
+
+  <!-- Row 4 -->
+  <text class="cell-file" x="50" y="326">.agent/TEST.md</text>
+  <text class="cell-desc" x="260" y="326">Validation matrix — TDD evidence, security checks</text>
+  <line class="table-line" x1="40" y1="336" x2="760" y2="336"/>
+
+  <!-- Row 5 -->
+  <text class="cell-file" x="50" y="356">.agent/REVIEW.md</text>
+  <text class="cell-desc" x="260" y="356">Review rubric — correctness, regressions, security</text>
+  <line class="table-line" x1="40" y1="366" x2="760" y2="366"/>
+
+  <!-- Row 6 -->
+  <text class="cell-file" x="50" y="386">.agent/TASKS.md</text>
+  <text class="cell-desc" x="260" y="386">Execution checklist — in-progress, done, blocked</text>
+  <line class="table-line" x1="40" y1="396" x2="760" y2="396"/>
+
+  <!-- Row 7 -->
+  <text class="cell-file" x="50" y="416">.agent/HANDOFF.md</text>
+  <text class="cell-desc" x="260" y="416">Memory. Session baton-pass for continuity.</text>
+  <line class="table-line" x1="40" y1="426" x2="760" y2="426"/>
+
+  <!-- Row 8 -->
+  <text class="cell-file" x="50" y="446">.agent/CONTEXT.md</text>
+  <text class="cell-desc" x="260" y="446">Active context — assumptions, constraints, facts</text>
+  <line class="table-line" x1="40" y1="456" x2="760" y2="456"/>
+
+  <!-- Row 9 -->
+  <text class="cell-file" x="50" y="476">docs/vendor/*</text>
+  <text class="cell-desc" x="260" y="476">Local vendor integration refs — Supabase and more</text>
+  <line class="table-line" x1="40" y1="486" x2="760" y2="486"/>
+
+  <!-- Row 10 -->
+  <text class="cell-file" x="50" y="506">docs/workflows/*</text>
+  <text class="cell-desc" x="260" y="506">Evals-driven dev — define "done", iterate safely</text>
+  <line class="table-line" x1="40" y1="516" x2="760" y2="516"/>
+
+  <!-- Row 11 -->
+  <text class="cell-file" x="50" y="536">.agent/LEARNINGS.md</text>
+  <text class="cell-desc" x="260" y="536">Learning log — reusable observations (opt-in)</text>
+  <line class="table-line" x1="40" y1="546" x2="760" y2="546"/>
+
+  <!-- Bottom prompt -->
+  <text class="prompt-char" x="50" y="580">$</text>
+  <text class="prompt-text" x="66" y="580">curl -fsSL .../bootstrap-project.sh | bash -s -- .</text>
+  <rect x="458" y="568" width="10" height="16" fill="#cc1d8a" opacity="0.8">
+    <animate attributeName="opacity" values="0.8;0;0.8" dur="1.2s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- Scanline overlay -->
+  <rect width="800" height="620" fill="url(#scan)" rx="10"/>
+
+  <!-- Vignette overlay -->
+  <rect width="800" height="620" fill="url(#vignette)" rx="10"/>
+</svg>
