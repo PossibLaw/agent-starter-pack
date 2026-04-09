@@ -1,3 +1,21 @@
+---
+contract_version: 1
+artifact_type: test
+status: IN_PROGRESS
+depends_on:
+  - .agent/PLAN.md
+produces:
+  - test_receipts
+  - eval_results
+  - security_results
+feeds_into:
+  - .agent/REVIEW.md
+  - .agent/HANDOFF.md
+memory:
+  include_in_memory: true
+  tags: [test, evals]
+---
+
 # TEST
 
 ## Validation Policy
@@ -37,6 +55,9 @@ Before implementation, present evals in plain language so the user can confirm s
 | E1 | | | | | | | |
 | E2 | | | | | | | |
 | E3 | | | | | | | |
+
+Contract rule:
+- Eval IDs in this table must map to `PLAN.md` and be referenced in test receipts.
 
 Minimum eval coverage:
 - Happy path scenario.

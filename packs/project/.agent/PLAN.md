@@ -1,3 +1,22 @@
+---
+contract_version: 1
+artifact_type: plan
+status: IN_PROGRESS
+depends_on: []
+produces:
+  - eval_ids
+  - assumptions
+  - risks
+  - milestone_status
+feeds_into:
+  - .agent/TEST.md
+  - .agent/REVIEW.md
+  - .agent/HANDOFF.md
+memory:
+  include_in_memory: true
+  tags: [plan]
+---
+
 # PLAN
 
 ## Objective
@@ -47,6 +66,12 @@ If this work involves an LLM/agent/RAG system, also define:
 - Question:
   - Owner:
   - Needed by:
+
+## Contract Outputs (Required)
+- Eval IDs defined for `E1`/`E2`/`E3` in `.agent/TEST.md`.
+- Assumptions marked `CONFIRMED`, `UNCONFIRMED`, or `ASSUMED`.
+- Risks include impact and mitigation.
+- Milestone statuses reflect current execution state.
 
 ## Milestones
 | Milestone | Owner | Status | Acceptance Check |

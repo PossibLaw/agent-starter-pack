@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2026-04-09
+- Added a typed workflow contract doc for staged state artifacts and optional integrations (`packs/project/docs/workflows/contracts.md`).
+- Updated project templates to enforce pipeline sequencing and optional integration points for raw-mode memory retrieval and stage skills (`packs/project/AGENTS.md`, `packs/project/CLAUDE.md`).
+- Added structured contract headers to state artifact templates and explicit cross-artifact linkage fields (`packs/project/.agent/PLAN.md`, `packs/project/.agent/CONTEXT.md`, `packs/project/.agent/TASKS.md`, `packs/project/.agent/REVIEW.md`, `packs/project/.agent/TEST.md`, `packs/project/.agent/HANDOFF.md`, `packs/project/.agent/LEARNINGS.md`).
+- Updated installers to include the new contracts workflow artifact (`scripts/install-project.sh`, `scripts/install-project.ps1`).
+- Expanded pack verification to require the contracts workflow artifact, contract sections, and typed artifact headers (`scripts/verify-pack.sh`, `scripts/verify-pack.ps1`).
+- Updated top-level docs to reflect the new contract pipeline and optional memory/skill integration guidance (`README.md`, `docs/architecture/file-purpose-map.md`, `packs/project/docs/workflows/evals.md`).
+
 ## 2026-03-03
 - Improved installer warning messaging when command inference leaves `UNCONFIRMED` values (`scripts/install-project.sh`, `scripts/install-project.ps1`) with explicit “why” and remediation steps.
 - Clarified `.agent/TEST.md` guidance to treat `UNCONFIRMED` commands the same as placeholders (`packs/project/.agent/TEST.md`).

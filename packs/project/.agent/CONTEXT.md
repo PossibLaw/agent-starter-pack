@@ -1,3 +1,21 @@
+---
+contract_version: 1
+artifact_type: context
+status: IN_PROGRESS
+depends_on: []
+produces:
+  - references
+  - key_decisions
+  - known_gaps
+feeds_into:
+  - .agent/PLAN.md
+  - .agent/REVIEW.md
+  - .agent/HANDOFF.md
+memory:
+  include_in_memory: true
+  tags: [context]
+---
+
 # CONTEXT
 
 ## Task Summary

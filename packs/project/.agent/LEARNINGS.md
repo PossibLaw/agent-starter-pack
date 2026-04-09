@@ -1,3 +1,20 @@
+---
+contract_version: 1
+artifact_type: learnings
+status: IN_PROGRESS
+depends_on:
+  - .agent/PLAN.md
+produces:
+  - reusable_observations
+  - proposed_improvements
+feeds_into:
+  - AGENTS.md
+  - CLAUDE.md
+memory:
+  include_in_memory: true
+  tags: [learning]
+---
+
 # LEARNINGS
 
 Use this file only when `Learning Mode` is `CAPTURE` or `APPLY`.

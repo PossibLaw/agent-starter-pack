@@ -12,6 +12,7 @@ Repo Root (absolute path, required): /path/to/your/repo
    - Test request → `.agent/TEST.md`
    - Review request → `.agent/REVIEW.md`
    - Handoff, resume, or parallel worktree → `.agent/HANDOFF.md` or `.claude/history.md`
+   - Contract workflow, artifact schema, or stage handoff questions → `docs/workflows/contracts.md`
    - Learning request, or `Learning Mode` = `CAPTURE`/`APPLY` → `.agent/LEARNINGS.md`
    - Vendor/integration setup or API config → `docs/vendor/`
    - Evals/help defining “done” → `docs/workflows/evals.md`
@@ -91,6 +92,26 @@ Run `<LINT_COMMAND> && <TYPECHECK_COMMAND> && <TEST_COMMAND>` before handoff.
 - Markdown drafting or doc updates → `@docs-agent`
 - Quality or risk review → `@review-agent`
 - Test suite generation → `@test-generator`
+
+## Contract Pipeline (Required)
+- Treat state artifacts as a typed pipeline, not independent notes.
+- Execution order: `PLAN.md` → `TEST.md` → `REVIEW.md` → `HANDOFF.md`.
+- `PLAN.md` must define eval IDs, assumptions, and risks before implementation.
+- `TEST.md` must reference eval IDs from `PLAN.md` and include receipts.
+- `REVIEW.md` must reference executed checks and receipts from `TEST.md`.
+- `HANDOFF.md` must summarize decisions, open questions, and next actions from upstream artifacts.
+- Do not return `DONE` if a required upstream artifact is missing, inconsistent, or unresolved.
+
+## Optional Memory Backend (MemPalace, Default OFF)
+- File artifacts in `.agent/*.md` and `.claude/history.md` remain source of truth.
+- If a local MemPalace backend is enabled, ingest completed `PLAN/TEST/REVIEW/HANDOFF/history` artifacts after each task.
+- Use raw/verbatim retrieval mode for reliability.
+- Treat memory retrieval as advisory and resolve conflicts in favor of current local files.
+
+## Optional Skill Runtime Integration (gstack-inspired, Default OFF)
+- If stage skills are available, use them to produce structured outputs that feed the next artifact.
+- Keep deterministic file-based fallback active at all times.
+- Do not require plugin/runtime-specific tooling for baseline operation.
 
 ## Vendor References
 - For vendor/integration setup, API config, or security guidance, read `docs/vendor/<vendor>.md` first.

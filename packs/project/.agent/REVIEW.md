@@ -1,3 +1,21 @@
+---
+contract_version: 1
+artifact_type: review
+status: IN_PROGRESS
+depends_on:
+  - .agent/PLAN.md
+  - .agent/TEST.md
+produces:
+  - findings
+  - security_assessment
+  - residual_risks
+feeds_into:
+  - .agent/HANDOFF.md
+memory:
+  include_in_memory: true
+  tags: [review, security]
+---
+
 # REVIEW
 
 ## Review Order
@@ -45,3 +63,7 @@ Adopt a Bug Hunter mindset for every review: assume hostile input, identity spoo
 ## Review Outcome
 - Status: `IN_PROGRESS`
 - Notes:
+
+## Contract Links (Required)
+- Referenced eval IDs from `PLAN.md`:
+- Referenced receipts from `TEST.md`:

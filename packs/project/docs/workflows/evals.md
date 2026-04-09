@@ -13,6 +13,8 @@ Repeat this loop for every user-visible feature or behavior change:
 6. **Review for regressions and security** using `.agent/REVIEW.md` when applicable.
 7. **Handoff** with clear next steps in `.agent/HANDOFF.md` (or `.claude/history.md`).
 
+For stage linkage and required artifact headers, use `docs/workflows/contracts.md`.
+
 ## Evals (What To Write Down)
 Prefer concrete pass/fail criteria. Avoid 1–5 scores unless you are only ranking items for curation.
 

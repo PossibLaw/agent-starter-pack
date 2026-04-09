@@ -1,3 +1,22 @@
+---
+contract_version: 1
+artifact_type: handoff
+status: IN_PROGRESS
+depends_on:
+  - .agent/PLAN.md
+  - .agent/TEST.md
+  - .agent/REVIEW.md
+produces:
+  - next_actions
+  - open_questions
+  - decision_summary
+feeds_into:
+  - .claude/history.md
+memory:
+  include_in_memory: true
+  tags: [handoff]
+---
+
 # HANDOFF
 
 ## Status
@@ -35,3 +54,8 @@
 
 ## Do-Not-Reread
 - Archive or stale sources to skip unless explicitly requested.
+
+## Contract Links (Required)
+- Eval IDs covered:
+- Test receipts referenced:
+- Review findings referenced:

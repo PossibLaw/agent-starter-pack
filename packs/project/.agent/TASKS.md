@@ -1,3 +1,21 @@
+---
+contract_version: 1
+artifact_type: tasks
+status: IN_PROGRESS
+depends_on:
+  - .agent/PLAN.md
+produces:
+  - active_task_state
+  - blockers
+feeds_into:
+  - .agent/TEST.md
+  - .agent/REVIEW.md
+  - .agent/HANDOFF.md
+memory:
+  include_in_memory: true
+  tags: [tasks]
+---
+
 # TASKS
 
 ## Status Legend

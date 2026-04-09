@@ -23,6 +23,7 @@ $requiredFiles = @(
   "packs/project/docs/vendor/README.md",
   "packs/project/docs/vendor/supabase.md",
   "packs/project/docs/workflows/evals.md",
+  "packs/project/docs/workflows/contracts.md",
   "packs/project/.claude/history.md",
   "packs/project/.agent/PLAN.md",
   "packs/project/.agent/CONTEXT.md",
@@ -117,6 +118,15 @@ function Require-Text {
 
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/CLAUDE.md") -Pattern "## Vendor References" -Message "missing vendor section in packs/project/CLAUDE.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/AGENTS.md") -Pattern "## Vendor References" -Message "missing vendor section in packs/project/AGENTS.md"
+Require-Text -FilePath (Join-Path $repoRoot "packs/project/CLAUDE.md") -Pattern "## Contract Pipeline (Required)" -Message "missing contract pipeline section in packs/project/CLAUDE.md"
+Require-Text -FilePath (Join-Path $repoRoot "packs/project/AGENTS.md") -Pattern "## Contract Pipeline (Required)" -Message "missing contract pipeline section in packs/project/AGENTS.md"
+Require-Text -FilePath (Join-Path $repoRoot "packs/project/docs/workflows/contracts.md") -Pattern "## Optional Memory Backend (MemPalace)" -Message "missing mempalace section in packs/project/docs/workflows/contracts.md"
+Require-Text -FilePath (Join-Path $repoRoot "packs/project/docs/workflows/contracts.md") -Pattern "## Optional Skill Workflow Integration (gstack-inspired)" -Message "missing gstack section in packs/project/docs/workflows/contracts.md"
+Require-Text -FilePath (Join-Path $repoRoot "packs/project/.agent/PLAN.md") -Pattern "contract_version: 1" -Message "missing contract header in packs/project/.agent/PLAN.md"
+Require-Text -FilePath (Join-Path $repoRoot "packs/project/.agent/PLAN.md") -Pattern "artifact_type: plan" -Message "missing plan artifact_type in packs/project/.agent/PLAN.md"
+Require-Text -FilePath (Join-Path $repoRoot "packs/project/.agent/TEST.md") -Pattern "artifact_type: test" -Message "missing test artifact_type in packs/project/.agent/TEST.md"
+Require-Text -FilePath (Join-Path $repoRoot "packs/project/.agent/REVIEW.md") -Pattern "artifact_type: review" -Message "missing review artifact_type in packs/project/.agent/REVIEW.md"
+Require-Text -FilePath (Join-Path $repoRoot "packs/project/.agent/HANDOFF.md") -Pattern "artifact_type: handoff" -Message "missing handoff artifact_type in packs/project/.agent/HANDOFF.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/global/claude/.claude/CLAUDE.md") -Pattern "For vendor setup/API/security guidance, verify against official vendor docs and cite source date." -Message "missing vendor recency rule in packs/global/claude/.claude/CLAUDE.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/global/codex/.codex/AGENTS.md") -Pattern "For vendor setup/API/security guidance, verify against official vendor docs and cite source date." -Message "missing vendor recency rule in packs/global/codex/.codex/AGENTS.md"
 

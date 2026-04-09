@@ -22,6 +22,7 @@ REQUIRED_FILES=(
   "packs/project/docs/vendor/README.md"
   "packs/project/docs/vendor/supabase.md"
   "packs/project/docs/workflows/evals.md"
+  "packs/project/docs/workflows/contracts.md"
   "packs/project/.claude/history.md"
   "packs/project/.agent/PLAN.md"
   "packs/project/.agent/CONTEXT.md"
@@ -106,6 +107,15 @@ require_text() {
 
 require_text "$REPO_ROOT/packs/project/CLAUDE.md" "## Vendor References" "missing vendor section in packs/project/CLAUDE.md"
 require_text "$REPO_ROOT/packs/project/AGENTS.md" "## Vendor References" "missing vendor section in packs/project/AGENTS.md"
+require_text "$REPO_ROOT/packs/project/CLAUDE.md" "## Contract Pipeline (Required)" "missing contract pipeline section in packs/project/CLAUDE.md"
+require_text "$REPO_ROOT/packs/project/AGENTS.md" "## Contract Pipeline (Required)" "missing contract pipeline section in packs/project/AGENTS.md"
+require_text "$REPO_ROOT/packs/project/docs/workflows/contracts.md" "## Optional Memory Backend (MemPalace)" "missing mempalace section in packs/project/docs/workflows/contracts.md"
+require_text "$REPO_ROOT/packs/project/docs/workflows/contracts.md" "## Optional Skill Workflow Integration (gstack-inspired)" "missing gstack section in packs/project/docs/workflows/contracts.md"
+require_text "$REPO_ROOT/packs/project/.agent/PLAN.md" "contract_version: 1" "missing contract header in packs/project/.agent/PLAN.md"
+require_text "$REPO_ROOT/packs/project/.agent/PLAN.md" "artifact_type: plan" "missing plan artifact_type in packs/project/.agent/PLAN.md"
+require_text "$REPO_ROOT/packs/project/.agent/TEST.md" "artifact_type: test" "missing test artifact_type in packs/project/.agent/TEST.md"
+require_text "$REPO_ROOT/packs/project/.agent/REVIEW.md" "artifact_type: review" "missing review artifact_type in packs/project/.agent/REVIEW.md"
+require_text "$REPO_ROOT/packs/project/.agent/HANDOFF.md" "artifact_type: handoff" "missing handoff artifact_type in packs/project/.agent/HANDOFF.md"
 require_text "$REPO_ROOT/packs/global/claude/.claude/CLAUDE.md" "For vendor setup/API/security guidance, verify against official vendor docs and cite source date." "missing vendor recency rule in packs/global/claude/.claude/CLAUDE.md"
 require_text "$REPO_ROOT/packs/global/codex/.codex/AGENTS.md" "For vendor setup/API/security guidance, verify against official vendor docs and cite source date." "missing vendor recency rule in packs/global/codex/.codex/AGENTS.md"
 
