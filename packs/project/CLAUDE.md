@@ -13,6 +13,7 @@ Repo Root (absolute path, required): /path/to/your/repo
    - Review request → `.agent/REVIEW.md`
    - Handoff, resume, or parallel worktree → `.agent/HANDOFF.md` or `.claude/history.md`
    - Contract workflow, artifact schema, or stage handoff questions → `docs/workflows/contracts.md`
+   - Wiki mode, Obsidian vault, or persistent knowledge questions → `docs/workflows/wiki.md`
    - Learning request, or `Learning Mode` = `CAPTURE`/`APPLY` → `.agent/LEARNINGS.md`
    - Vendor/integration setup or API config → `docs/vendor/`
    - Evals/help defining “done” → `docs/workflows/evals.md`
@@ -112,6 +113,10 @@ Run `<LINT_COMMAND> && <TYPECHECK_COMMAND> && <TEST_COMMAND>` before handoff.
 - If stage skills are available, use them to produce structured outputs that feed the next artifact.
 - Keep deterministic file-based fallback active at all times.
 - Do not require plugin/runtime-specific tooling for baseline operation.
+
+## Optional Wiki Mode (Default OFF)
+- Use `docs/workflows/wiki.md` for startup flow, metadata, and lint rules.
+- Wiki pages accelerate orientation; source code and tests remain authoritative.
 
 ## Vendor References
 - For vendor/integration setup, API config, or security guidance, read `docs/vendor/<vendor>.md` first.

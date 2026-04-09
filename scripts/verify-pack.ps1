@@ -24,6 +24,7 @@ $requiredFiles = @(
   "packs/project/docs/vendor/supabase.md",
   "packs/project/docs/workflows/evals.md",
   "packs/project/docs/workflows/contracts.md",
+  "packs/project/docs/workflows/wiki.md",
   "packs/project/.claude/history.md",
   "packs/project/.agent/PLAN.md",
   "packs/project/.agent/CONTEXT.md",
@@ -120,8 +121,12 @@ Require-Text -FilePath (Join-Path $repoRoot "packs/project/CLAUDE.md") -Pattern 
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/AGENTS.md") -Pattern "## Vendor References" -Message "missing vendor section in packs/project/AGENTS.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/CLAUDE.md") -Pattern "## Contract Pipeline (Required)" -Message "missing contract pipeline section in packs/project/CLAUDE.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/AGENTS.md") -Pattern "## Contract Pipeline (Required)" -Message "missing contract pipeline section in packs/project/AGENTS.md"
+Require-Text -FilePath (Join-Path $repoRoot "packs/project/CLAUDE.md") -Pattern "## Optional Wiki Mode (Default OFF)" -Message "missing wiki mode section in packs/project/CLAUDE.md"
+Require-Text -FilePath (Join-Path $repoRoot "packs/project/AGENTS.md") -Pattern "## Optional Wiki Mode (Default OFF)" -Message "missing wiki mode section in packs/project/AGENTS.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/docs/workflows/contracts.md") -Pattern "## Optional Memory Backend (MemPalace)" -Message "missing mempalace section in packs/project/docs/workflows/contracts.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/docs/workflows/contracts.md") -Pattern "## Optional Skill Workflow Integration (gstack-inspired)" -Message "missing gstack section in packs/project/docs/workflows/contracts.md"
+Require-Text -FilePath (Join-Path $repoRoot "packs/project/docs/workflows/contracts.md") -Pattern "## Optional Wiki Mode Integration (Karpathy Pattern)" -Message "missing wiki integration section in packs/project/docs/workflows/contracts.md"
+Require-Text -FilePath (Join-Path $repoRoot "packs/project/docs/workflows/wiki.md") -Pattern "## Trust Order (Required)" -Message "missing trust order section in packs/project/docs/workflows/wiki.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/.agent/PLAN.md") -Pattern "contract_version: 1" -Message "missing contract header in packs/project/.agent/PLAN.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/.agent/PLAN.md") -Pattern "artifact_type: plan" -Message "missing plan artifact_type in packs/project/.agent/PLAN.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/.agent/TEST.md") -Pattern "artifact_type: test" -Message "missing test artifact_type in packs/project/.agent/TEST.md"

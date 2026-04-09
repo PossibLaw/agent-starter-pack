@@ -420,6 +420,7 @@ copy_with_backup "$PACK_ROOT/docs/vendor/README.md" "$TARGET_DIR/docs/vendor/REA
 copy_with_backup "$PACK_ROOT/docs/vendor/supabase.md" "$TARGET_DIR/docs/vendor/supabase.md" "docs/vendor/supabase.md"
 copy_with_backup "$PACK_ROOT/docs/workflows/evals.md" "$TARGET_DIR/docs/workflows/evals.md" "docs/workflows/evals.md"
 copy_with_backup "$PACK_ROOT/docs/workflows/contracts.md" "$TARGET_DIR/docs/workflows/contracts.md" "docs/workflows/contracts.md"
+copy_with_backup "$PACK_ROOT/docs/workflows/wiki.md" "$TARGET_DIR/docs/workflows/wiki.md" "docs/workflows/wiki.md"
 copy_with_backup "$PACK_ROOT/.claude/history.md" "$TARGET_DIR/.claude/history.md" ".claude/history.md"
 copy_with_backup "$PACK_ROOT/.agent/PLAN.md" "$TARGET_DIR/.agent/PLAN.md" ".agent/PLAN.md"
 copy_with_backup "$PACK_ROOT/.agent/CONTEXT.md" "$TARGET_DIR/.agent/CONTEXT.md" ".agent/CONTEXT.md"

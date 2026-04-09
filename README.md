@@ -14,6 +14,7 @@ It was created by reviewing and distilling hundreds of pages of guides and best-
 - `docs/vendor/supabase.md`: Initial vendor reference guide (Supabase) with key usage, env patterns, and security reminders.
 - `docs/workflows/evals.md`: Evals-driven development guide to define “done” and iterate safely (with extra guidance for LLM features).
 - `docs/workflows/contracts.md`: Typed workflow contract for `PLAN -> TEST -> REVIEW -> HANDOFF`, plus optional memory and stage-skill integration rules.
+- `docs/workflows/wiki.md`: Optional wiki-mode workflow for persistent codebase context (Obsidian-friendly) with trust-order and verification rules.
 - `.agent/PLAN.md`: Working plan template to define objective, milestones, risks, and acceptance criteria.
 - `.agent/CONTEXT.md`: Active context capture for assumptions, constraints, and key facts discovered during execution.
 - `.agent/TASKS.md`: Action checklist to track in-progress, done, blocked, and unconfirmed work items.
@@ -172,6 +173,7 @@ pwsh -File .\scripts\install-global.ps1 --claude
 - `docs/vendor/supabase.md`
 - `docs/workflows/evals.md`
 - `docs/workflows/contracts.md`
+- `docs/workflows/wiki.md`
 - `.gitignore` updates for local continuity files (`.claude/history.md` and `.agent/*.md`)
 
 `Learning Mode` defaults to `OFF`. Turn it on per task by setting `Learning Mode: CAPTURE` or `Learning Mode: APPLY` in `.agent/PLAN.md` (or by explicit prompt instruction).
@@ -191,6 +193,11 @@ pwsh -File .\scripts\install-global.ps1 --claude
 - Required stage order: `PLAN -> TEST -> REVIEW -> HANDOFF`.
 - Optional MemPalace integration is documented in raw retrieval mode; local files remain the source of truth.
 - Optional stage-skill integration (gstack-inspired) is additive and must keep file-based fallback behavior.
+
+## Optional Wiki Mode
+- `docs/workflows/wiki.md` defines how to use a persistent wiki for faster startup context.
+- Wiki mode is for orientation and synthesis, not authority; source code and tests remain authoritative.
+- Supports both in-repo wiki files and external Obsidian vaults on local disk.
 
 ## Safety and Rollback
 - Existing destination files are backed up before overwrite.

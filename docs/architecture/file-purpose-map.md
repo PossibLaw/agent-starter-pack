@@ -7,6 +7,7 @@
 - `docs/vendor/supabase.md`: Supabase-specific integration and security reference.
 - `docs/workflows/evals.md`: evals-driven development guide (define “done”, design evals, and iterate safely).
 - `docs/workflows/contracts.md`: typed state-artifact pipeline (`PLAN -> TEST -> REVIEW -> HANDOFF`) plus optional memory/skill integration rules.
+- `docs/workflows/wiki.md`: optional wiki-mode workflow for persistent context acceleration with code-first verification.
 - `.agent/PLAN.md`: planning artifact template.
 - `.agent/CONTEXT.md`: working context and decisions template.
 - `.agent/TASKS.md`: task board with status markers.

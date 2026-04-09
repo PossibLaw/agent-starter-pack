@@ -1,6 +1,9 @@
 # CHANGELOG
 
 ## 2026-04-09
+- Added optional wiki-mode workflow doc for persistent context acceleration with trust order and verification rules (`packs/project/docs/workflows/wiki.md`).
+- Added concise wiki-mode pointers in project startup templates while keeping detailed guidance in workflow docs (`packs/project/AGENTS.md`, `packs/project/CLAUDE.md`, `packs/project/docs/workflows/contracts.md`).
+- Updated installers and verification scripts to include and enforce wiki-mode artifacts (`scripts/install-project.sh`, `scripts/install-project.ps1`, `scripts/verify-pack.sh`, `scripts/verify-pack.ps1`).
 - Added a typed workflow contract doc for staged state artifacts and optional integrations (`packs/project/docs/workflows/contracts.md`).
 - Updated project templates to enforce pipeline sequencing and optional integration points for raw-mode memory retrieval and stage skills (`packs/project/AGENTS.md`, `packs/project/CLAUDE.md`).
 - Added structured contract headers to state artifact templates and explicit cross-artifact linkage fields (`packs/project/.agent/PLAN.md`, `packs/project/.agent/CONTEXT.md`, `packs/project/.agent/TASKS.md`, `packs/project/.agent/REVIEW.md`, `packs/project/.agent/TEST.md`, `packs/project/.agent/HANDOFF.md`, `packs/project/.agent/LEARNINGS.md`).

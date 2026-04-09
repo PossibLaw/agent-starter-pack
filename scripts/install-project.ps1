@@ -457,6 +457,7 @@ $filesToCopy = @(
   @{ Source = "docs/vendor/supabase.md"; Destination = "docs/vendor/supabase.md" },
   @{ Source = "docs/workflows/evals.md"; Destination = "docs/workflows/evals.md" },
   @{ Source = "docs/workflows/contracts.md"; Destination = "docs/workflows/contracts.md" },
+  @{ Source = "docs/workflows/wiki.md"; Destination = "docs/workflows/wiki.md" },
   @{ Source = ".claude/history.md"; Destination = ".claude/history.md" },
   @{ Source = ".agent/PLAN.md"; Destination = ".agent/PLAN.md" },
   @{ Source = ".agent/CONTEXT.md"; Destination = ".agent/CONTEXT.md" },

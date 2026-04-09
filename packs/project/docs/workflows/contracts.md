@@ -72,6 +72,15 @@ When enabled:
 - Keep skill usage optional with deterministic file-based fallback.
 - Keep plugin/runtime-specific behavior out of core repo policy unless explicitly adopted.
 
+## Optional Wiki Mode Integration (Karpathy Pattern)
+
+Default is `OFF`. Use `docs/workflows/wiki.md` when enabled.
+
+When enabled:
+- Read wiki index pages for orientation before deep code search.
+- Verify wiki claims against code before implementation.
+- Update wiki after validated changes so context compounds across sessions.
+
 ## Validation Commands
 
 Use these checks as a baseline:
