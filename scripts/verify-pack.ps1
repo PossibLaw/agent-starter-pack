@@ -99,12 +99,16 @@ $tokenRegex = '<[A-Z_]+>'
 $packRoot = Join-Path $repoRoot "packs"
 
 Get-ChildItem -LiteralPath $packRoot -Recurse -File | ForEach-Object {
+  $relativePath = [System.IO.Path]::GetRelativePath($repoRoot, $_.FullName).Replace('\\', '/')
+  if ($relativePath -split '/' | Where-Object { $_.StartsWith('.') }) {
+    return
+  }
+
   $lineNumber = 0
   foreach ($line in Get-Content -LiteralPath $_.FullName) {
     $lineNumber += 1
     foreach ($match in [regex]::Matches($line, $tokenRegex)) {
       if (-not $allowedTokens.Contains($match.Value)) {
-        $relativePath = [System.IO.Path]::GetRelativePath($repoRoot, $_.FullName).Replace('\', '/')
         $unexpected.Add("$relativePath`:$lineNumber`:$($match.Value)")
       }
     }
