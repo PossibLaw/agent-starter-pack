@@ -73,6 +73,7 @@ PROGRESS_REL_FILES=(
   ".agent/REVIEW.md"
   ".agent/TEST.md"
   ".agent/HANDOFF.md"
+  ".agent/WIKI.md"
   ".agent/LEARNINGS.md"
 )
 
@@ -416,6 +417,13 @@ fi
 
 copy_with_backup "$PACK_ROOT/AGENTS.md" "$TARGET_DIR/AGENTS.md" "AGENTS.md"
 copy_with_backup "$PACK_ROOT/CLAUDE.md" "$TARGET_DIR/CLAUDE.md" "CLAUDE.md"
+copy_with_backup "$PACK_ROOT/docs/roles/README.md" "$TARGET_DIR/docs/roles/README.md" "docs/roles/README.md"
+copy_with_backup "$PACK_ROOT/docs/roles/product-strategist.md" "$TARGET_DIR/docs/roles/product-strategist.md" "docs/roles/product-strategist.md"
+copy_with_backup "$PACK_ROOT/docs/roles/engineering-planner.md" "$TARGET_DIR/docs/roles/engineering-planner.md" "docs/roles/engineering-planner.md"
+copy_with_backup "$PACK_ROOT/docs/roles/reviewer.md" "$TARGET_DIR/docs/roles/reviewer.md" "docs/roles/reviewer.md"
+copy_with_backup "$PACK_ROOT/docs/roles/security-reviewer.md" "$TARGET_DIR/docs/roles/security-reviewer.md" "docs/roles/security-reviewer.md"
+copy_with_backup "$PACK_ROOT/docs/roles/qa-validator.md" "$TARGET_DIR/docs/roles/qa-validator.md" "docs/roles/qa-validator.md"
+copy_with_backup "$PACK_ROOT/docs/roles/docs-releaser.md" "$TARGET_DIR/docs/roles/docs-releaser.md" "docs/roles/docs-releaser.md"
 copy_with_backup "$PACK_ROOT/docs/vendor/README.md" "$TARGET_DIR/docs/vendor/README.md" "docs/vendor/README.md"
 copy_with_backup "$PACK_ROOT/docs/vendor/supabase.md" "$TARGET_DIR/docs/vendor/supabase.md" "docs/vendor/supabase.md"
 copy_with_backup "$PACK_ROOT/docs/workflows/evals.md" "$TARGET_DIR/docs/workflows/evals.md" "docs/workflows/evals.md"
@@ -428,6 +436,7 @@ copy_with_backup "$PACK_ROOT/.agent/TASKS.md" "$TARGET_DIR/.agent/TASKS.md" ".ag
 copy_with_backup "$PACK_ROOT/.agent/REVIEW.md" "$TARGET_DIR/.agent/REVIEW.md" ".agent/REVIEW.md"
 copy_with_backup "$PACK_ROOT/.agent/TEST.md" "$TARGET_DIR/.agent/TEST.md" ".agent/TEST.md"
 copy_with_backup "$PACK_ROOT/.agent/HANDOFF.md" "$TARGET_DIR/.agent/HANDOFF.md" ".agent/HANDOFF.md"
+copy_with_backup "$PACK_ROOT/.agent/WIKI.md" "$TARGET_DIR/.agent/WIKI.md" ".agent/WIKI.md"
 copy_with_backup "$PACK_ROOT/.agent/LEARNINGS.md" "$TARGET_DIR/.agent/LEARNINGS.md" ".agent/LEARNINGS.md"
 ensure_progress_ignored
 

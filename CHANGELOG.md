@@ -1,9 +1,16 @@
 # CHANGELOG
 
 ## 2026-04-09
+- Added a canonical host-agnostic role registry plus six shared role contracts for planning, review, validation, and handoff (`packs/project/docs/roles/README.md`, `packs/project/docs/roles/*.md`).
+- Updated project templates to route Codex and Claude through the shared role contracts instead of freeform role lists (`packs/project/AGENTS.md`, `packs/project/CLAUDE.md`, `packs/project/.agent/PLAN.md`, `packs/project/.agent/TEST.md`, `packs/project/.agent/REVIEW.md`, `packs/project/.agent/HANDOFF.md`, `packs/project/docs/workflows/contracts.md`).
+- Replaced weak Claude-side wrappers with role-aligned host adapters and added canonical wrappers for strategy, planning, QA, and release work (`packs/global/claude/.claude/agents/*.md`).
+- Updated installers, verification scripts, and top-level docs so the shared role registry installs and validates as part of the starter pack (`scripts/install-project.sh`, `scripts/install-project.ps1`, `scripts/verify-pack.sh`, `scripts/verify-pack.ps1`, `README.md`, `docs/architecture/file-purpose-map.md`).
 - Added optional wiki-mode workflow doc for persistent context acceleration with trust order and verification rules (`packs/project/docs/workflows/wiki.md`).
 - Added concise wiki-mode pointers in project startup templates while keeping detailed guidance in workflow docs (`packs/project/AGENTS.md`, `packs/project/CLAUDE.md`, `packs/project/docs/workflows/contracts.md`).
 - Updated installers and verification scripts to include and enforce wiki-mode artifacts (`scripts/install-project.sh`, `scripts/install-project.ps1`, `scripts/verify-pack.sh`, `scripts/verify-pack.ps1`).
+- Added `.agent/WIKI.md` starter template for wiki enablement flag, Obsidian vault path, auto-derived wiki root, and sync rules.
+- Updated handoff/history templates to capture wiki sync output (`packs/project/.agent/HANDOFF.md`, `packs/project/.claude/history.md`).
+- Updated startup and local-continuity rules so wiki configuration is treated as a first-class state artifact (`packs/project/AGENTS.md`, `packs/project/CLAUDE.md`, `scripts/install-project.sh`, `scripts/install-project.ps1`, `scripts/verify-pack.sh`, `scripts/verify-pack.ps1`).
 - Added a typed workflow contract doc for staged state artifacts and optional integrations (`packs/project/docs/workflows/contracts.md`).
 - Updated project templates to enforce pipeline sequencing and optional integration points for raw-mode memory retrieval and stage skills (`packs/project/AGENTS.md`, `packs/project/CLAUDE.md`).
 - Added structured contract headers to state artifact templates and explicit cross-artifact linkage fields (`packs/project/.agent/PLAN.md`, `packs/project/.agent/CONTEXT.md`, `packs/project/.agent/TASKS.md`, `packs/project/.agent/REVIEW.md`, `packs/project/.agent/TEST.md`, `packs/project/.agent/HANDOFF.md`, `packs/project/.agent/LEARNINGS.md`).

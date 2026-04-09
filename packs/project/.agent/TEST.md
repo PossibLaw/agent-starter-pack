@@ -23,6 +23,10 @@ No task is `DONE` without evidence or an explicit waiver.
 No behavior change is `DONE` without an explicit eval definition approved by the user or an explicit waiver.
 Do not assume eval criteria, fixtures, or expected outputs; mark unknowns as `UNCONFIRMED` and resolve before executing checks.
 
+## Suggested Roles
+- `qa-validator` owns check execution and evidence capture.
+- `security-reviewer` joins when trust boundaries or security-sensitive changes are in scope.
+
 ## Check Matrix
 | Change Type | Required Checks | Evidence Required |
 | --- | --- | --- |

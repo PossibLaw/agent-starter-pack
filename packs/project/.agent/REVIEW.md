@@ -25,6 +25,10 @@ memory:
 4. Maintainability.
 5. Tests and evidence.
 
+## Suggested Roles
+- `reviewer` owns correctness and regression findings.
+- `security-reviewer` owns attacker-minded findings and required hardening notes.
+
 ## Security Review Mode
 Adopt a Bug Hunter mindset for every review: assume hostile input, identity spoofing attempts, and broken trust boundaries until disproven.
 

@@ -12,6 +12,7 @@ produces:
   - decision_summary
 feeds_into:
   - .claude/history.md
+  - .agent/WIKI.md
 memory:
   include_in_memory: true
   tags: [handoff]
@@ -24,6 +25,9 @@ memory:
 - Owner:
 - Timestamp (ISO):
 - Overall status: `IN_PROGRESS`
+
+## Suggested Roles
+- `docs-releaser` owns handoff quality, docs alignment, and next-action clarity.
 
 ## What Was Completed
 - Item:
@@ -59,3 +63,9 @@ memory:
 - Eval IDs covered:
 - Test receipts referenced:
 - Review findings referenced:
+
+## Wiki Sync (Required When `.agent/WIKI.md` Enabled)
+- Wiki root:
+- Wiki index updated: `YES` or `NO`
+- Wiki log updated: `YES` or `NO`
+- Pages updated:

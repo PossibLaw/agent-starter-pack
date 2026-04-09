@@ -20,6 +20,13 @@ $requiredFiles = @(
   "scripts/set-learning-mode.ps1",
   "packs/project/AGENTS.md",
   "packs/project/CLAUDE.md",
+  "packs/project/docs/roles/README.md",
+  "packs/project/docs/roles/product-strategist.md",
+  "packs/project/docs/roles/engineering-planner.md",
+  "packs/project/docs/roles/reviewer.md",
+  "packs/project/docs/roles/security-reviewer.md",
+  "packs/project/docs/roles/qa-validator.md",
+  "packs/project/docs/roles/docs-releaser.md",
   "packs/project/docs/vendor/README.md",
   "packs/project/docs/vendor/supabase.md",
   "packs/project/docs/workflows/evals.md",
@@ -32,9 +39,16 @@ $requiredFiles = @(
   "packs/project/.agent/REVIEW.md",
   "packs/project/.agent/TEST.md",
   "packs/project/.agent/HANDOFF.md",
+  "packs/project/.agent/WIKI.md",
   "packs/project/.agent/LEARNINGS.md",
   "packs/global/codex/.codex/AGENTS.md",
-  "packs/global/claude/.claude/CLAUDE.md"
+  "packs/global/claude/.claude/CLAUDE.md",
+  "packs/global/claude/.claude/agents/product-strategist.md",
+  "packs/global/claude/.claude/agents/engineering-planner.md",
+  "packs/global/claude/.claude/agents/review-agent.md",
+  "packs/global/claude/.claude/agents/security-reviewer.md",
+  "packs/global/claude/.claude/agents/qa-validator.md",
+  "packs/global/claude/.claude/agents/docs-releaser.md"
 )
 
 $forbiddenPatterns = @(
@@ -119,14 +133,19 @@ function Require-Text {
 
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/CLAUDE.md") -Pattern "## Vendor References" -Message "missing vendor section in packs/project/CLAUDE.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/AGENTS.md") -Pattern "## Vendor References" -Message "missing vendor section in packs/project/AGENTS.md"
+Require-Text -FilePath (Join-Path $repoRoot "packs/project/docs/roles/README.md") -Pattern "## Canonical Roles" -Message "missing canonical role table in packs/project/docs/roles/README.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/CLAUDE.md") -Pattern "## Contract Pipeline (Required)" -Message "missing contract pipeline section in packs/project/CLAUDE.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/AGENTS.md") -Pattern "## Contract Pipeline (Required)" -Message "missing contract pipeline section in packs/project/AGENTS.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/CLAUDE.md") -Pattern "## Optional Wiki Mode (Default OFF)" -Message "missing wiki mode section in packs/project/CLAUDE.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/AGENTS.md") -Pattern "## Optional Wiki Mode (Default OFF)" -Message "missing wiki mode section in packs/project/AGENTS.md"
+Require-Text -FilePath (Join-Path $repoRoot "packs/project/CLAUDE.md") -Pattern ".agent/WIKI.md" -Message "missing wiki config pointer in packs/project/CLAUDE.md"
+Require-Text -FilePath (Join-Path $repoRoot "packs/project/AGENTS.md") -Pattern ".agent/WIKI.md" -Message "missing wiki config pointer in packs/project/AGENTS.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/docs/workflows/contracts.md") -Pattern "## Optional Memory Backend (MemPalace)" -Message "missing mempalace section in packs/project/docs/workflows/contracts.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/docs/workflows/contracts.md") -Pattern "## Optional Skill Workflow Integration (gstack-inspired)" -Message "missing gstack section in packs/project/docs/workflows/contracts.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/docs/workflows/contracts.md") -Pattern "## Optional Wiki Mode Integration (Karpathy Pattern)" -Message "missing wiki integration section in packs/project/docs/workflows/contracts.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/docs/workflows/wiki.md") -Pattern "## Trust Order (Required)" -Message "missing trust order section in packs/project/docs/workflows/wiki.md"
+Require-Text -FilePath (Join-Path $repoRoot "packs/project/.agent/WIKI.md") -Pattern "artifact_type: wiki_config" -Message "missing wiki config artifact_type in packs/project/.agent/WIKI.md"
+Require-Text -FilePath (Join-Path $repoRoot "packs/project/.agent/WIKI.md") -Pattern "Vault root (absolute): `UNCONFIRMED`" -Message "missing vault-path setup marker in packs/project/.agent/WIKI.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/.agent/PLAN.md") -Pattern "contract_version: 1" -Message "missing contract header in packs/project/.agent/PLAN.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/.agent/PLAN.md") -Pattern "artifact_type: plan" -Message "missing plan artifact_type in packs/project/.agent/PLAN.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/.agent/TEST.md") -Pattern "artifact_type: test" -Message "missing test artifact_type in packs/project/.agent/TEST.md"

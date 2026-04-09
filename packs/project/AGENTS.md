@@ -13,7 +13,8 @@ Codex project instruction file for <PROJECT_NAME>.
    - Review request → `.agent/REVIEW.md`
    - Handoff, resume, or parallel worktree → `.agent/HANDOFF.md` or `.claude/history.md`
    - Contract workflow, artifact schema, or stage handoff questions → `docs/workflows/contracts.md`
-   - Wiki mode, Obsidian vault, or persistent knowledge questions → `docs/workflows/wiki.md`
+   - Role workflow, routing, or specialization questions → `docs/roles/README.md` plus the relevant role file in `docs/roles/`
+   - Wiki mode, Obsidian vault path, or persistent knowledge questions → `.agent/WIKI.md` and `docs/workflows/wiki.md`
    - Learning request, or `Learning Mode` = `CAPTURE`/`APPLY` → `.agent/LEARNINGS.md`
    - Vendor/integration setup or API config → `docs/vendor/`
    - Evals/help defining “done” → `docs/workflows/evals.md`
@@ -21,7 +22,7 @@ Codex project instruction file for <PROJECT_NAME>.
 5. Global continuity stays in `~/.codex/AGENTS.md`. Repo continuity is optional and on-demand.
 
 ## Repo Root & State File Paths (Required)
-1. Before writing any state file (`.agent/PLAN.md`, `.agent/HANDOFF.md`, `.claude/history.md`), resolve the repo root using `git rev-parse --show-toplevel` and confirm with `pwd`.
+1. Before writing any state file (`.agent/PLAN.md`, `.agent/HANDOFF.md`, `.agent/WIKI.md`, `.claude/history.md`), resolve the repo root using `git rev-parse --show-toplevel` and confirm with `pwd`.
 2. If the resolved root is under `/tmp`, `/var/folders`, or any OS temp directory, return `BLOCKED` and ask for the real repo root.
 3. If multiple repo roots or worktrees are possible, ask the user which repo root to use.
 4. If the repo root cannot be resolved, ask the user for the absolute repo root path and do not write any state files until confirmed.
@@ -53,6 +54,7 @@ When resuming prior work, read `${REPO_ROOT}/.claude/history.md` first.
   - `.agent/REVIEW.md`
   - `.agent/TEST.md`
   - `.agent/HANDOFF.md`
+  - `.agent/WIKI.md`
   - `.agent/LEARNINGS.md`
 - If any are already tracked, untrack them with `git rm --cached <path>`.
 
@@ -67,19 +69,21 @@ When resuming prior work, read `${REPO_ROOT}/.claude/history.md` first.
   - `APPLY`: capture observations and propose specific skill/plugin/instruction updates.
 - This is additive. Do not replace `.claude/history.md` or `.agent/HANDOFF.md`.
 
-## Roles
-- `@orchestrator` — Plan, route, and synthesize outcomes.
-- `@research-agent` — Source gathering and fact extraction.
-- `@docs-agent` — Documentation edits.
-- `@review-agent` — Defect/risk analysis.
-- `@test-agent` — Validation execution and receipts.
+## Canonical Roles
+- `product-strategist` — Clarifies user value, scope, and success criteria. Source of truth: `docs/roles/product-strategist.md`.
+- `engineering-planner` — Produces an executable implementation plan with risks and eval IDs. Source of truth: `docs/roles/engineering-planner.md`.
+- `reviewer` — Performs correctness and regression review. Source of truth: `docs/roles/reviewer.md`.
+- `security-reviewer` — Performs attacker-minded review and security-check pressure testing. Source of truth: `docs/roles/security-reviewer.md`.
+- `qa-validator` — Executes evals and records receipts. Source of truth: `docs/roles/qa-validator.md`.
+- `docs-releaser` — Syncs handoff and user-facing docs after validation. Source of truth: `docs/roles/docs-releaser.md`.
 
 ## Routing Rules
-- Architecture/policy tasks → `@orchestrator`.
-- Source comparison tasks → `@research-agent`.
-- Documentation updates → `@docs-agent`.
-- QA/risk review → `@review-agent`.
-- Check execution → `@test-agent`.
+- Product framing, scope, or success-definition work → `product-strategist`.
+- Implementation planning and architecture tradeoffs → `engineering-planner`.
+- Test execution, eval receipts, and validation evidence → `qa-validator`.
+- Correctness, regressions, and maintainability review → `reviewer`.
+- Security-sensitive review or trust-boundary changes → `security-reviewer`.
+- Release notes, handoff, and docs sync after validated changes → `docs-releaser`.
 - If required facts are missing, escalate once with a targeted question.
 
 ## Contract Pipeline (Required)
@@ -103,8 +107,10 @@ When resuming prior work, read `${REPO_ROOT}/.claude/history.md` first.
 - Do not require plugin/runtime-specific tooling for baseline operation.
 
 ## Optional Wiki Mode (Default OFF)
+- Configure vault and wiki paths in `.agent/WIKI.md` before first use.
 - Use `docs/workflows/wiki.md` for startup flow, metadata, and lint rules.
 - Wiki pages accelerate orientation; source code and tests remain authoritative.
+- For full repository review requests, start with `.agent/WIKI.md` and wiki index, then verify in code.
 
 ## Vendor References
 - For vendor/integration setup, API config, or security guidance, read `docs/vendor/<vendor>.md` first.

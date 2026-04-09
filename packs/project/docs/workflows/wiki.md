@@ -22,18 +22,28 @@ You may keep the wiki:
 - Inside the repo (example: `docs/wiki/`)
 - In an external Obsidian vault on local disk
 
+Required config file:
+- `.agent/WIKI.md` stores `Enabled`, vault path, wiki root, and sync rules.
+
 Recommended core files:
 - `index.md` (topic/page index)
 - `log.md` (append-only operations log)
 - `pages/*` (entity/concept/project pages)
 
+Path convention:
+- `wiki_root = {vault_root}/codebases/{repo_name}`
+- First-time setup should write this path into `.agent/WIKI.md`.
+
 ## Startup Flow (Wiki Enabled)
 
-1. Read active `HANDOFF.md` and `PLAN.md`.
-2. Read `wiki/index.md` (or vault index) and 1-3 relevant wiki pages.
+1. Read `.agent/WIKI.md`, then active `HANDOFF.md` and `PLAN.md`.
+2. Read configured wiki index and 1-3 relevant wiki pages.
 3. Verify wiki claims against live code before editing files.
 4. Execute task and checks.
 5. Update wiki pages and append `log.md` with what changed.
+
+For "review the entire repo" requests:
+- Start with wiki index and map pages first, then verify critical claims in code.
 
 ## Source Ingest Flow
 
@@ -42,6 +52,7 @@ When new source material is added:
 2. Update relevant wiki pages with summaries and cross-links.
 3. Tag uncertain claims as `UNCONFIRMED`.
 4. Record exact file path and timestamp for each new claim.
+5. Update `.agent/HANDOFF.md` and `.claude/history.md` with wiki sync details.
 
 ## Required Page Metadata
 

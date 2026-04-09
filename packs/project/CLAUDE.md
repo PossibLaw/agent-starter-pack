@@ -13,7 +13,8 @@ Repo Root (absolute path, required): /path/to/your/repo
    - Review request → `.agent/REVIEW.md`
    - Handoff, resume, or parallel worktree → `.agent/HANDOFF.md` or `.claude/history.md`
    - Contract workflow, artifact schema, or stage handoff questions → `docs/workflows/contracts.md`
-   - Wiki mode, Obsidian vault, or persistent knowledge questions → `docs/workflows/wiki.md`
+   - Role workflow, routing, or specialization questions → `docs/roles/README.md` plus the relevant role file in `docs/roles/`
+   - Wiki mode, Obsidian vault path, or persistent knowledge questions → `.agent/WIKI.md` and `docs/workflows/wiki.md`
    - Learning request, or `Learning Mode` = `CAPTURE`/`APPLY` → `.agent/LEARNINGS.md`
    - Vendor/integration setup or API config → `docs/vendor/`
    - Evals/help defining “done” → `docs/workflows/evals.md`
@@ -21,7 +22,7 @@ Repo Root (absolute path, required): /path/to/your/repo
 5. Global continuity stays in `~/.claude/CLAUDE.md`. Repo continuity is optional and on-demand.
 
 ## Repo Root & State File Paths (Required)
-1. Before writing any state file (`.agent/PLAN.md`, `.agent/HANDOFF.md`, `.claude/history.md`), resolve the repo root using `git rev-parse --show-toplevel` and confirm with `pwd`.
+1. Before writing any state file (`.agent/PLAN.md`, `.agent/HANDOFF.md`, `.agent/WIKI.md`, `.claude/history.md`), resolve the repo root using `git rev-parse --show-toplevel` and confirm with `pwd`.
 2. If the resolved root is under `/tmp`, `/var/folders`, or any OS temp directory, return `BLOCKED` and ask for the real repo root.
 3. If multiple repo roots or worktrees are possible, ask the user which repo root to use.
 4. If the repo root cannot be resolved, ask the user for the absolute repo root path and do not write any state files until confirmed.
@@ -49,6 +50,7 @@ When resuming prior work, read `${REPO_ROOT}/.claude/history.md` first.
   - `.agent/REVIEW.md`
   - `.agent/TEST.md`
   - `.agent/HANDOFF.md`
+  - `.agent/WIKI.md`
   - `.agent/LEARNINGS.md`
 - If any are already tracked, untrack them with `git rm --cached <path>`.
 
@@ -88,11 +90,16 @@ Run `<LINT_COMMAND> && <TYPECHECK_COMMAND> && <TEST_COMMAND>` before handoff.
 - Tests:
 
 ## Agent Routing
-- Task planning or phased implementation → `@task-planner`
+- Product framing, CEO-style prioritization, or scope pressure test → `@product-strategist`
+- Engineering plan review, architecture, or phased implementation planning → `@engineering-planner`
+- Correctness and regression review → `@review-agent`
+- Security and trust-boundary review → `@security-reviewer`
+- Validation execution and evidence capture → `@qa-validator`
+- Handoff, release notes, and docs sync after validated changes → `@docs-releaser`
+
+Supporting specialists:
 - Source extraction or fact gathering → `@research-agent`
-- Markdown drafting or doc updates → `@docs-agent`
-- Quality or risk review → `@review-agent`
-- Test suite generation → `@test-generator`
+- Markdown-heavy doc drafting without release ownership → `@docs-agent`
 
 ## Contract Pipeline (Required)
 - Treat state artifacts as a typed pipeline, not independent notes.
@@ -115,8 +122,10 @@ Run `<LINT_COMMAND> && <TYPECHECK_COMMAND> && <TEST_COMMAND>` before handoff.
 - Do not require plugin/runtime-specific tooling for baseline operation.
 
 ## Optional Wiki Mode (Default OFF)
+- Configure vault and wiki paths in `.agent/WIKI.md` before first use.
 - Use `docs/workflows/wiki.md` for startup flow, metadata, and lint rules.
 - Wiki pages accelerate orientation; source code and tests remain authoritative.
+- For full repository review requests, start with `.agent/WIKI.md` and wiki index, then verify in code.
 
 ## Vendor References
 - For vendor/integration setup, API config, or security guidance, read `docs/vendor/<vendor>.md` first.

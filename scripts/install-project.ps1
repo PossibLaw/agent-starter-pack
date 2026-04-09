@@ -74,6 +74,7 @@ $progressRelativePaths = @(
   ".agent/REVIEW.md",
   ".agent/TEST.md",
   ".agent/HANDOFF.md",
+  ".agent/WIKI.md",
   ".agent/LEARNINGS.md"
 )
 
@@ -453,6 +454,13 @@ $buildCommand = Normalize-OrUnconfirmed -Value $buildCommand
 $filesToCopy = @(
   @{ Source = "AGENTS.md"; Destination = "AGENTS.md" },
   @{ Source = "CLAUDE.md"; Destination = "CLAUDE.md" },
+  @{ Source = "docs/roles/README.md"; Destination = "docs/roles/README.md" },
+  @{ Source = "docs/roles/product-strategist.md"; Destination = "docs/roles/product-strategist.md" },
+  @{ Source = "docs/roles/engineering-planner.md"; Destination = "docs/roles/engineering-planner.md" },
+  @{ Source = "docs/roles/reviewer.md"; Destination = "docs/roles/reviewer.md" },
+  @{ Source = "docs/roles/security-reviewer.md"; Destination = "docs/roles/security-reviewer.md" },
+  @{ Source = "docs/roles/qa-validator.md"; Destination = "docs/roles/qa-validator.md" },
+  @{ Source = "docs/roles/docs-releaser.md"; Destination = "docs/roles/docs-releaser.md" },
   @{ Source = "docs/vendor/README.md"; Destination = "docs/vendor/README.md" },
   @{ Source = "docs/vendor/supabase.md"; Destination = "docs/vendor/supabase.md" },
   @{ Source = "docs/workflows/evals.md"; Destination = "docs/workflows/evals.md" },
@@ -465,6 +473,7 @@ $filesToCopy = @(
   @{ Source = ".agent/REVIEW.md"; Destination = ".agent/REVIEW.md" },
   @{ Source = ".agent/TEST.md"; Destination = ".agent/TEST.md" },
   @{ Source = ".agent/HANDOFF.md"; Destination = ".agent/HANDOFF.md" },
+  @{ Source = ".agent/WIKI.md"; Destination = ".agent/WIKI.md" },
   @{ Source = ".agent/LEARNINGS.md"; Destination = ".agent/LEARNINGS.md" }
 )
 

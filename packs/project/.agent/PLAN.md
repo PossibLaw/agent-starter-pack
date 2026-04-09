@@ -22,6 +22,10 @@ memory:
 ## Objective
 - IN_PROGRESS: <Define target outcome>
 
+## Suggested Roles
+- `product-strategist` for scope sharpening and success criteria.
+- `engineering-planner` for milestones, file impact, and eval IDs.
+
 ## Scope
 - In scope:
 - Out of scope:
@@ -72,6 +76,7 @@ If this work involves an LLM/agent/RAG system, also define:
 - Assumptions marked `CONFIRMED`, `UNCONFIRMED`, or `ASSUMED`.
 - Risks include impact and mitigation.
 - Milestone statuses reflect current execution state.
+- Planning outputs are compatible with the canonical role specs in `docs/roles/`.
 
 ## Milestones
 | Milestone | Owner | Status | Acceptance Check |

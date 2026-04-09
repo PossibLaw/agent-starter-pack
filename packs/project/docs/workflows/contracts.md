@@ -52,6 +52,20 @@ memory:
 - `HANDOFF.md` must summarize decisions, open questions, and next actions from prior artifacts.
 - Do not mark work `DONE` when required upstream artifacts are missing or unresolved.
 
+## Canonical Role Mapping
+
+The starter pack uses a shared role registry in `docs/roles/`.
+
+- `product-strategist` and `engineering-planner` feed `PLAN.md`.
+- `qa-validator` feeds `TEST.md`.
+- `reviewer` and `security-reviewer` feed `REVIEW.md`.
+- `docs-releaser` feeds `HANDOFF.md` and any final docs sync.
+
+Host-specific wrappers should stay thin:
+- Codex routing belongs in `AGENTS.md`.
+- Claude routing belongs in `CLAUDE.md` and `.claude/agents/*.md`.
+- Shared role logic belongs in `docs/roles/*.md`.
+
 ## Optional Memory Backend (MemPalace)
 
 Default is `OFF`. File artifacts remain the source of truth.
@@ -77,9 +91,11 @@ When enabled:
 Default is `OFF`. Use `docs/workflows/wiki.md` when enabled.
 
 When enabled:
+- Configure and persist wiki paths in `.agent/WIKI.md` once per repo.
 - Read wiki index pages for orientation before deep code search.
 - Verify wiki claims against code before implementation.
 - Update wiki after validated changes so context compounds across sessions.
+- When saving handoff/history, include wiki sync notes (root path + updated pages).
 
 ## Validation Commands
 

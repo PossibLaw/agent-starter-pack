@@ -3,6 +3,8 @@
 ## Project Pack (`packs/project`)
 - `AGENTS.md`: Codex startup and execution contract for a repo.
 - `CLAUDE.md`: Claude startup and execution contract for a repo.
+- `docs/roles/README.md`: canonical role registry shared by Codex and Claude wrappers.
+- `docs/roles/*.md`: role contracts for planning, review, validation, and handoff stages.
 - `docs/vendor/README.md`: rules for using local vendor docs as authoritative defaults.
 - `docs/vendor/supabase.md`: Supabase-specific integration and security reference.
 - `docs/workflows/evals.md`: evals-driven development guide (define “done”, design evals, and iterate safely).
@@ -14,6 +16,7 @@
 - `.agent/REVIEW.md`: review + security checklist.
 - `.agent/TEST.md`: validation matrix and security checks.
 - `.agent/HANDOFF.md`: baton pass template.
+- `.agent/WIKI.md`: optional wiki-mode config (vault path, wiki root, sync rules).
 - `.agent/LEARNINGS.md`: optional learning log for reusable observations and improvement proposals.
 - `.claude/history.md`: cross-session memory log.
 

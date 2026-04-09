@@ -5,6 +5,15 @@ Install a complete Claude + Codex instruction hierarchy into any repository with
 Built to make AI-assisted software delivery consistent and reliable, this pack standardizes planning, testing, review, and handoff workflows for both Codex and Claude.
 It was created by reviewing and distilling hundreds of pages of guides and best-practice references (captured under `docs/references/`) into practical, reusable templates.
 
+## Canonical Role Model
+
+The starter pack is the canonical home for host-agnostic delivery roles.
+
+- Shared role contracts live in `packs/project/docs/roles/*.md`.
+- Codex routing lives in `packs/project/AGENTS.md`.
+- Claude routing lives in `packs/project/CLAUDE.md` and `packs/global/claude/.claude/agents/*.md`.
+- Plugin packages and runtime adapters belong in the separate Plugins repository.
+
 ## What Each File Does
 
 ### Project-level files
@@ -12,6 +21,8 @@ It was created by reviewing and distilling hundreds of pages of guides and best-
 - `CLAUDE.md`: Claude operating contract for the repo; mirrors delivery and safety expectations for Claude workflows.
 - `docs/vendor/README.md`: Vendor-doc contract; defines how agents should use local vendor references over model memory.
 - `docs/vendor/supabase.md`: Initial vendor reference guide (Supabase) with key usage, env patterns, and security reminders.
+- `docs/roles/README.md`: Canonical host-agnostic role registry for planning, review, validation, and handoff work.
+- `docs/roles/*.md`: Shared role contracts that Claude and Codex wrappers should both follow.
 - `docs/workflows/evals.md`: Evals-driven development guide to define “done” and iterate safely (with extra guidance for LLM features).
 - `docs/workflows/contracts.md`: Typed workflow contract for `PLAN -> TEST -> REVIEW -> HANDOFF`, plus optional memory and stage-skill integration rules.
 - `docs/workflows/wiki.md`: Optional wiki-mode workflow for persistent codebase context (Obsidian-friendly) with trust-order and verification rules.
@@ -21,6 +32,7 @@ It was created by reviewing and distilling hundreds of pages of guides and best-
 - `.agent/REVIEW.md`: Structured review rubric focused on correctness, regressions, and security findings.
 - `.agent/TEST.md`: Validation contract with TDD/eval evidence requirements and security test checklist.
 - `.agent/HANDOFF.md`: Session baton-pass template for local continuity between agent sessions.
+- `.agent/WIKI.md`: Optional wiki-mode config with Obsidian vault path and wiki sync rules.
 - `.agent/LEARNINGS.md`: Optional learning log (default off) for capturing reusable observations and proposed skill/plugin/instruction improvements.
 - `.claude/history.md`: Ongoing local session memory log for timeline, decisions, and next steps.
 
@@ -168,9 +180,17 @@ pwsh -File .\scripts\install-global.ps1 --claude
 - `.agent/REVIEW.md`
 - `.agent/TEST.md`
 - `.agent/HANDOFF.md`
+- `.agent/WIKI.md`
 - `.agent/LEARNINGS.md`
 - `docs/vendor/README.md`
 - `docs/vendor/supabase.md`
+- `docs/roles/README.md`
+- `docs/roles/product-strategist.md`
+- `docs/roles/engineering-planner.md`
+- `docs/roles/reviewer.md`
+- `docs/roles/security-reviewer.md`
+- `docs/roles/qa-validator.md`
+- `docs/roles/docs-releaser.md`
 - `docs/workflows/evals.md`
 - `docs/workflows/contracts.md`
 - `docs/workflows/wiki.md`
@@ -198,6 +218,8 @@ pwsh -File .\scripts\install-global.ps1 --claude
 - `docs/workflows/wiki.md` defines how to use a persistent wiki for faster startup context.
 - Wiki mode is for orientation and synthesis, not authority; source code and tests remain authoritative.
 - Supports both in-repo wiki files and external Obsidian vaults on local disk.
+- To enable it in a repo, set `Enabled: ON` and update `Vault root (absolute)` in `.agent/WIKI.md`.
+- After vault setup, the wiki root is generated with `{vault_root}/codebases/{repo_name}` and reused for handoff/history sync.
 
 ## Safety and Rollback
 - Existing destination files are backed up before overwrite.
@@ -240,6 +262,7 @@ pwsh -File C:\path\to\agent-starter-pack\scripts\set-learning-mode.ps1 C:\path\t
 ```text
 packs/
   project/                 # Repo-level files
+    docs/roles/            # Canonical host-agnostic role contracts
     docs/vendor/           # Local vendor integration references
     docs/workflows/        # Evals and contract pipeline guidance
   global/claude/           # ~/.claude curated files
