@@ -149,7 +149,7 @@ Require-Text -FilePath (Join-Path $repoRoot "packs/project/docs/workflows/contra
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/docs/workflows/contracts.md") -Pattern "## Optional Wiki Mode Integration (Karpathy Pattern)" -Message "missing wiki integration section in packs/project/docs/workflows/contracts.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/docs/workflows/wiki.md") -Pattern "## Trust Order (Required)" -Message "missing trust order section in packs/project/docs/workflows/wiki.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/.agent/WIKI.md") -Pattern "artifact_type: wiki_config" -Message "missing wiki config artifact_type in packs/project/.agent/WIKI.md"
-Require-Text -FilePath (Join-Path $repoRoot "packs/project/.agent/WIKI.md") -Pattern "Vault root (absolute): `UNCONFIRMED`" -Message "missing vault-path setup marker in packs/project/.agent/WIKI.md"
+Require-Text -FilePath (Join-Path $repoRoot "packs/project/.agent/WIKI.md") -Pattern 'Vault root (absolute): `UNCONFIRMED`' -Message "missing vault-path setup marker in packs/project/.agent/WIKI.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/.agent/PLAN.md") -Pattern "contract_version: 1" -Message "missing contract header in packs/project/.agent/PLAN.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/.agent/PLAN.md") -Pattern "artifact_type: plan" -Message "missing plan artifact_type in packs/project/.agent/PLAN.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/.agent/TEST.md") -Pattern "artifact_type: test" -Message "missing test artifact_type in packs/project/.agent/TEST.md"
