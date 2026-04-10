@@ -92,10 +92,13 @@ Default is `OFF`. Use `docs/workflows/wiki.md` when enabled.
 
 When enabled:
 - Configure and persist wiki paths in `.agent/WIKI.md` once per repo.
+- Set `Wiki backend` to `manual` or `graphify`; default to `manual`.
 - Read wiki index pages for orientation before deep code search.
+- If `Wiki backend` is `graphify`, use `graphify-out/GRAPH_REPORT.md` and focused graph queries for orientation.
 - Verify wiki claims against code before implementation.
 - Update wiki after validated changes so context compounds across sessions.
 - When saving handoff/history, include wiki sync notes (root path + updated pages).
+- Treat generated graph/wiki output as advisory and do not install always-on hooks without explicit user approval.
 
 ## Validation Commands
 

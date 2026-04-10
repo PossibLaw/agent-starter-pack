@@ -45,6 +45,7 @@ This repository includes:
 - Project-level instruction files (`AGENTS.md`, `CLAUDE.md`, `.agent/*`, `.claude/history.md`).
 - Optional global instruction files (`~/.codex/AGENTS.md`, `~/.claude/CLAUDE.md`, `~/.claude/agents/*.md`).
 - Full reference/source docs used to design this workflow.
+- Architecture decision guides, including `docs/architecture/memory-and-indexing-guide.md`.
 
 ## Quick Start (Project Files)
 
@@ -214,10 +215,27 @@ pwsh -File .\scripts\install-global.ps1 --claude
 - Optional MemPalace integration is documented in raw retrieval mode; local files remain the source of truth.
 - Optional stage-skill integration (gstack-inspired) is additive and must keep file-based fallback behavior.
 
+## Memory
+- `docs/architecture/memory-and-indexing-guide.md` explains which memory/indexing layer owns which facts and when to enable optional backends.
+- Source code, tests, runtime behavior, and active state artifacts remain the source of truth.
+- `.agent/HANDOFF.md` carries the current baton pass; `.claude/history.md` carries the append-only session timeline.
+- `.agent/LEARNINGS.md` is default-off and should capture reusable process observations only when `Learning Mode` is `CAPTURE` or `APPLY`.
+- MemPalace is an optional retrieval index over completed local artifacts, not a second place to author decisions.
+- Wiki mode and Graphify are orientation/indexing layers; generated claims stay advisory until verified against source.
+
+Examples:
+- Local artifact: a handoff records that matter records are created only after `conflict_check.status = approved`, why draft matters for rejected intakes were rejected, what tests proved it, and what remains open.
+- MemPalace: after the handoff is complete, ingest the raw handoff/test/review/history chunks with metadata such as repo, artifact type, source path, timestamp, task title, tags, and commit SHA. A later query for "automated reminders for eligible intakes" can retrieve the old conflict-check decision even if the exact words differ.
+- Manual wiki: use curated pages for stable codebase maps, domain glossary, architecture notes, and cross-links that humans may want to edit.
+- Graphify: use generated `graphify-out/GRAPH_REPORT.md` and focused graph queries for first-pass orientation on larger repos, then verify the result in source before implementation.
+
 ## Optional Wiki Mode
 - `docs/workflows/wiki.md` defines how to use a persistent wiki for faster startup context.
 - Wiki mode is for orientation and synthesis, not authority; source code and tests remain authoritative.
 - Supports both in-repo wiki files and external Obsidian vaults on local disk.
+- Wiki backend defaults to `manual`; `graphify` is an optional generated graph/wiki backend.
+- Graphify output such as `graphify-out/GRAPH_REPORT.md` and `graphify-out/graph.json` is advisory until verified against source.
+- Do not install Graphify always-on assistant hooks, git hooks, or watch mode without explicit user approval.
 - To enable it in a repo, set `Enabled: ON` and update `Vault root (absolute)` in `.agent/WIKI.md`.
 - After vault setup, the wiki root is generated with `{vault_root}/codebases/{repo_name}` and reused for handoff/history sync.
 

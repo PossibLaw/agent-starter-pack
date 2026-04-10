@@ -34,3 +34,6 @@
 - `scripts/install-global.ps1`: Windows PowerShell installer for global files.
 - `scripts/verify-pack.ps1`: Windows PowerShell structural and safety checks.
 - `scripts/set-learning-mode.ps1`: Windows PowerShell learning mode updater.
+
+## Repository Docs
+- `docs/architecture/memory-and-indexing-guide.md`: decision guide for repo memory layers, optional indexing, and Graphify fit.
