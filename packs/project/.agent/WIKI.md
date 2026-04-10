@@ -64,6 +64,7 @@ memory:
 - Exclude secrets, `.env*`, generated files, dependency/vendor folders, build outputs, caches, logs, private client exports, and raw client data before graphing.
 - Keep `graphify-out/` local unless the team explicitly decides generated output is safe and useful to commit.
 - Commit `.graphifyignore` only when it contains project-safe exclusions.
+- If a non-developer user asks to "index this codebase", "create a codebase graph", or "run Graphify", follow the Graphify Indexing Request Contract in `docs/workflows/wiki.md`.
 
 ## Last Sync
 | Timestamp (ISO) | Wiki root | Pages updated | Notes |

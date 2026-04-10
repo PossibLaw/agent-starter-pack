@@ -15,6 +15,7 @@ Repo Root (absolute path, required): /path/to/your/repo
    - Contract workflow, artifact schema, or stage handoff questions → `docs/workflows/contracts.md`
    - Role workflow, routing, or specialization questions → `docs/roles/README.md` plus the relevant role file in `docs/roles/`
    - Wiki mode, Obsidian vault path, or persistent knowledge questions → `.agent/WIKI.md` and `docs/workflows/wiki.md`
+   - Graphify codebase indexing request → `.agent/WIKI.md` and `docs/workflows/wiki.md`, then follow the Graphify Indexing Request Contract
    - Learning request, or `Learning Mode` = `CAPTURE`/`APPLY` → `.agent/LEARNINGS.md`
    - Vendor/integration setup or API config → `docs/vendor/`
    - Evals/help defining “done” → `docs/workflows/evals.md`

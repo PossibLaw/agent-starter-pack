@@ -199,6 +199,14 @@ Manual wiki is the first optional indexing layer because it is simple, file-base
 
 Graphify should produce input to wiki mode, not new policy. Its report can seed manual wiki pages after verification.
 
+For non-developer users, the intended prompt is simple:
+
+```text
+Index this codebase with Graphify.
+```
+
+The agent should then follow the Graphify Indexing Request Contract in `docs/workflows/wiki.md`: enable Graphify in `.agent/WIKI.md`, create safe ignore rules, ask before installing missing tooling, run a one-time graph build, and report the generated output paths.
+
 ### Add MemPalace When
 
 - the team needs retrieval across many completed tasks
@@ -254,4 +262,3 @@ If any answer is unclear, keep the layer off.
 5. Do not add Ix to the Starter Pack for now.
 6. Prefer pruning duplicate memory over adding another backend.
 7. Require generated indexes to cite source files and be verified before they influence implementation.
-

@@ -228,6 +228,7 @@ Examples:
 - MemPalace: after the handoff is complete, ingest the raw handoff/test/review/history chunks with metadata such as repo, artifact type, source path, timestamp, task title, tags, and commit SHA. A later query for "automated reminders for eligible intakes" can retrieve the old conflict-check decision even if the exact words differ.
 - Manual wiki: use curated pages for stable codebase maps, domain glossary, architecture notes, and cross-links that humans may want to edit.
 - Graphify: use generated `graphify-out/GRAPH_REPORT.md` and focused graph queries for first-pass orientation on larger repos, then verify the result in source before implementation.
+- Non-developer path: ask the agent to "index this codebase with Graphify." The project contract tells the agent to configure `.agent/WIKI.md`, create safe ignore rules, install Graphify only with approval if missing, run the graph build, and report where the output lives.
 
 ## Optional Wiki Mode
 - `docs/workflows/wiki.md` defines how to use a persistent wiki for faster startup context.
