@@ -25,6 +25,7 @@ memory:
 - Owner:
 - Timestamp (ISO):
 - Overall status: `IN_PROGRESS`
+- Checkpoint reason: `task-end` | `sprint-closeout` | `pre-git-cycle` | `context-50` | `handoff`
 
 ## Suggested Roles
 - `docs-releaser` owns handoff quality, docs alignment, and next-action clarity.
@@ -55,6 +56,18 @@ memory:
 1.
 2.
 3.
+
+## Sprint / Git Cycle
+- Sprint label:
+- Sprint status: `IN_PROGRESS` | `PAUSED` | `COMPLETE`
+- Git cycle status: `NOT_STARTED` | `REVIEWING` | `READY_TO_COMMIT` | `COMMITTED` | `PUSHED` | `PR_OPEN`
+- Recommended next git step:
+
+## Learning / Memory
+- Learning mode:
+- Learnings updated: `YES` | `NO` | `N/A`
+- MemPalace ingest attempted: `YES` | `NO`
+- MemPalace ingest result:
 
 ## Do-Not-Reread
 - Archive or stale sources to skip unless explicitly requested.

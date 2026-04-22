@@ -58,6 +58,23 @@ If this work involves an LLM/agent/RAG system, also define:
   - Set mode in this file for the current task, or
   - Explicitly request mode in the user prompt.
 
+## Continuity Checkpoint
+- Sprint label: `UNCONFIRMED`
+- Run checkpoint when:
+  - the sprint is done or paused
+  - the session is about to end
+  - work is moving into commit, PR, or merge steps
+  - context feels roughly 50% full
+- Required checkpoint outputs:
+  - update milestone statuses in this file
+  - refresh `.agent/HANDOFF.md`
+  - append `.claude/history.md`
+  - append `.agent/LEARNINGS.md` when learning mode is `CAPTURE` or `APPLY`
+  - run `.agent/integrations/mempalace-ingest.sh` or `.ps1` only if a local backend was added
+- Checkpoint helper (optional):
+  - `.agent/integrations/run-checkpoint.sh --reason sprint-closeout`
+  - `.agent/integrations/run-checkpoint.ps1 -Reason sprint-closeout`
+
 ## Assumptions
 - [ASSUMPTION]
 
@@ -85,6 +102,7 @@ If this work involves an LLM/agent/RAG system, also define:
 | Implement changes | | PENDING | Requested files updated |
 | Validate outcomes | | PENDING | Checks executed with receipts |
 | Handoff | | PENDING | Risks and next actions documented |
+| Sprint checkpoint | | PENDING | PLAN, HANDOFF, and history synced before pause or ship |
 
 ## Exit Criteria
 - Requested outputs complete and validated.

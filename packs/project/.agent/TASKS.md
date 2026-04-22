@@ -29,6 +29,15 @@ memory:
 | --- | --- | --- | --- | --- | --- |
 | T1 | Confirm objective, acceptance criteria, and evals | | IN_PROGRESS | | |
 
+## Sprint Closeout
+| Check | Status | Notes |
+| --- | --- | --- |
+| PLAN milestone status updated | PENDING | |
+| HANDOFF refreshed | PENDING | |
+| History entry appended | PENDING | |
+| Learnings captured if enabled | PENDING | |
+| Git cycle reviewed if shipping | PENDING | |
+
 ## Backlog
 | ID | Task | Priority | Status |
 | --- | --- | --- | --- |

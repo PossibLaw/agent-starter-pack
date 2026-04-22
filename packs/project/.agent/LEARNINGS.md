@@ -40,3 +40,4 @@ Default behavior is `OFF`.
 - Keep entries concise and evidence-based.
 - Prefer reusable principles over one-off fixes.
 - Preserve existing handoff/history workflows; this file is additive.
+- Capture at sprint closeout, after repeated corrections, after surprising bugs, or after tool/workflow friction worth fixing.

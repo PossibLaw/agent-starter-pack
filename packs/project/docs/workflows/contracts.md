@@ -52,6 +52,26 @@ memory:
 - `HANDOFF.md` must summarize decisions, open questions, and next actions from prior artifacts.
 - Do not mark work `DONE` when required upstream artifacts are missing or unresolved.
 
+## Continuity Checkpoints (Required)
+
+Run a continuity checkpoint when:
+- a sprint is complete or paused
+- the session is about to end
+- the work is entering a git or PR cycle
+- context feels roughly 50% full and summarization pressure is rising
+
+At each checkpoint:
+- update `PLAN.md` milestone and sprint status
+- update `HANDOFF.md` with current state, decisions, and next actions
+- append `.claude/history.md`
+- append `.agent/LEARNINGS.md` only when learning mode is `CAPTURE` or `APPLY`
+
+Optional local helpers may be used:
+- `.agent/integrations/run-checkpoint.sh`
+- `.agent/integrations/run-checkpoint.ps1`
+
+Treat the checkpoint as a guardrail, not busywork. It exists to preserve state before context loss or shipping.
+
 ## Canonical Role Mapping
 
 The starter pack uses a shared role registry in `docs/roles/`.
@@ -72,6 +92,7 @@ Default is `OFF`. File artifacts remain the source of truth.
 
 When enabled:
 - Ingest completed `PLAN`, `TEST`, `REVIEW`, `HANDOFF`, and `.claude/history.md`.
+- Trigger ingest after continuity checkpoints, especially sprint closeout.
 - Use retrieval in raw/verbatim mode for reliability.
 - Treat memory retrieval as advisory; resolve conflicts in favor of current local artifacts.
 - Capture citations to source artifact path and timestamp in summaries.

@@ -1,12 +1,6 @@
 .DS_Store
 *.bak.*
 
-# Local agent continuity files (keep local; do not commit)
-.claude/history.md
-.agent/PLAN.md
-.agent/CONTEXT.md
-.agent/TASKS.md
-.agent/REVIEW.md
-.agent/TEST.md
-.agent/HANDOFF.md
-.agent/LEARNINGS.md
+# Local agent continuity state at the repo root (keep local; do not commit)
+/.claude/
+/.agent/
