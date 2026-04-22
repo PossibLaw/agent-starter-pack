@@ -69,6 +69,11 @@ Use this split:
 
 `.agent/LEARNINGS.md` is not task memory. It is a controlled improvement queue.
 
+Best capture points:
+- sprint closeout
+- pre-git-cycle checkpoints
+- repeated corrections worth turning into a norm or skill
+
 Use it only when `Learning Mode` is `CAPTURE` or `APPLY`:
 - `CAPTURE`: record concise observations with evidence.
 - `APPLY`: record observations and propose concrete changes to skills, plugins, instructions, or workflows.
@@ -93,7 +98,7 @@ Do not use MemPalace to create a second writable truth store. The write path sho
 
 1. Complete local artifacts.
 2. Append history/handoff.
-3. Ingest those completed artifacts into MemPalace.
+3. Ingest those completed artifacts into MemPalace, ideally from a continuity checkpoint or sprint-closeout helper.
 4. On retrieval, verify against current local files and source code.
 
 ### Manual Wiki
@@ -205,7 +210,7 @@ For non-developer users, the intended prompt is simple:
 Index this codebase with Graphify.
 ```
 
-The agent should then follow the Graphify Indexing Request Contract in `docs/workflows/wiki.md`: enable Graphify in `.agent/WIKI.md`, create safe ignore rules, ask before installing missing tooling, run a one-time graph build, and report the generated output paths.
+The agent should then follow the Graphify Indexing Request Contract in `docs/workflows/graphify.md`: enable Graphify in `.agent/WIKI.md`, create safe ignore rules, ask before installing missing tooling, run a one-time graph build, and report the generated output paths.
 
 ### Add MemPalace When
 

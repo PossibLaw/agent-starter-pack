@@ -32,6 +32,8 @@ $requiredFiles = @(
   "packs/project/docs/workflows/evals.md",
   "packs/project/docs/workflows/contracts.md",
   "packs/project/docs/workflows/wiki.md",
+  "packs/project/docs/workflows/graphify.md",
+  "packs/project/docs/glossary.md",
   "packs/project/.claude/history.md",
   "packs/project/.agent/PLAN.md",
   "packs/project/.agent/CONTEXT.md",
@@ -41,11 +43,18 @@ $requiredFiles = @(
   "packs/project/.agent/HANDOFF.md",
   "packs/project/.agent/WIKI.md",
   "packs/project/.agent/LEARNINGS.md",
+  "packs/project/.agent/integrations/README.md",
+  "packs/project/.agent/integrations/run-checkpoint.sh",
+  "packs/project/.agent/integrations/run-checkpoint.ps1",
+  "packs/project/.agent/integrations/mempalace-ingest.sh",
+  "packs/project/.agent/integrations/mempalace-ingest.ps1",
+  "packs/project/.claude/skills/closing-sprint-and-syncing-state/SKILL.md",
+  "packs/project/.claude/skills/running-novice-safe-git-cycle/SKILL.md",
   "packs/global/codex/.codex/AGENTS.md",
   "packs/global/claude/.claude/CLAUDE.md",
   "packs/global/claude/.claude/agents/product-strategist.md",
   "packs/global/claude/.claude/agents/engineering-planner.md",
-  "packs/global/claude/.claude/agents/review-agent.md",
+  "packs/global/claude/.claude/agents/reviewer.md",
   "packs/global/claude/.claude/agents/security-reviewer.md",
   "packs/global/claude/.claude/agents/qa-validator.md",
   "packs/global/claude/.claude/agents/docs-releaser.md"
@@ -140,24 +149,32 @@ Require-Text -FilePath (Join-Path $repoRoot "packs/project/AGENTS.md") -Pattern 
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/docs/roles/README.md") -Pattern "## Canonical Roles" -Message "missing canonical role table in packs/project/docs/roles/README.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/CLAUDE.md") -Pattern "## Contract Pipeline (Required)" -Message "missing contract pipeline section in packs/project/CLAUDE.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/AGENTS.md") -Pattern "## Contract Pipeline (Required)" -Message "missing contract pipeline section in packs/project/AGENTS.md"
+Require-Text -FilePath (Join-Path $repoRoot "packs/project/CLAUDE.md") -Pattern "## Continuity Checkpoint Contract" -Message "missing checkpoint section in packs/project/CLAUDE.md"
+Require-Text -FilePath (Join-Path $repoRoot "packs/project/AGENTS.md") -Pattern "## Continuity Checkpoint Contract" -Message "missing checkpoint section in packs/project/AGENTS.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/CLAUDE.md") -Pattern "## Optional Wiki Mode (Default OFF)" -Message "missing wiki mode section in packs/project/CLAUDE.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/AGENTS.md") -Pattern "## Optional Wiki Mode (Default OFF)" -Message "missing wiki mode section in packs/project/AGENTS.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/CLAUDE.md") -Pattern ".agent/WIKI.md" -Message "missing wiki config pointer in packs/project/CLAUDE.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/AGENTS.md") -Pattern ".agent/WIKI.md" -Message "missing wiki config pointer in packs/project/AGENTS.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/docs/workflows/contracts.md") -Pattern "## Optional Memory Backend (MemPalace)" -Message "missing mempalace section in packs/project/docs/workflows/contracts.md"
+Require-Text -FilePath (Join-Path $repoRoot "packs/project/docs/workflows/contracts.md") -Pattern "## Continuity Checkpoints (Required)" -Message "missing checkpoint section in packs/project/docs/workflows/contracts.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/docs/workflows/contracts.md") -Pattern "## Optional Skill Workflow Integration (gstack-inspired)" -Message "missing gstack section in packs/project/docs/workflows/contracts.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/docs/workflows/contracts.md") -Pattern "## Optional Wiki Mode Integration (Karpathy Pattern)" -Message "missing wiki integration section in packs/project/docs/workflows/contracts.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/docs/workflows/wiki.md") -Pattern "## Trust Order (Required)" -Message "missing trust order section in packs/project/docs/workflows/wiki.md"
-Require-Text -FilePath (Join-Path $repoRoot "packs/project/docs/workflows/wiki.md") -Pattern "## Graphify Indexing Request Contract" -Message "missing graphify indexing request contract in packs/project/docs/workflows/wiki.md"
+Require-Text -FilePath (Join-Path $repoRoot "packs/project/docs/workflows/graphify.md") -Pattern "## Graphify Indexing Request Contract" -Message "missing graphify indexing request contract in packs/project/docs/workflows/graphify.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/.agent/WIKI.md") -Pattern "artifact_type: wiki_config" -Message "missing wiki config artifact_type in packs/project/.agent/WIKI.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/.agent/WIKI.md") -Pattern 'Vault root (absolute): `UNCONFIRMED`' -Message "missing vault-path setup marker in packs/project/.agent/WIKI.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/CLAUDE.md") -Pattern "Graphify codebase indexing request" -Message "missing graphify startup trigger in packs/project/CLAUDE.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/AGENTS.md") -Pattern "Graphify codebase indexing request" -Message "missing graphify startup trigger in packs/project/AGENTS.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/.agent/PLAN.md") -Pattern "contract_version: 1" -Message "missing contract header in packs/project/.agent/PLAN.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/.agent/PLAN.md") -Pattern "artifact_type: plan" -Message "missing plan artifact_type in packs/project/.agent/PLAN.md"
+Require-Text -FilePath (Join-Path $repoRoot "packs/project/.agent/PLAN.md") -Pattern "## Continuity Checkpoint" -Message "missing checkpoint section in packs/project/.agent/PLAN.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/.agent/TEST.md") -Pattern "artifact_type: test" -Message "missing test artifact_type in packs/project/.agent/TEST.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/.agent/REVIEW.md") -Pattern "artifact_type: review" -Message "missing review artifact_type in packs/project/.agent/REVIEW.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/.agent/HANDOFF.md") -Pattern "artifact_type: handoff" -Message "missing handoff artifact_type in packs/project/.agent/HANDOFF.md"
+Require-Text -FilePath (Join-Path $repoRoot "packs/project/.agent/HANDOFF.md") -Pattern "## Sprint / Git Cycle" -Message "missing sprint git section in packs/project/.agent/HANDOFF.md"
+Require-Text -FilePath (Join-Path $repoRoot "packs/project/.agent/integrations/README.md") -Pattern "Optional MemPalace Hook" -Message "missing MemPalace hook contract in integrations README"
+Require-Text -FilePath (Join-Path $repoRoot "packs/project/.claude/skills/closing-sprint-and-syncing-state/SKILL.md") -Pattern "name: closing-sprint-and-syncing-state" -Message "missing closing sprint skill metadata"
+Require-Text -FilePath (Join-Path $repoRoot "packs/project/.claude/skills/running-novice-safe-git-cycle/SKILL.md") -Pattern "name: running-novice-safe-git-cycle" -Message "missing git cycle skill metadata"
 Require-Text -FilePath (Join-Path $repoRoot "packs/global/claude/.claude/CLAUDE.md") -Pattern "For vendor setup/API/security guidance, verify against official vendor docs and cite source date." -Message "missing vendor recency rule in packs/global/claude/.claude/CLAUDE.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/global/codex/.codex/AGENTS.md") -Pattern "For vendor setup/API/security guidance, verify against official vendor docs and cite source date." -Message "missing vendor recency rule in packs/global/codex/.codex/AGENTS.md"
 

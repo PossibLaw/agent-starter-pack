@@ -8,8 +8,10 @@
 - `docs/vendor/README.md`: rules for using local vendor docs as authoritative defaults.
 - `docs/vendor/supabase.md`: Supabase-specific integration and security reference.
 - `docs/workflows/evals.md`: evals-driven development guide (define “done”, design evals, and iterate safely).
-- `docs/workflows/contracts.md`: typed state-artifact pipeline (`PLAN -> TEST -> REVIEW -> HANDOFF`) plus optional memory/skill integration rules.
+- `docs/workflows/contracts.md`: typed state-artifact pipeline (`PLAN -> TEST -> REVIEW -> HANDOFF`) plus continuity checkpoint and optional memory/skill integration rules.
 - `docs/workflows/wiki.md`: optional wiki-mode workflow for persistent context acceleration with code-first verification.
+- `docs/workflows/graphify.md`: optional Graphify indexing workflow and non-developer request contract.
+- `docs/glossary.md`: short, beginner-friendly glossary of terms used across the pack.
 - `.agent/PLAN.md`: planning artifact template.
 - `.agent/CONTEXT.md`: working context and decisions template.
 - `.agent/TASKS.md`: task board with status markers.
@@ -18,7 +20,9 @@
 - `.agent/HANDOFF.md`: baton pass template.
 - `.agent/WIKI.md`: optional wiki-mode config (vault path, wiki root, sync rules).
 - `.agent/LEARNINGS.md`: optional learning log for reusable observations and improvement proposals.
+- `.agent/integrations/*`: local checkpoint helpers plus shipped MemPalace ingest stubs (replace to enable real ingestion).
 - `.claude/history.md`: cross-session memory log.
+- `.claude/skills/*/SKILL.md`: repo-local workflow skills for repeated procedures.
 
 ## Global Pack (`packs/global`)
 - `codex/.codex/AGENTS.md`: Codex user-level global policy.

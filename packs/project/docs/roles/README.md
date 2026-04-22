@@ -14,7 +14,7 @@ Rules:
 | --- | --- | --- | --- |
 | `product-strategist` | `.agent/PLAN.md` | Goal, scope, or sequencing is still fuzzy | `@product-strategist` |
 | `engineering-planner` | `.agent/PLAN.md` | Implementation plan, architecture, and execution order need to be made explicit | `@engineering-planner` |
-| `reviewer` | `.agent/REVIEW.md` | Correctness, regressions, or maintainability need structured review findings | `@review-agent` |
+| `reviewer` | `.agent/REVIEW.md` | Correctness, regressions, or maintainability need structured review findings | `@reviewer` |
 | `security-reviewer` | `.agent/REVIEW.md` and `.agent/TEST.md` | Auth, data access, input handling, API, or deployment/runtime risk matters | `@security-reviewer` |
 | `qa-validator` | `.agent/TEST.md` | Evals, commands, and evidence receipts need execution and recording | `@qa-validator` |
 | `docs-releaser` | `.agent/HANDOFF.md` and docs | User-facing docs, handoff, or release notes must match validated changes | `@docs-releaser` |

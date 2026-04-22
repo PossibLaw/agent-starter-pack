@@ -15,12 +15,14 @@ Codex project instruction file for <PROJECT_NAME>.
    - Contract workflow, artifact schema, or stage handoff questions → `docs/workflows/contracts.md`
    - Role workflow, routing, or specialization questions → `docs/roles/README.md` plus the relevant role file in `docs/roles/`
    - Wiki mode, Obsidian vault path, or persistent knowledge questions → `.agent/WIKI.md` and `docs/workflows/wiki.md`
-   - Graphify codebase indexing request → `.agent/WIKI.md` and `docs/workflows/wiki.md`, then follow the Graphify Indexing Request Contract
+   - Graphify codebase indexing request → `.agent/WIKI.md` and `docs/workflows/graphify.md`
    - Learning request, or `Learning Mode` = `CAPTURE`/`APPLY` → `.agent/LEARNINGS.md`
    - Vendor/integration setup or API config → `docs/vendor/`
    - Evals/help defining “done” → `docs/workflows/evals.md`
+   - Unfamiliar term (e.g. "eval", "handoff", "trust boundary") → `docs/glossary.md`
 4. If more repo context is needed, read `.claude/history.md` next — not the whole repo.
 5. Global continuity stays in `~/.codex/AGENTS.md`. Repo continuity is optional and on-demand.
+6. When a sprint is wrapping, work is about to pause or ship, or context feels roughly half full, run a continuity checkpoint before losing state.
 
 ## Repo Root & State File Paths (Required)
 1. Before writing any state file (`.agent/PLAN.md`, `.agent/HANDOFF.md`, `.agent/WIKI.md`, `.claude/history.md`), resolve the repo root using `git rev-parse --show-toplevel` and confirm with `pwd`.
@@ -43,6 +45,12 @@ After completing work, append a summary to `${REPO_ROOT}/.claude/history.md` (lo
 - Files changed.
 - Key decisions (with status).
 - Current state and next steps.
+
+Before pausing, handing off, or moving into a git cycle, refresh:
+- `${REPO_ROOT}/.agent/PLAN.md` milestone status and sprint status.
+- `${REPO_ROOT}/.agent/HANDOFF.md` with current decisions, open questions, and next actions.
+- `${REPO_ROOT}/.claude/history.md` with a short checkpoint entry.
+- `${REPO_ROOT}/.agent/LEARNINGS.md` only when `Learning Mode` is `CAPTURE` or `APPLY`.
 
 When resuming prior work, read `${REPO_ROOT}/.claude/history.md` first.
 
@@ -88,13 +96,13 @@ When resuming prior work, read `${REPO_ROOT}/.claude/history.md` first.
 - If required facts are missing, escalate once with a targeted question.
 
 ## Contract Pipeline (Required)
-- Treat state artifacts as a typed pipeline, not independent notes.
-- Execution order: `PLAN.md` → `TEST.md` → `REVIEW.md` → `HANDOFF.md`.
-- `PLAN.md` must define eval IDs, assumptions, and risks before implementation.
-- `TEST.md` must reference eval IDs from `PLAN.md` and include receipts.
-- `REVIEW.md` must reference executed checks and receipts from `TEST.md`.
-- `HANDOFF.md` must summarize decisions, open questions, and next actions from upstream artifacts.
-- Do not return `DONE` if a required upstream artifact is missing, inconsistent, or unresolved.
+- Canonical source: `docs/workflows/contracts.md`. Read it for full rules, artifact schema, cross-artifact linkage, and validation commands.
+- Quick summary: stage order is `PLAN.md` → `TEST.md` → `REVIEW.md` → `HANDOFF.md`; each stage must cite evidence from the prior stage; never return `DONE` with an unresolved upstream artifact.
+
+## Continuity Checkpoint Contract
+- Canonical source: `docs/workflows/contracts.md` (Continuity Checkpoints section).
+- Quick summary: run a checkpoint at sprint close, before a git cycle, before ending the session, and when context feels ~50% full. Each checkpoint updates `.agent/PLAN.md`, `.agent/HANDOFF.md`, and appends `.claude/history.md` (and `.agent/LEARNINGS.md` when learning mode is enabled).
+- If present, prefer local helpers: `.agent/integrations/run-checkpoint.{sh,ps1}`. If a local `.agent/integrations/mempalace-ingest.{sh,ps1}` exists, call it after file artifacts are updated.
 
 ## Optional Memory Backend (MemPalace, Default OFF)
 - File artifacts in `.agent/*.md` and `.claude/history.md` remain source of truth.
@@ -151,6 +159,17 @@ Never do:
 - Use focused branches and atomic commits.
 - Attach validation evidence to PRs/handoffs.
 - Never commit credentials.
+- Never commit `.agent/*` or `.claude/history.md`.
+- For novice-safe shipping, run this order:
+  1. `git status --short`
+  2. review `git diff --stat` and files changed
+  3. run relevant checks
+  4. refresh the plan/handoff/history checkpoint
+  5. commit a focused change
+  6. push the branch and open or update a PR when a remote exists
+- If local helper scripts exist, prefer:
+  - `.agent/integrations/run-checkpoint.sh --reason pre-git-cycle`
+  - `.agent/integrations/run-checkpoint.ps1 -Reason pre-git-cycle`
 
 ## Local Norms
 - Persist repeated user corrections here so they survive across sessions.

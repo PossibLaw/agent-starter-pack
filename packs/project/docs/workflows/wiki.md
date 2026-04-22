@@ -58,95 +58,13 @@ For `manual`, the wiki index is the main entry point.
 
 For `graphify`, use `GRAPH_REPORT.md` for high-level structure and focused graph queries for specific questions. Sync generated pages into a manual wiki only when the team explicitly wants that extra artifact. Do not paste raw `graph.json` wholesale into prompts.
 
-## Graphify Flow (Optional)
+## Graphify Backend (Optional)
 
-Use Graphify when generated structure would reduce orientation time. Do not use it as the default path for small repos or simple tasks.
+Graphify is the optional generated-graph backend for wiki mode. It is advisory only — source code, tests, runtime behavior, and active state artifacts remain higher authority.
 
-Before graphing:
-1. Confirm `Wiki backend: graphify` in `.agent/WIKI.md`.
-2. Create or review `.graphifyignore`.
-3. Exclude secrets, `.env*`, generated files, dependency/vendor folders, build outputs, caches, logs, private client exports, and raw client data.
-4. Ask before installing Graphify, assistant hooks, git hooks, watch mode, or any always-on integration.
+Full setup, the Graphify Indexing Request Contract, baseline `.graphifyignore`, and expected outputs live in `docs/workflows/graphify.md`. Do not use Graphify as the default path for small repos or simple tasks.
 
-Allowed generated outputs:
-- `graphify-out/`
-- `graphify-out/GRAPH_REPORT.md`
-- `graphify-out/graph.json`
-- `graphify-out/cache/`
-- optional Graphify-generated wiki pages
-
-Generated output is advisory. Source code, tests, runtime behavior, and active state artifacts remain higher authority.
-
-## Graphify Indexing Request Contract
-
-Use this contract when a non-developer user asks for "Graphify indexing", "codebase indexing", "create a codebase graph", "make a wiki graph", or similar wording.
-
-The agent should do the setup and run the workflow. Do not hand the user a list of developer commands unless blocked by permissions or missing approvals.
-
-Required steps:
-
-1. Resolve the repo root with `git rev-parse --show-toplevel` and confirm it is not a temp directory.
-2. Read `.agent/WIKI.md` and this file.
-3. Update `.agent/WIKI.md` so `Enabled` is `ON` and `Wiki backend` is `graphify`.
-4. Set `Graphify output root` to `graphify-out/` unless the user requested another path.
-5. Create or update `.graphifyignore` before running Graphify.
-6. Add `graphify-out/` to `.gitignore` unless the user explicitly wants generated graph output committed.
-7. Check whether the `graphify` command is available.
-8. If Graphify is missing, ask for approval before installing the official package. The upstream project currently documents `pip install graphifyy` as the official PyPI install and `graphify` as the CLI command.
-9. Run a one-time graph build for the repo root, normally `graphify .`.
-10. If the user asked for Obsidian output, use Graphify's Obsidian option and write to the configured vault path. Otherwise keep output in `graphify-out/`.
-11. Read `graphify-out/GRAPH_REPORT.md` enough to confirm the graph was created.
-12. Update `.agent/WIKI.md` Last Sync with timestamp, output root, and notes.
-13. Report the exact output paths and remind the user that generated graph claims must be verified against source before implementation.
-
-Baseline `.graphifyignore`:
-
-```gitignore
-.env
-.env.*
-*.pem
-*.key
-*.p12
-*.log
-node_modules/
-vendor/
-dist/
-build/
-coverage/
-.cache/
-graphify-out/
-.git/
-.claude/
-.agent/
-```
-
-Do not install these unless the user explicitly asks for them:
-- always-on assistant hooks
-- git hooks
-- watch mode
-- MCP server
-- Neo4j export or push
-- Obsidian sync
-
-Expected local output:
-
-```text
-graphify-out/
-├── graph.html
-├── GRAPH_REPORT.md
-├── graph.json
-└── cache/
-```
-
-Final response should be short and non-technical:
-- state whether indexing completed
-- give the output folder
-- identify the report file to open first
-- list any skipped optional integrations
-- list any blocker and the exact approval or missing dependency needed
-
-For "review the entire repo" requests:
-- Start with wiki index and map pages first, then verify critical claims in code.
+For "review the entire repo" requests: start with the wiki index and map pages first, then verify critical claims in code.
 
 ## Source Ingest Flow
 

@@ -1,5 +1,22 @@
 # CHANGELOG
 
+## 2026-04-22
+- Fixed installer cross-platform parity: Bash `install-project.sh` now tracks whether `.agent/TEST.md` was newly copied and uses the same placeholder-replacement condition as the PowerShell installer (`scripts/install-project.sh`).
+- Renamed the Claude reviewer wrapper to match the canonical role (`packs/global/claude/.claude/agents/reviewer.md`, previously `review-agent.md`); updated references in `scripts/verify-pack.sh`, `scripts/verify-pack.ps1`, `packs/project/docs/roles/README.md`, and `packs/project/CLAUDE.md`.
+- Collapsed the duplicated `Contract Pipeline` and `Continuity Checkpoint Contract` bodies in `packs/project/CLAUDE.md` and `packs/project/AGENTS.md` into short pointers to the canonical source (`packs/project/docs/workflows/contracts.md`).
+- Added parity governance sections to `packs/project/CLAUDE.md` so Claude and Codex templates now mirror each other: `Tool Ownership`, `Canonical Roles`, aligned `Routing Rules`, and `Security Review Contract`.
+- Extracted the Graphify Indexing Request Contract out of `packs/project/docs/workflows/wiki.md` into a dedicated `packs/project/docs/workflows/graphify.md`; added an explicit note that the upstream PyPI package is `graphifyy` (CLI entry point `graphify`); updated installer/verify scripts, README, architecture docs, and the Startup Contract in both CLAUDE.md and AGENTS.md to point at the new file.
+- Added `packs/project/docs/glossary.md` with 25+ beginner-friendly definitions (roles, artifacts, TDD/evals, trust boundary, IDOR/CSRF, UNCONFIRMED, BLOCKED); linked from Startup Contract in CLAUDE.md and AGENTS.md.
+- Shipped stub MemPalace hooks (`packs/project/.agent/integrations/mempalace-ingest.{sh,ps1}`) so the advertised integration point is self-documenting; updated `packs/project/.agent/integrations/README.md` to describe the stubs, and added them to installer copy lists and `scripts/verify-pack.{sh,ps1}` required-file checks.
+- Filled the empty `evals.md` eval-table with a concrete worked example (Export contacts as CSV — happy, edge, failure/security) to anchor the beginner audience.
+- Removed a tracked macOS artifact (`.DS_Store`) from `packs/project/.agent/integrations/`.
+
+## 2026-04-21
+- Added explicit continuity-checkpoint rules to the Codex and Claude project templates so sprint closeout, pre-git-cycle, session end, and context-pressure checkpoints refresh plan, handoff, and history consistently (`packs/project/AGENTS.md`, `packs/project/CLAUDE.md`, `packs/project/.agent/PLAN.md`, `packs/project/.agent/TASKS.md`, `packs/project/.agent/HANDOFF.md`, `packs/project/.claude/history.md`, `packs/project/docs/workflows/contracts.md`).
+- Added local checkpoint integration helpers plus a MemPalace hook contract under `.agent/integrations/` (`packs/project/.agent/integrations/README.md`, `packs/project/.agent/integrations/run-checkpoint.sh`, `packs/project/.agent/integrations/run-checkpoint.ps1`).
+- Added repo-local workflow skills for sprint closeout/state sync and a novice-safe git cycle (`packs/project/.claude/skills/closing-sprint-and-syncing-state/SKILL.md`, `packs/project/.claude/skills/running-novice-safe-git-cycle/SKILL.md`).
+- Updated installers, verification scripts, README, and architecture docs so the new continuity helpers and skills install and validate as part of the pack (`scripts/install-project.sh`, `scripts/install-project.ps1`, `scripts/verify-pack.sh`, `scripts/verify-pack.ps1`, `README.md`, `docs/architecture/file-purpose-map.md`, `docs/architecture/memory-and-indexing-guide.md`).
+
 ## 2026-04-09
 - Added a canonical host-agnostic role registry plus six shared role contracts for planning, review, validation, and handoff (`packs/project/docs/roles/README.md`, `packs/project/docs/roles/*.md`).
 - Updated project templates to route Codex and Claude through the shared role contracts instead of freeform role lists (`packs/project/AGENTS.md`, `packs/project/CLAUDE.md`, `packs/project/.agent/PLAN.md`, `packs/project/.agent/TEST.md`, `packs/project/.agent/REVIEW.md`, `packs/project/.agent/HANDOFF.md`, `packs/project/docs/workflows/contracts.md`).

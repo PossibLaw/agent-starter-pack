@@ -31,6 +31,14 @@ Use this format (copy into `.agent/TEST.md`):
 | E2 |  |  |  |  |  |  |  |
 | E3 |  |  |  |  |  |  |  |
 
+Worked example — a "Export contacts as CSV" feature:
+
+| Eval ID | User Goal | Given | When | Then | Inputs/Fixtures | Expected Output | How User Verifies |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| E1 (happy) | Download contacts as CSV | Signed-in user with 3 contacts | User clicks "Export CSV" | A `contacts.csv` file downloads with header row + 3 data rows | Seeded user `u1` with contacts `c1`, `c2`, `c3` | File `contacts.csv` 4 lines; headers `name,email,phone` | Open the file and count lines; spot-check one contact's row |
+| E2 (edge) | Export when no contacts exist | Signed-in user with 0 contacts | User clicks "Export CSV" | A `contacts.csv` downloads with only the header row (no error) | Seeded user `u2` with no contacts | File `contacts.csv` 1 line; headers only | Open file; confirm only one line |
+| E3 (failure/security) | Block anonymous export | Anonymous (not signed in) user | User hits the `/export` URL directly | Request is rejected with HTTP 401; no file returned | Unauth request to `/export` | HTTP 401 JSON `{"error":"unauthenticated"}` | `curl -i` the endpoint; confirm 401 and no CSV body |
+
 ## Choosing Evaluators
 1. **Fix obvious issues first** (missing prompt instruction, missing tool, configuration bug, retrieval bug).
 2. Prefer **deterministic checks** when possible:

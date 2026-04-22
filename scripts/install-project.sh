@@ -279,10 +279,14 @@ if [[ -z "${LINT_COMMAND// }" ]]; then LINT_COMMAND="UNCONFIRMED"; fi
 if [[ -z "${TYPECHECK_COMMAND// }" ]]; then TYPECHECK_COMMAND="UNCONFIRMED"; fi
 if [[ -z "${BUILD_COMMAND// }" ]]; then BUILD_COMMAND="UNCONFIRMED"; fi
 
+LAST_COPY_STATUS=0
+
 copy_with_backup() {
   local src="$1"
   local dst="$2"
   local rel="$3"
+
+  LAST_COPY_STATUS=0
 
   if [[ ! -f "$src" ]]; then
     echo "BLOCKED: source file missing: $src"
@@ -315,6 +319,8 @@ copy_with_backup() {
     cp "$src" "$dst"
     echo "Copied: $src -> $dst"
   fi
+
+  LAST_COPY_STATUS=1
 }
 
 ensure_progress_ignored() {
@@ -414,6 +420,7 @@ TEST_FILE_PREEXISTED=0
 if [[ -e "$TARGET_DIR/.agent/TEST.md" ]]; then
   TEST_FILE_PREEXISTED=1
 fi
+TEST_FILE_WAS_COPIED=0
 
 copy_with_backup "$PACK_ROOT/AGENTS.md" "$TARGET_DIR/AGENTS.md" "AGENTS.md"
 copy_with_backup "$PACK_ROOT/CLAUDE.md" "$TARGET_DIR/CLAUDE.md" "CLAUDE.md"
@@ -429,21 +436,31 @@ copy_with_backup "$PACK_ROOT/docs/vendor/supabase.md" "$TARGET_DIR/docs/vendor/s
 copy_with_backup "$PACK_ROOT/docs/workflows/evals.md" "$TARGET_DIR/docs/workflows/evals.md" "docs/workflows/evals.md"
 copy_with_backup "$PACK_ROOT/docs/workflows/contracts.md" "$TARGET_DIR/docs/workflows/contracts.md" "docs/workflows/contracts.md"
 copy_with_backup "$PACK_ROOT/docs/workflows/wiki.md" "$TARGET_DIR/docs/workflows/wiki.md" "docs/workflows/wiki.md"
+copy_with_backup "$PACK_ROOT/docs/workflows/graphify.md" "$TARGET_DIR/docs/workflows/graphify.md" "docs/workflows/graphify.md"
+copy_with_backup "$PACK_ROOT/docs/glossary.md" "$TARGET_DIR/docs/glossary.md" "docs/glossary.md"
 copy_with_backup "$PACK_ROOT/.claude/history.md" "$TARGET_DIR/.claude/history.md" ".claude/history.md"
 copy_with_backup "$PACK_ROOT/.agent/PLAN.md" "$TARGET_DIR/.agent/PLAN.md" ".agent/PLAN.md"
 copy_with_backup "$PACK_ROOT/.agent/CONTEXT.md" "$TARGET_DIR/.agent/CONTEXT.md" ".agent/CONTEXT.md"
 copy_with_backup "$PACK_ROOT/.agent/TASKS.md" "$TARGET_DIR/.agent/TASKS.md" ".agent/TASKS.md"
 copy_with_backup "$PACK_ROOT/.agent/REVIEW.md" "$TARGET_DIR/.agent/REVIEW.md" ".agent/REVIEW.md"
 copy_with_backup "$PACK_ROOT/.agent/TEST.md" "$TARGET_DIR/.agent/TEST.md" ".agent/TEST.md"
+TEST_FILE_WAS_COPIED="$LAST_COPY_STATUS"
 copy_with_backup "$PACK_ROOT/.agent/HANDOFF.md" "$TARGET_DIR/.agent/HANDOFF.md" ".agent/HANDOFF.md"
 copy_with_backup "$PACK_ROOT/.agent/WIKI.md" "$TARGET_DIR/.agent/WIKI.md" ".agent/WIKI.md"
 copy_with_backup "$PACK_ROOT/.agent/LEARNINGS.md" "$TARGET_DIR/.agent/LEARNINGS.md" ".agent/LEARNINGS.md"
+copy_with_backup "$PACK_ROOT/.agent/integrations/README.md" "$TARGET_DIR/.agent/integrations/README.md" ".agent/integrations/README.md"
+copy_with_backup "$PACK_ROOT/.agent/integrations/run-checkpoint.sh" "$TARGET_DIR/.agent/integrations/run-checkpoint.sh" ".agent/integrations/run-checkpoint.sh"
+copy_with_backup "$PACK_ROOT/.agent/integrations/run-checkpoint.ps1" "$TARGET_DIR/.agent/integrations/run-checkpoint.ps1" ".agent/integrations/run-checkpoint.ps1"
+copy_with_backup "$PACK_ROOT/.agent/integrations/mempalace-ingest.sh" "$TARGET_DIR/.agent/integrations/mempalace-ingest.sh" ".agent/integrations/mempalace-ingest.sh"
+copy_with_backup "$PACK_ROOT/.agent/integrations/mempalace-ingest.ps1" "$TARGET_DIR/.agent/integrations/mempalace-ingest.ps1" ".agent/integrations/mempalace-ingest.ps1"
+copy_with_backup "$PACK_ROOT/.claude/skills/closing-sprint-and-syncing-state/SKILL.md" "$TARGET_DIR/.claude/skills/closing-sprint-and-syncing-state/SKILL.md" ".claude/skills/closing-sprint-and-syncing-state/SKILL.md"
+copy_with_backup "$PACK_ROOT/.claude/skills/running-novice-safe-git-cycle/SKILL.md" "$TARGET_DIR/.claude/skills/running-novice-safe-git-cycle/SKILL.md" ".claude/skills/running-novice-safe-git-cycle/SKILL.md"
 ensure_progress_ignored
 
 if [[ "$DRY_RUN" -eq 0 ]]; then
   replace_placeholders "$TARGET_DIR/AGENTS.md"
   replace_placeholders "$TARGET_DIR/CLAUDE.md"
-  if [[ "$PRESERVE_PROGRESS" -eq 0 || "$TEST_FILE_PREEXISTED" -eq 0 ]]; then
+  if [[ "$PRESERVE_PROGRESS" -eq 0 || "$TEST_FILE_PREEXISTED" -eq 0 || "$TEST_FILE_WAS_COPIED" -eq 1 ]]; then
     replace_placeholders "$TARGET_DIR/.agent/TEST.md"
   fi
 fi

@@ -466,6 +466,8 @@ $filesToCopy = @(
   @{ Source = "docs/workflows/evals.md"; Destination = "docs/workflows/evals.md" },
   @{ Source = "docs/workflows/contracts.md"; Destination = "docs/workflows/contracts.md" },
   @{ Source = "docs/workflows/wiki.md"; Destination = "docs/workflows/wiki.md" },
+  @{ Source = "docs/workflows/graphify.md"; Destination = "docs/workflows/graphify.md" },
+  @{ Source = "docs/glossary.md"; Destination = "docs/glossary.md" },
   @{ Source = ".claude/history.md"; Destination = ".claude/history.md" },
   @{ Source = ".agent/PLAN.md"; Destination = ".agent/PLAN.md" },
   @{ Source = ".agent/CONTEXT.md"; Destination = ".agent/CONTEXT.md" },
@@ -474,7 +476,14 @@ $filesToCopy = @(
   @{ Source = ".agent/TEST.md"; Destination = ".agent/TEST.md" },
   @{ Source = ".agent/HANDOFF.md"; Destination = ".agent/HANDOFF.md" },
   @{ Source = ".agent/WIKI.md"; Destination = ".agent/WIKI.md" },
-  @{ Source = ".agent/LEARNINGS.md"; Destination = ".agent/LEARNINGS.md" }
+  @{ Source = ".agent/LEARNINGS.md"; Destination = ".agent/LEARNINGS.md" },
+  @{ Source = ".agent/integrations/README.md"; Destination = ".agent/integrations/README.md" },
+  @{ Source = ".agent/integrations/run-checkpoint.sh"; Destination = ".agent/integrations/run-checkpoint.sh" },
+  @{ Source = ".agent/integrations/run-checkpoint.ps1"; Destination = ".agent/integrations/run-checkpoint.ps1" },
+  @{ Source = ".agent/integrations/mempalace-ingest.sh"; Destination = ".agent/integrations/mempalace-ingest.sh" },
+  @{ Source = ".agent/integrations/mempalace-ingest.ps1"; Destination = ".agent/integrations/mempalace-ingest.ps1" },
+  @{ Source = ".claude/skills/closing-sprint-and-syncing-state/SKILL.md"; Destination = ".claude/skills/closing-sprint-and-syncing-state/SKILL.md" },
+  @{ Source = ".claude/skills/running-novice-safe-git-cycle/SKILL.md"; Destination = ".claude/skills/running-novice-safe-git-cycle/SKILL.md" }
 )
 
 $testTemplatePath = Join-Path $targetDirResolved ".agent/TEST.md"

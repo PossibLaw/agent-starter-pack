@@ -15,12 +15,14 @@ Repo Root (absolute path, required): /path/to/your/repo
    - Contract workflow, artifact schema, or stage handoff questions → `docs/workflows/contracts.md`
    - Role workflow, routing, or specialization questions → `docs/roles/README.md` plus the relevant role file in `docs/roles/`
    - Wiki mode, Obsidian vault path, or persistent knowledge questions → `.agent/WIKI.md` and `docs/workflows/wiki.md`
-   - Graphify codebase indexing request → `.agent/WIKI.md` and `docs/workflows/wiki.md`, then follow the Graphify Indexing Request Contract
+   - Graphify codebase indexing request → `.agent/WIKI.md` and `docs/workflows/graphify.md`
    - Learning request, or `Learning Mode` = `CAPTURE`/`APPLY` → `.agent/LEARNINGS.md`
    - Vendor/integration setup or API config → `docs/vendor/`
    - Evals/help defining “done” → `docs/workflows/evals.md`
+   - Unfamiliar term (e.g. "eval", "handoff", "trust boundary") → `docs/glossary.md`
 4. If more repo context is needed, read `.claude/history.md` next — not the whole repo.
 5. Global continuity stays in `~/.claude/CLAUDE.md`. Repo continuity is optional and on-demand.
+6. When a sprint is wrapping, work is about to pause or ship, or context feels roughly half full, run a continuity checkpoint before losing state.
 
 ## Repo Root & State File Paths (Required)
 1. Before writing any state file (`.agent/PLAN.md`, `.agent/HANDOFF.md`, `.agent/WIKI.md`, `.claude/history.md`), resolve the repo root using `git rev-parse --show-toplevel` and confirm with `pwd`.
@@ -33,12 +35,23 @@ Repo Root (absolute path, required): /path/to/your/repo
 8. If `.agent/` or `.claude/` is missing, return `BLOCKED` and ask for permission to create them under `${REPO_ROOT}`.
 9. When saving, print the absolute path used; if it is not under `${REPO_ROOT}`, stop and ask for correction.
 
+## Tool Ownership
+- Claude reads: `CLAUDE.md` (this file), `~/.claude/CLAUDE.md` (global), `.claude/agents/*.md`, `.claude/skills/*/SKILL.md`.
+- Ignore `AGENTS.md` and `.codex/` unless the user explicitly requests cross-agent sync.
+- Shared contracts in `docs/roles/`, `docs/workflows/`, and `docs/vendor/` apply to both Claude and Codex.
+
 ## Session Memory
 After completing work, append a summary to `${REPO_ROOT}/.claude/history.md` (local-only, gitignored):
 - Date and task title.
 - Files changed.
 - Key decisions (with status).
 - Current state and next steps.
+
+Before pausing, handing off, or moving into a git cycle, refresh:
+- `${REPO_ROOT}/.agent/PLAN.md` milestone status and sprint status.
+- `${REPO_ROOT}/.agent/HANDOFF.md` with current decisions, open questions, and next actions.
+- `${REPO_ROOT}/.claude/history.md` with a short checkpoint entry.
+- `${REPO_ROOT}/.agent/LEARNINGS.md` only when `Learning Mode` is `CAPTURE` or `APPLY`.
 
 When resuming prior work, read `${REPO_ROOT}/.claude/history.md` first.
 
@@ -90,32 +103,59 @@ Run `<LINT_COMMAND> && <TYPECHECK_COMMAND> && <TEST_COMMAND>` before handoff.
 - Data/storage:
 - Tests:
 
-## Agent Routing
-- Product framing, CEO-style prioritization, or scope pressure test → `@product-strategist`
-- Engineering plan review, architecture, or phased implementation planning → `@engineering-planner`
-- Correctness and regression review → `@review-agent`
-- Security and trust-boundary review → `@security-reviewer`
-- Validation execution and evidence capture → `@qa-validator`
-- Handoff, release notes, and docs sync after validated changes → `@docs-releaser`
+## Canonical Roles
+- `product-strategist` — Clarifies user value, scope, and success criteria. Source of truth: `docs/roles/product-strategist.md`.
+- `engineering-planner` — Produces an executable implementation plan with risks and eval IDs. Source of truth: `docs/roles/engineering-planner.md`.
+- `reviewer` — Performs correctness and regression review. Source of truth: `docs/roles/reviewer.md`.
+- `security-reviewer` — Performs attacker-minded review and security-check pressure testing. Source of truth: `docs/roles/security-reviewer.md`.
+- `qa-validator` — Executes evals and records receipts. Source of truth: `docs/roles/qa-validator.md`.
+- `docs-releaser` — Syncs handoff and user-facing docs after validation. Source of truth: `docs/roles/docs-releaser.md`.
 
-Supporting specialists:
-- Source extraction or fact gathering → `@research-agent`
-- Markdown-heavy doc drafting without release ownership → `@docs-agent`
+In Claude Code, invoke each role via its `@name` handle (for example `@reviewer`, `@qa-validator`). Name = canonical role.
+
+## Routing Rules
+- Product framing, scope, or success-definition work → `@product-strategist`.
+- Implementation planning and architecture tradeoffs → `@engineering-planner`.
+- Test execution, eval receipts, and validation evidence → `@qa-validator`.
+- Correctness, regressions, and maintainability review → `@reviewer`.
+- Security-sensitive review or trust-boundary changes → `@security-reviewer`.
+- Release notes, handoff, and docs sync after validated changes → `@docs-releaser`.
+- If required facts are missing, escalate once with a targeted question.
+
+Supporting specialists (not canonical roles — use when a canonical role is not a fit):
+- Source extraction or fact gathering → `@research-agent`.
+- Markdown-heavy doc drafting without release ownership → `@docs-agent`.
 
 ## Contract Pipeline (Required)
-- Treat state artifacts as a typed pipeline, not independent notes.
-- Execution order: `PLAN.md` → `TEST.md` → `REVIEW.md` → `HANDOFF.md`.
-- `PLAN.md` must define eval IDs, assumptions, and risks before implementation.
-- `TEST.md` must reference eval IDs from `PLAN.md` and include receipts.
-- `REVIEW.md` must reference executed checks and receipts from `TEST.md`.
-- `HANDOFF.md` must summarize decisions, open questions, and next actions from upstream artifacts.
-- Do not return `DONE` if a required upstream artifact is missing, inconsistent, or unresolved.
+- Canonical source: `docs/workflows/contracts.md`. Read it for full rules, artifact schema, cross-artifact linkage, and validation commands.
+- Quick summary: stage order is `PLAN.md` → `TEST.md` → `REVIEW.md` → `HANDOFF.md`; each stage must cite evidence from the prior stage; never return `DONE` with an unresolved upstream artifact.
+
+## Continuity Checkpoint Contract
+- Canonical source: `docs/workflows/contracts.md` (Continuity Checkpoints section).
+- Quick summary: run a checkpoint at sprint close, before a git cycle, before ending the session, and when context feels ~50% full. Each checkpoint updates `.agent/PLAN.md`, `.agent/HANDOFF.md`, and appends `.claude/history.md` (and `.agent/LEARNINGS.md` when learning mode is enabled).
+- If present, prefer local helpers: `.agent/integrations/run-checkpoint.{sh,ps1}`. If a local `.agent/integrations/mempalace-ingest.{sh,ps1}` exists, call it after file artifacts are updated.
 
 ## Optional Memory Backend (MemPalace, Default OFF)
 - File artifacts in `.agent/*.md` and `.claude/history.md` remain source of truth.
 - If a local MemPalace backend is enabled, ingest completed `PLAN/TEST/REVIEW/HANDOFF/history` artifacts after each task.
 - Use raw/verbatim retrieval mode for reliability.
 - Treat memory retrieval as advisory and resolve conflicts in favor of current local files.
+
+## Git Workflow Contract
+- Use focused branches and atomic commits.
+- Attach validation evidence to PRs and handoffs.
+- Never commit credentials.
+- Never commit `.agent/*` or `.claude/history.md`.
+- For novice-safe shipping, run this order:
+  1. `git status --short`
+  2. review `git diff --stat` and files changed
+  3. run relevant checks
+  4. refresh the plan/handoff/history checkpoint
+  5. commit a focused change
+  6. push the branch and open or update a PR when a remote exists
+- If local helper scripts exist, prefer:
+  - `.agent/integrations/run-checkpoint.sh --reason pre-git-cycle`
+  - `.agent/integrations/run-checkpoint.ps1 -Reason pre-git-cycle`
 
 ## Optional Skill Runtime Integration (gstack-inspired, Default OFF)
 - If stage skills are available, use them to produce structured outputs that feed the next artifact.
@@ -133,6 +173,10 @@ Supporting specialists:
 - Treat `docs/vendor/*.md` guidance as authoritative over model-memory defaults.
 - If the vendor file is missing or stale, consult official vendor docs/release notes before answering.
 - Cite the official source URL and source date for recency-sensitive vendor guidance.
+
+## Security Review Contract
+- For review tasks, apply `.agent/REVIEW.md` Security Review Mode and complete the required security checklist.
+- For validation/test tasks, run `.agent/TEST.md` security checks when work touches auth, data access, input handling, API surface, or deployment/runtime settings.
 
 ## TDD and Eval Contract
 - For code changes, use TDD when feasible: start with a failing test/eval, implement the minimum code to pass, then refactor while checks stay green.

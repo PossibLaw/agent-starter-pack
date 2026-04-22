@@ -24,7 +24,7 @@ The starter pack is the canonical home for host-agnostic delivery roles.
 - `docs/roles/README.md`: Canonical host-agnostic role registry for planning, review, validation, and handoff work.
 - `docs/roles/*.md`: Shared role contracts that Claude and Codex wrappers should both follow.
 - `docs/workflows/evals.md`: Evals-driven development guide to define “done” and iterate safely (with extra guidance for LLM features).
-- `docs/workflows/contracts.md`: Typed workflow contract for `PLAN -> TEST -> REVIEW -> HANDOFF`, plus optional memory and stage-skill integration rules.
+- `docs/workflows/contracts.md`: Typed workflow contract for `PLAN -> TEST -> REVIEW -> HANDOFF`, plus continuity checkpoints and optional memory/stage-skill integration rules.
 - `docs/workflows/wiki.md`: Optional wiki-mode workflow for persistent codebase context (Obsidian-friendly) with trust-order and verification rules.
 - `.agent/PLAN.md`: Working plan template to define objective, milestones, risks, and acceptance criteria.
 - `.agent/CONTEXT.md`: Active context capture for assumptions, constraints, and key facts discovered during execution.
@@ -34,7 +34,9 @@ The starter pack is the canonical home for host-agnostic delivery roles.
 - `.agent/HANDOFF.md`: Session baton-pass template for local continuity between agent sessions.
 - `.agent/WIKI.md`: Optional wiki-mode config with Obsidian vault path and wiki sync rules.
 - `.agent/LEARNINGS.md`: Optional learning log (default off) for capturing reusable observations and proposed skill/plugin/instruction improvements.
+- `.agent/integrations/*`: Local checkpoint helpers and optional MemPalace hook contract.
 - `.claude/history.md`: Ongoing local session memory log for timeline, decisions, and next steps.
+- `.claude/skills/*/SKILL.md`: Repo-local workflow skills for repeated procedures such as sprint closeout and a novice-safe git cycle.
 
 ### Optional global files
 - `~/.codex/AGENTS.md`: User-level Codex defaults that apply across repositories.
@@ -43,6 +45,7 @@ The starter pack is the canonical home for host-agnostic delivery roles.
 
 This repository includes:
 - Project-level instruction files (`AGENTS.md`, `CLAUDE.md`, `.agent/*`, `.claude/history.md`).
+- Repo-local workflow skills under `.claude/skills/`.
 - Optional global instruction files (`~/.codex/AGENTS.md`, `~/.claude/CLAUDE.md`, `~/.claude/agents/*.md`).
 - Full reference/source docs used to design this workflow.
 - Architecture decision guides, including `docs/architecture/memory-and-indexing-guide.md`.
@@ -183,6 +186,13 @@ pwsh -File .\scripts\install-global.ps1 --claude
 - `.agent/HANDOFF.md`
 - `.agent/WIKI.md`
 - `.agent/LEARNINGS.md`
+- `.agent/integrations/README.md`
+- `.agent/integrations/run-checkpoint.sh`
+- `.agent/integrations/run-checkpoint.ps1`
+- `.agent/integrations/mempalace-ingest.sh` (stub — replace to enable real MemPalace ingest)
+- `.agent/integrations/mempalace-ingest.ps1` (stub — replace to enable real MemPalace ingest)
+- `.claude/skills/closing-sprint-and-syncing-state/SKILL.md`
+- `.claude/skills/running-novice-safe-git-cycle/SKILL.md`
 - `docs/vendor/README.md`
 - `docs/vendor/supabase.md`
 - `docs/roles/README.md`
@@ -195,9 +205,12 @@ pwsh -File .\scripts\install-global.ps1 --claude
 - `docs/workflows/evals.md`
 - `docs/workflows/contracts.md`
 - `docs/workflows/wiki.md`
+- `docs/workflows/graphify.md`
+- `docs/glossary.md`
 - `.gitignore` updates for local continuity files (`.claude/history.md` and `.agent/*.md`)
 
 `Learning Mode` defaults to `OFF`. Turn it on per task by setting `Learning Mode: CAPTURE` or `Learning Mode: APPLY` in `.agent/PLAN.md` (or by explicit prompt instruction).
+Continuity checkpoints default to sprint closeout, pre-git-cycle, session end, and "context feels ~50% full" as a heuristic trigger.
 
 ### Global-level home folder (optional)
 - `~/.codex/AGENTS.md`
@@ -210,7 +223,7 @@ pwsh -File .\scripts\install-global.ps1 --claude
 - Agents should read `docs/vendor/` first for vendor/API/security setup work, then verify against current official docs when recency matters.
 
 ## Contract Pipeline and Optional Integrations
-- `docs/workflows/contracts.md` defines the typed artifact header and cross-artifact linkage rules.
+- `docs/workflows/contracts.md` defines the typed artifact header, continuity checkpoint rules, and cross-artifact linkage rules.
 - Required stage order: `PLAN -> TEST -> REVIEW -> HANDOFF`.
 - Optional MemPalace integration is documented in raw retrieval mode; local files remain the source of truth.
 - Optional stage-skill integration (gstack-inspired) is additive and must keep file-based fallback behavior.
@@ -220,6 +233,7 @@ pwsh -File .\scripts\install-global.ps1 --claude
 - Source code, tests, runtime behavior, and active state artifacts remain the source of truth.
 - `.agent/HANDOFF.md` carries the current baton pass; `.claude/history.md` carries the append-only session timeline.
 - `.agent/LEARNINGS.md` is default-off and should capture reusable process observations only when `Learning Mode` is `CAPTURE` or `APPLY`.
+- `.agent/integrations/run-checkpoint.*` flags the required state sync at sprint closeout, pre-git-cycle, or context pressure.
 - MemPalace is an optional retrieval index over completed local artifacts, not a second place to author decisions.
 - Wiki mode and Graphify are orientation/indexing layers; generated claims stay advisory until verified against source.
 
@@ -276,6 +290,28 @@ pwsh -File C:\path\to\agent-starter-pack\scripts\set-learning-mode.ps1 CAPTURE
 pwsh -File C:\path\to\agent-starter-pack\scripts\set-learning-mode.ps1 C:\path\to\your\repo OFF
 ```
 
+## Continuity Checkpoint Helper
+
+Flag a sprint-closeout or pre-git checkpoint in a target repo:
+
+```bash
+# from inside target repo
+./.agent/integrations/run-checkpoint.sh --reason sprint-closeout
+
+# explicit target repo path
+/path/to/your/repo/.agent/integrations/run-checkpoint.sh /path/to/your/repo --reason pre-git-cycle
+```
+
+```powershell
+# from inside target repo
+pwsh -File .\.agent\integrations\run-checkpoint.ps1 -Reason sprint-closeout
+
+# explicit target repo path
+pwsh -File C:\path\to\your\repo\.agent\integrations\run-checkpoint.ps1 C:\path\to\your\repo -Reason pre-git-cycle
+```
+
+The helper does not invent summaries. It flags the required `PLAN`/`HANDOFF`/`history` updates, reads learning mode, shows git scope, and calls a local MemPalace ingest helper only if you add one under `.agent/integrations/`.
+
 ## Repository Layout
 
 ```text
@@ -284,6 +320,8 @@ packs/
     docs/roles/            # Canonical host-agnostic role contracts
     docs/vendor/           # Local vendor integration references
     docs/workflows/        # Evals and contract pipeline guidance
+    .claude/skills/        # Repo-local workflow skills
+    .agent/integrations/   # Local checkpoint helpers and optional MemPalace hook
   global/claude/           # ~/.claude curated files
   global/codex/            # ~/.codex curated files
 scripts/
