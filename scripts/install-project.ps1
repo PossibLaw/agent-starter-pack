@@ -482,8 +482,11 @@ $filesToCopy = @(
   @{ Source = ".agent/integrations/run-checkpoint.ps1"; Destination = ".agent/integrations/run-checkpoint.ps1" },
   @{ Source = ".agent/integrations/mempalace-ingest.sh"; Destination = ".agent/integrations/mempalace-ingest.sh" },
   @{ Source = ".agent/integrations/mempalace-ingest.ps1"; Destination = ".agent/integrations/mempalace-ingest.ps1" },
-  @{ Source = ".claude/skills/closing-sprint-and-syncing-state/SKILL.md"; Destination = ".claude/skills/closing-sprint-and-syncing-state/SKILL.md" },
-  @{ Source = ".claude/skills/running-novice-safe-git-cycle/SKILL.md"; Destination = ".claude/skills/running-novice-safe-git-cycle/SKILL.md" }
+)
+
+$skillsToCopy = @(
+  @{ Source = "skills/closing-sprint-and-syncing-state/SKILL.md"; Destination = ".claude/skills/closing-sprint-and-syncing-state/SKILL.md" },
+  @{ Source = "skills/running-novice-safe-git-cycle/SKILL.md"; Destination = ".claude/skills/running-novice-safe-git-cycle/SKILL.md" }
 )
 
 $testTemplatePath = Join-Path $targetDirResolved ".agent/TEST.md"
@@ -496,6 +499,11 @@ foreach ($file in $filesToCopy) {
     $copiedTestTemplate = $wasCopied
   }
 }
+
+foreach ($skill in $skillsToCopy) {
+  Copy-WithBackup -Src (Join-Path $repoRoot $skill.Source) -Dst (Join-Path $targetDirResolved $skill.Destination) -RelativePath $skill.Destination | Out-Null
+}
+
 Ensure-ProgressIgnored
 
 if (-not $dryRun) {

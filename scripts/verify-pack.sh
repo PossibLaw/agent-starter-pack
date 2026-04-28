@@ -7,6 +7,12 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 REQUIRED_FILES=(
   "README.md"
   "CHANGELOG.md"
+  ".claude-plugin/plugin.json"
+  "skills/closing-sprint-and-syncing-state/SKILL.md"
+  "skills/running-novice-safe-git-cycle/SKILL.md"
+  "hooks/hooks.json"
+  "scripts/guardrails/validate-bash.py"
+  "tests/guardrails/test_validate_bash.py"
   "scripts/bootstrap-project.sh"
   "scripts/install-project.sh"
   "scripts/install-global.sh"
@@ -47,16 +53,8 @@ REQUIRED_FILES=(
   "packs/project/.agent/integrations/run-checkpoint.ps1"
   "packs/project/.agent/integrations/mempalace-ingest.sh"
   "packs/project/.agent/integrations/mempalace-ingest.ps1"
-  "packs/project/.claude/skills/closing-sprint-and-syncing-state/SKILL.md"
-  "packs/project/.claude/skills/running-novice-safe-git-cycle/SKILL.md"
   "packs/global/codex/.codex/AGENTS.md"
   "packs/global/claude/.claude/CLAUDE.md"
-  "packs/global/claude/.claude/agents/product-strategist.md"
-  "packs/global/claude/.claude/agents/engineering-planner.md"
-  "packs/global/claude/.claude/agents/reviewer.md"
-  "packs/global/claude/.claude/agents/security-reviewer.md"
-  "packs/global/claude/.claude/agents/qa-validator.md"
-  "packs/global/claude/.claude/agents/docs-releaser.md"
 )
 
 FORBIDDEN_PATTERNS=(
@@ -158,8 +156,20 @@ require_text "$REPO_ROOT/packs/project/.agent/REVIEW.md" "artifact_type: review"
 require_text "$REPO_ROOT/packs/project/.agent/HANDOFF.md" "artifact_type: handoff" "missing handoff artifact_type in packs/project/.agent/HANDOFF.md"
 require_text "$REPO_ROOT/packs/project/.agent/HANDOFF.md" "## Sprint / Git Cycle" "missing sprint git section in packs/project/.agent/HANDOFF.md"
 require_text "$REPO_ROOT/packs/project/.agent/integrations/README.md" "Optional MemPalace Hook" "missing MemPalace hook contract in integrations README"
-require_text "$REPO_ROOT/packs/project/.claude/skills/closing-sprint-and-syncing-state/SKILL.md" "name: closing-sprint-and-syncing-state" "missing closing sprint skill metadata"
-require_text "$REPO_ROOT/packs/project/.claude/skills/running-novice-safe-git-cycle/SKILL.md" "name: running-novice-safe-git-cycle" "missing git cycle skill metadata"
+require_text "$REPO_ROOT/skills/closing-sprint-and-syncing-state/SKILL.md" "name: closing-sprint-and-syncing-state" "missing closing sprint skill metadata"
+require_text "$REPO_ROOT/skills/running-novice-safe-git-cycle/SKILL.md" "name: running-novice-safe-git-cycle" "missing git cycle skill metadata"
+require_text "$REPO_ROOT/.claude-plugin/plugin.json" '"name": "possiblaw-starter"' "missing plugin name in .claude-plugin/plugin.json"
+
+agent_md_count="$(find "$REPO_ROOT/agents" -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')"
+if [[ "$agent_md_count" -lt 10 ]]; then
+  echo "BLOCKED: expected at least 10 agent .md files in agents/, found $agent_md_count"
+  exit 1
+fi
+
+if [[ ! -x "$REPO_ROOT/scripts/guardrails/validate-bash.py" ]]; then
+  echo "BLOCKED: scripts/guardrails/validate-bash.py is not executable"
+  exit 1
+fi
 require_text "$REPO_ROOT/packs/global/claude/.claude/CLAUDE.md" "For vendor setup/API/security guidance, verify against official vendor docs and cite source date." "missing vendor recency rule in packs/global/claude/.claude/CLAUDE.md"
 require_text "$REPO_ROOT/packs/global/codex/.codex/AGENTS.md" "For vendor setup/API/security guidance, verify against official vendor docs and cite source date." "missing vendor recency rule in packs/global/codex/.codex/AGENTS.md"
 

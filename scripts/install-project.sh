@@ -453,8 +453,8 @@ copy_with_backup "$PACK_ROOT/.agent/integrations/run-checkpoint.sh" "$TARGET_DIR
 copy_with_backup "$PACK_ROOT/.agent/integrations/run-checkpoint.ps1" "$TARGET_DIR/.agent/integrations/run-checkpoint.ps1" ".agent/integrations/run-checkpoint.ps1"
 copy_with_backup "$PACK_ROOT/.agent/integrations/mempalace-ingest.sh" "$TARGET_DIR/.agent/integrations/mempalace-ingest.sh" ".agent/integrations/mempalace-ingest.sh"
 copy_with_backup "$PACK_ROOT/.agent/integrations/mempalace-ingest.ps1" "$TARGET_DIR/.agent/integrations/mempalace-ingest.ps1" ".agent/integrations/mempalace-ingest.ps1"
-copy_with_backup "$PACK_ROOT/.claude/skills/closing-sprint-and-syncing-state/SKILL.md" "$TARGET_DIR/.claude/skills/closing-sprint-and-syncing-state/SKILL.md" ".claude/skills/closing-sprint-and-syncing-state/SKILL.md"
-copy_with_backup "$PACK_ROOT/.claude/skills/running-novice-safe-git-cycle/SKILL.md" "$TARGET_DIR/.claude/skills/running-novice-safe-git-cycle/SKILL.md" ".claude/skills/running-novice-safe-git-cycle/SKILL.md"
+copy_with_backup "$REPO_ROOT/skills/closing-sprint-and-syncing-state/SKILL.md" "$TARGET_DIR/.claude/skills/closing-sprint-and-syncing-state/SKILL.md" ".claude/skills/closing-sprint-and-syncing-state/SKILL.md"
+copy_with_backup "$REPO_ROOT/skills/running-novice-safe-git-cycle/SKILL.md" "$TARGET_DIR/.claude/skills/running-novice-safe-git-cycle/SKILL.md" ".claude/skills/running-novice-safe-git-cycle/SKILL.md"
 ensure_progress_ignored
 
 if [[ "$DRY_RUN" -eq 0 ]]; then
