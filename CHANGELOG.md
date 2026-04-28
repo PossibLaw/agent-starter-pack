@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-04-28 — v2.1.0 — Project-init slash command
+- Added `/possiblaw-starter:init` slash command (`commands/init.md`) that runs `scripts/install-project.sh` against the current working directory. Closes the UX gap where users installing only the plugin had no in-Claude-Code path to scaffold the state-artifact pipeline (`.agent/*.md`), governance files (`AGENTS.md`, `CLAUDE.md`), role + workflow contracts (`docs/roles/`, `docs/workflows/`), and project-local skills into their own repo.
+- Bumped plugin version to `2.1.0` in `.claude-plugin/plugin.json` so users running `/plugin update` pick up the new command.
+- README updated: explains that `/plugin install` provides the global runtime layer (guardrails + agents + skills) and `/possiblaw-starter:init` provides the per-project files.
+
 ## 2026-04-28 — v2.0.0 — Plugin packaging + guardrails absorption
 - Added Claude Code plugin manifest at `.claude-plugin/plugin.json` (`name: possiblaw-starter`, `version: 2.0.0`); the starter pack is now installable as a single Claude Code plugin while preserving the existing dual-host bootstrap installers for Codex.
 - Promoted repo-local workflow skills from `packs/project/.claude/skills/` to top-level `skills/` (`closing-sprint-and-syncing-state`, `running-novice-safe-git-cycle`); added `version: 1.0.0` to each `SKILL.md` frontmatter.

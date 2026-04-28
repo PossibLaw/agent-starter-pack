@@ -1,6 +1,6 @@
 {
   "name": "possiblaw-starter",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Dual-host (Claude + Codex) governance pack with state-artifact pipeline (PLAN/TEST/REVIEW/HANDOFF), role registry, continuity checkpoints, and runtime guardrails (Claude only).",
   "author": {"name": "PossibLaw"},
   "homepage": "https://github.com/PossibLaw/PossibLaw-Plugins",

@@ -12,9 +12,17 @@ It was created by reviewing and distilling hundreds of pages of guides and best-
 /plugin install possiblaw-starter@possiblaw-plugins
 ```
 
-This is the one-line install for Claude Code users: it pulls in the governance pack, repo-local skills, host-agnostic agents, and the runtime guardrails (destructive-command blocker, sensitive-file protection, format-on-write checks) in a single plugin.
+This installs the plugin: runtime guardrails (destructive-command blocker, sensitive-file protection, format-on-write), host-agnostic agents, and repo-local skills — all available globally to every Claude Code session.
 
-Codex users continue to use the bootstrap installer below — Codex parity is preserved by keeping `packs/global/codex/` and `packs/project/AGENTS.md` shipping unchanged.
+Then, **inside any project repo where you want the state-artifact pipeline + governance files**, run:
+
+```
+/possiblaw-starter:init
+```
+
+This scaffolds `AGENTS.md`, `CLAUDE.md`, `.agent/{PLAN,TEST,REVIEW,HANDOFF,...}.md`, `docs/roles/`, `docs/workflows/`, `docs/glossary.md`, and `.claude/skills/` into the current working directory. It auto-detects your stack (Node/Python/Go/Rust) and pre-fills test/lint/build commands. Pass `--preserve-progress` to skip overwriting existing state files; pass `--dry-run` to preview.
+
+Codex users skip the plugin entirely and use the bootstrap installer below — Codex parity is preserved because `packs/global/codex/` and `packs/project/AGENTS.md` ship unchanged.
 
 > **Tier 2 hooks (off by default):** the optional `hooks/tier2-hooks.json` (validate-task, validate-subagent, sanitize-input, persist-state, git-status SessionStart) is shipped but **not active by default**. To enable them, merge the entries from `hooks/tier2-hooks.json` into your `.claude/settings.json` (or symlink the file into the plugin's hooks loader). The base `hooks/hooks.json` (destructive-command blocker, sensitive-file protection, format-on-write) is on by default once the plugin is installed.
 
