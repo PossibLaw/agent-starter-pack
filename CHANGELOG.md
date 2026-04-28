@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 2026-04-28 — v2.0.0 — Plugin packaging + guardrails absorption
+- Added Claude Code plugin manifest at `.claude-plugin/plugin.json` (`name: possiblaw-starter`, `version: 2.0.0`); the starter pack is now installable as a single Claude Code plugin while preserving the existing dual-host bootstrap installers for Codex.
+- Promoted repo-local workflow skills from `packs/project/.claude/skills/` to top-level `skills/` (`closing-sprint-and-syncing-state`, `running-novice-safe-git-cycle`); added `version: 1.0.0` to each `SKILL.md` frontmatter.
+- Promoted host-agnostic agent definitions from `packs/global/claude/.claude/agents/` to top-level `agents/` (11 `.md` files).
+- Absorbed runtime guardrails (predecessor: `possiblaw-guardrails` v1.2.2 plugin): copied hooks (`hooks/hooks.json`, `hooks/tier2-hooks.json`), Python/shell scripts (`scripts/guardrails/{validate-bash,protect-files,format-check,blacklist,persist-state,sanitize-input,validate-task,validate-subagent,git-status}`), pytest suite (`tests/guardrails/test_*.py`, 113 tests passing), and the `/possiblaw-starter:guardrails` slash command (`commands/guardrails.md`).
+- Updated all `${CLAUDE_PLUGIN_ROOT}/scripts/...` hook command paths to point at the new `scripts/guardrails/` location; updated test `SCRIPT` path constants to `parent.parent.parent / "scripts" / "guardrails" / ...` so pytest runs against the relocated scripts.
+- Updated install scripts so `install-project.{sh,ps1}` copy SKILL.md files from top-level `skills/` and `install-global.{sh,ps1}` copy agents from top-level `agents/` (Bash + PowerShell parity preserved). Codex pack assets (`packs/global/codex/.codex/*`, `packs/project/AGENTS.md`, `docs/roles/*`, `docs/workflows/*`, `.agent/` templates) are unchanged.
+- Updated `scripts/verify-pack.{sh,ps1}` to require the plugin manifest, top-level `skills/` and `agents/` (>=10 agent .md files), `hooks/hooks.json`, `scripts/guardrails/validate-bash.py` (executable), and `tests/guardrails/test_validate_bash.py`.
+- Tier 2 hooks (validate-task, validate-subagent, sanitize-input, persist-state, git-status SessionStart) ship in `hooks/tier2-hooks.json` and remain disabled by default; documented opt-in path in `README.md`.
+
 ## 2026-04-22
 - Fixed installer cross-platform parity: Bash `install-project.sh` now tracks whether `.agent/TEST.md` was newly copied and uses the same placeholder-replacement condition as the PowerShell installer (`scripts/install-project.sh`).
 - Renamed the Claude reviewer wrapper to match the canonical role (`packs/global/claude/.claude/agents/reviewer.md`, previously `review-agent.md`); updated references in `scripts/verify-pack.sh`, `scripts/verify-pack.ps1`, `packs/project/docs/roles/README.md`, and `packs/project/CLAUDE.md`.

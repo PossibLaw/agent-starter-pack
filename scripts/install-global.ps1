@@ -97,6 +97,7 @@ $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $repoRoot = (Resolve-Path -LiteralPath (Join-Path $scriptDir "..")).Path
 $packClaude = Join-Path $repoRoot "packs/global/claude/.claude"
 $packCodex = Join-Path $repoRoot "packs/global/codex/.codex"
+$agentsRoot = Join-Path $repoRoot "agents"
 $targetHome = if (-not [string]::IsNullOrWhiteSpace($homeOverride)) { $homeOverride } else { $HOME }
 
 if (-not (Test-Path -LiteralPath $targetHome -PathType Container)) {
@@ -156,16 +157,18 @@ if ($installCodex) {
 if ($installClaude) {
   Copy-WithBackup -Src (Join-Path $packClaude "CLAUDE.md") -Dst (Join-Path $targetHome ".claude/CLAUDE.md")
 
-  $agentDir = Join-Path $packClaude "agents"
-  if (Test-Path -LiteralPath $agentDir -PathType Container) {
-    Get-ChildItem -LiteralPath $agentDir -Filter "*.md" -File | ForEach-Object {
-      Copy-WithBackup -Src $_.FullName -Dst (Join-Path $targetHome ".claude/agents/$($_.Name)")
-    }
+  if (-not (Test-Path -LiteralPath $agentsRoot -PathType Container)) {
+    Write-Host "BLOCKED: missing top-level agents directory: $agentsRoot"
+    exit 1
   }
 
-  $installScript = Join-Path $agentDir "install.sh"
-  if (Test-Path -LiteralPath $installScript -PathType Leaf) {
-    Copy-WithBackup -Src $installScript -Dst (Join-Path $targetHome ".claude/agents/install.sh")
+  Get-ChildItem -LiteralPath $agentsRoot -Filter "*.md" -File | ForEach-Object {
+    Copy-WithBackup -Src $_.FullName -Dst (Join-Path $targetHome ".claude/agents/$($_.Name)")
+  }
+
+  $legacyAgentInstall = Join-Path $packClaude "agents/install.sh"
+  if (Test-Path -LiteralPath $legacyAgentInstall -PathType Leaf) {
+    Copy-WithBackup -Src $legacyAgentInstall -Dst (Join-Path $targetHome ".claude/agents/install.sh")
   }
 }
 

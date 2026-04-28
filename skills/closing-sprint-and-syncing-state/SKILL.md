@@ -1,5 +1,6 @@
 ---
 name: closing-sprint-and-syncing-state
+version: 1.0.0
 description: Use when a sprint is ending, a session is pausing, or context is getting crowded; updates PLAN, HANDOFF, and history, captures learnings when enabled, runs optional MemPalace ingest, and leaves a clean baton pass.
 ---
 

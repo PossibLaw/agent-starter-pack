@@ -8,6 +8,12 @@ $repoRoot = (Resolve-Path -LiteralPath (Join-Path $scriptDir "..")).Path
 $requiredFiles = @(
   "README.md",
   "CHANGELOG.md",
+  ".claude-plugin/plugin.json",
+  "skills/closing-sprint-and-syncing-state/SKILL.md",
+  "skills/running-novice-safe-git-cycle/SKILL.md",
+  "hooks/hooks.json",
+  "scripts/guardrails/validate-bash.py",
+  "tests/guardrails/test_validate_bash.py",
   "scripts/bootstrap-project.sh",
   "scripts/install-project.sh",
   "scripts/install-global.sh",
@@ -48,16 +54,8 @@ $requiredFiles = @(
   "packs/project/.agent/integrations/run-checkpoint.ps1",
   "packs/project/.agent/integrations/mempalace-ingest.sh",
   "packs/project/.agent/integrations/mempalace-ingest.ps1",
-  "packs/project/.claude/skills/closing-sprint-and-syncing-state/SKILL.md",
-  "packs/project/.claude/skills/running-novice-safe-git-cycle/SKILL.md",
   "packs/global/codex/.codex/AGENTS.md",
-  "packs/global/claude/.claude/CLAUDE.md",
-  "packs/global/claude/.claude/agents/product-strategist.md",
-  "packs/global/claude/.claude/agents/engineering-planner.md",
-  "packs/global/claude/.claude/agents/reviewer.md",
-  "packs/global/claude/.claude/agents/security-reviewer.md",
-  "packs/global/claude/.claude/agents/qa-validator.md",
-  "packs/global/claude/.claude/agents/docs-releaser.md"
+  "packs/global/claude/.claude/CLAUDE.md"
 )
 
 $forbiddenPatterns = @(
@@ -173,8 +171,26 @@ Require-Text -FilePath (Join-Path $repoRoot "packs/project/.agent/REVIEW.md") -P
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/.agent/HANDOFF.md") -Pattern "artifact_type: handoff" -Message "missing handoff artifact_type in packs/project/.agent/HANDOFF.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/.agent/HANDOFF.md") -Pattern "## Sprint / Git Cycle" -Message "missing sprint git section in packs/project/.agent/HANDOFF.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/project/.agent/integrations/README.md") -Pattern "Optional MemPalace Hook" -Message "missing MemPalace hook contract in integrations README"
-Require-Text -FilePath (Join-Path $repoRoot "packs/project/.claude/skills/closing-sprint-and-syncing-state/SKILL.md") -Pattern "name: closing-sprint-and-syncing-state" -Message "missing closing sprint skill metadata"
-Require-Text -FilePath (Join-Path $repoRoot "packs/project/.claude/skills/running-novice-safe-git-cycle/SKILL.md") -Pattern "name: running-novice-safe-git-cycle" -Message "missing git cycle skill metadata"
+Require-Text -FilePath (Join-Path $repoRoot "skills/closing-sprint-and-syncing-state/SKILL.md") -Pattern "name: closing-sprint-and-syncing-state" -Message "missing closing sprint skill metadata"
+Require-Text -FilePath (Join-Path $repoRoot "skills/running-novice-safe-git-cycle/SKILL.md") -Pattern "name: running-novice-safe-git-cycle" -Message "missing git cycle skill metadata"
+Require-Text -FilePath (Join-Path $repoRoot ".claude-plugin/plugin.json") -Pattern '"name": "possiblaw-starter"' -Message "missing plugin name in .claude-plugin/plugin.json"
+
+$agentsDir = Join-Path $repoRoot "agents"
+if (-not (Test-Path -LiteralPath $agentsDir -PathType Container)) {
+  Write-Host "BLOCKED: missing top-level agents directory: $agentsDir"
+  exit 1
+}
+$agentMdCount = (Get-ChildItem -LiteralPath $agentsDir -Filter "*.md" -File | Measure-Object).Count
+if ($agentMdCount -lt 10) {
+  Write-Host "BLOCKED: expected at least 10 agent .md files in agents/, found $agentMdCount"
+  exit 1
+}
+
+$validateBash = Join-Path $repoRoot "scripts/guardrails/validate-bash.py"
+if (-not (Test-Path -LiteralPath $validateBash -PathType Leaf)) {
+  Write-Host "BLOCKED: missing scripts/guardrails/validate-bash.py"
+  exit 1
+}
 Require-Text -FilePath (Join-Path $repoRoot "packs/global/claude/.claude/CLAUDE.md") -Pattern "For vendor setup/API/security guidance, verify against official vendor docs and cite source date." -Message "missing vendor recency rule in packs/global/claude/.claude/CLAUDE.md"
 Require-Text -FilePath (Join-Path $repoRoot "packs/global/codex/.codex/AGENTS.md") -Pattern "For vendor setup/API/security guidance, verify against official vendor docs and cite source date." -Message "missing vendor recency rule in packs/global/codex/.codex/AGENTS.md"
 

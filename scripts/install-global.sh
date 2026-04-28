@@ -69,6 +69,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 PACK_CLAUDE="$REPO_ROOT/packs/global/claude/.claude"
 PACK_CODEX="$REPO_ROOT/packs/global/codex/.codex"
+AGENTS_ROOT="$REPO_ROOT/agents"
 
 TARGET_HOME="${HOME_OVERRIDE:-$HOME}"
 
@@ -122,7 +123,12 @@ fi
 if [[ "$INSTALL_CLAUDE" -eq 1 ]]; then
   copy_with_backup "$PACK_CLAUDE/CLAUDE.md" "$TARGET_HOME/.claude/CLAUDE.md"
 
-  for agent_file in "$PACK_CLAUDE/agents"/*.md; do
+  if [[ ! -d "$AGENTS_ROOT" ]]; then
+    echo "BLOCKED: missing top-level agents directory: $AGENTS_ROOT"
+    exit 1
+  fi
+
+  for agent_file in "$AGENTS_ROOT"/*.md; do
     copy_with_backup "$agent_file" "$TARGET_HOME/.claude/agents/$(basename "$agent_file")"
   done
 

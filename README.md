@@ -5,13 +5,26 @@ Install a complete Claude + Codex instruction hierarchy into any repository with
 Built to make AI-assisted software delivery consistent and reliable, this pack standardizes planning, testing, review, and handoff workflows for both Codex and Claude.
 It was created by reviewing and distilling hundreds of pages of guides and best-practice references (captured under `docs/references/`) into practical, reusable templates.
 
+## Quick install (Claude Code)
+
+```
+/plugin marketplace add PossibLaw/PossibLaw-Plugins
+/plugin install possiblaw-starter@possiblaw-plugins
+```
+
+This is the one-line install for Claude Code users: it pulls in the governance pack, repo-local skills, host-agnostic agents, and the runtime guardrails (destructive-command blocker, sensitive-file protection, format-on-write checks) in a single plugin.
+
+Codex users continue to use the bootstrap installer below — Codex parity is preserved by keeping `packs/global/codex/` and `packs/project/AGENTS.md` shipping unchanged.
+
+> **Tier 2 hooks (off by default):** the optional `hooks/tier2-hooks.json` (validate-task, validate-subagent, sanitize-input, persist-state, git-status SessionStart) is shipped but **not active by default**. To enable them, merge the entries from `hooks/tier2-hooks.json` into your `.claude/settings.json` (or symlink the file into the plugin's hooks loader). The base `hooks/hooks.json` (destructive-command blocker, sensitive-file protection, format-on-write) is on by default once the plugin is installed.
+
 ## Canonical Role Model
 
 The starter pack is the canonical home for host-agnostic delivery roles.
 
 - Shared role contracts live in `packs/project/docs/roles/*.md`.
 - Codex routing lives in `packs/project/AGENTS.md`.
-- Claude routing lives in `packs/project/CLAUDE.md` and `packs/global/claude/.claude/agents/*.md`.
+- Claude routing lives in `packs/project/CLAUDE.md` and the top-level `agents/*.md` (promoted from `packs/global/claude/.claude/agents/` in v2.0.0).
 - Plugin packages and runtime adapters belong in the separate Plugins repository.
 
 ## What Each File Does

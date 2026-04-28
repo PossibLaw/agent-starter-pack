@@ -1,5 +1,6 @@
 ---
 name: running-novice-safe-git-cycle
+version: 1.0.0
 description: Use when work is ready to ship and the developer needs a novice-safe git workflow; reviews scope, runs checks, refreshes continuity artifacts, and moves through commit, push, and PR steps without committing local state files.
 ---
 
