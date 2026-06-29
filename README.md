@@ -24,7 +24,16 @@ This scaffolds `AGENTS.md`, `CLAUDE.md`, `.agent/{PLAN,TEST,REVIEW,HANDOFF,...}.
 
 Codex users skip the plugin entirely and use the bootstrap installer below — Codex parity is preserved because `packs/global/codex/` and `packs/project/AGENTS.md` ship unchanged.
 
-> **Tier 2 hooks (off by default):** the optional `hooks/tier2-hooks.json` (validate-task, validate-subagent, sanitize-input, persist-state, git-status SessionStart) is shipped but **not active by default**. To enable them, merge the entries from `hooks/tier2-hooks.json` into your `.claude/settings.json` (or symlink the file into the plugin's hooks loader). The base `hooks/hooks.json` (destructive-command blocker, sensitive-file protection, format-on-write) is on by default once the plugin is installed.
+> **Tier 2 hooks (off by default):** the optional `hooks/tier2-hooks.json` (validate-task, validate-subagent, sanitize-input, git-status SessionStart) is shipped but **not active by default**. To enable them, merge the entries from `hooks/tier2-hooks.json` into your `.claude/settings.json` (or symlink the file into the plugin's hooks loader). The base `hooks/hooks.json` (destructive-command blocker, sensitive-file protection, format-on-write) is on by default once the plugin is installed.
+
+## Two Tiers (How This Pack Grows With You)
+
+The harness is built for non-developer legal users and starts simple. It has two tiers, and it grows with your codebase instead of overwhelming you up front.
+
+- **Tier 1 — Starter (default):** the everyday workflow most projects ever need — `PLAN → TEST → REVIEW → HANDOFF`, a single continuity file, runtime guardrails, the **simplicity ladder** (prefer the simplest thing that works: reuse before writing new code), and always-on token discipline.
+- **Tier 2 — Scale (opt-in, gated as the codebase grows):** indexed retrieval with Graphify, wiki orientation, and deeper review. When a repo gets large the harness suggests `/possiblaw-starter:scale`; you opt in. Tier 2 never removes Tier 1 rules — it only adds to them.
+
+Learnings are **validation-gated**: a lesson is promoted into `.agent/LEARNINGS.md` only if it recurred at least twice or you explicitly confirmed it, so the learnings file stays small and trustworthy.
 
 ## Canonical Role Model
 
@@ -47,17 +56,15 @@ The starter pack is the canonical home for host-agnostic delivery roles.
 - `docs/workflows/evals.md`: Evals-driven development guide to define “done” and iterate safely (with extra guidance for LLM features).
 - `docs/workflows/contracts.md`: Typed workflow contract for `PLAN -> TEST -> REVIEW -> HANDOFF`, plus continuity checkpoints and optional memory/stage-skill integration rules.
 - `docs/workflows/wiki.md`: Optional wiki-mode workflow for persistent codebase context (Obsidian-friendly) with trust-order and verification rules.
-- `.agent/PLAN.md`: Working plan template to define objective, milestones, risks, and acceptance criteria.
-- `.agent/CONTEXT.md`: Active context capture for assumptions, constraints, and key facts discovered during execution.
-- `.agent/TASKS.md`: Action checklist to track in-progress, done, blocked, and unconfirmed work items.
+- `.agent/PLAN.md`: Working plan template — objective, assumptions, milestones, risks, and acceptance criteria (now also absorbs the former CONTEXT and TASKS checklists).
 - `.agent/REVIEW.md`: Structured review rubric focused on correctness, regressions, and security findings.
 - `.agent/TEST.md`: Validation contract with TDD/eval evidence requirements and security test checklist.
-- `.agent/HANDOFF.md`: Session baton-pass template for local continuity between agent sessions.
-- `.agent/WIKI.md`: Optional wiki-mode config with Obsidian vault path and wiki sync rules.
-- `.agent/LEARNINGS.md`: Optional learning log (default off) for capturing reusable observations and proposed skill/plugin/instruction improvements.
-- `.agent/integrations/*`: Local checkpoint helpers and optional MemPalace hook contract.
-- `.claude/history.md`: Ongoing local session memory log for timeline, decisions, and next steps.
-- `.claude/skills/*/SKILL.md`: Repo-local workflow skills for repeated procedures such as sprint closeout and a novice-safe git cycle.
+- `.agent/HANDOFF.md`: Single continuity file — current baton pass on top, a newest-first dated Session Timeline below a STOP marker.
+- `.agent/WIKI.md`: Optional wiki-mode config with Obsidian vault path and wiki sync rules (Tier 2).
+- `.agent/LEARNINGS.md`: Optional, validation-gated learning log (default off) for reusable observations and proposed skill/plugin/instruction improvements.
+- `.agent/integrations/*`: Local advisory checkpoint helper (`run-checkpoint.sh`) that prints the PLAN/HANDOFF updates to make.
+- `docs/workflows/token-management.md`: Token/context budgeting guide so the harness stays fast and cheap.
+- `.claude/skills/*/SKILL.md`: Repo-local workflow skills for repeated procedures (sprint closeout, novice-safe git cycle, the simplicity ladder, and scaling up with Graphify).
 
 ### Optional global files
 - `~/.codex/AGENTS.md`: User-level Codex defaults that apply across repositories.
@@ -65,7 +72,7 @@ The starter pack is the canonical home for host-agnostic delivery roles.
 - `~/.claude/agents/*.md`: Reusable specialist agents available to Claude sessions.
 
 This repository includes:
-- Project-level instruction files (`AGENTS.md`, `CLAUDE.md`, `.agent/*`, `.claude/history.md`).
+- Project-level instruction files (`AGENTS.md`, `CLAUDE.md`, `.agent/*`).
 - Repo-local workflow skills under `.claude/skills/`.
 - Optional global instruction files (`~/.codex/AGENTS.md`, `~/.claude/CLAUDE.md`, `~/.claude/agents/*.md`).
 - Full reference/source docs used to design this workflow.
@@ -76,8 +83,8 @@ This repository includes:
 ### Pick the Right Mode
 
 - Brand new repo: run quick start as-is (no `--preserve-progress`). This creates all starter-pack files.
-- Existing repo, keep progress/history/handoff: add `--preserve-progress`.
-- Existing repo, intentionally reset progress/history/handoff to fresh templates: run without `--preserve-progress`.
+- Existing repo, keep progress (PLAN/HANDOFF continuity): add `--preserve-progress`.
+- Existing repo, intentionally reset progress (PLAN/HANDOFF) to fresh templates: run without `--preserve-progress`.
 
 If you run the installer in a brand-new/empty repo (no detectable stack files yet), you may see a warning that commands are `UNCONFIRMED`. This is expected—either initialize the project and re-run, pass explicit `--primary/--test/--lint/--typecheck/--build` overrides, or edit `.agent/TEST.md` and `CLAUDE.md`.
 
@@ -103,38 +110,12 @@ git clone --depth 1 https://github.com/PossibLaw/agent-starter-pack.git /tmp/age
 rm -rf /tmp/agent-starter-pack
 ```
 
-### Windows (PowerShell 7+, run from inside your target repo)
-
-Brand new repo:
-
-```powershell
-$bootstrap = Join-Path $env:TEMP "bootstrap-project.ps1"
-irm https://raw.githubusercontent.com/PossibLaw/agent-starter-pack/main/scripts/bootstrap-project.ps1 -OutFile $bootstrap
-pwsh -File $bootstrap .
-Remove-Item $bootstrap -Force
-```
-
-Existing repo (preserve progress files):
-
-```powershell
-$bootstrap = Join-Path $env:TEMP "bootstrap-project.ps1"
-irm https://raw.githubusercontent.com/PossibLaw/agent-starter-pack/main/scripts/bootstrap-project.ps1 -OutFile $bootstrap
-pwsh -File $bootstrap . --preserve-progress
-Remove-Item $bootstrap -Force
-```
-
 ### Manual install from a local starter-pack clone
 
 ```bash
 git clone https://github.com/PossibLaw/agent-starter-pack.git
 cd agent-starter-pack
 ./scripts/install-project.sh ~/code/my-app
-```
-
-```powershell
-git clone https://github.com/PossibLaw/agent-starter-pack.git
-cd agent-starter-pack
-pwsh -File .\scripts\install-project.ps1 C:\code\my-app
 ```
 
 Tip: `git clone` uses the repository name (`agent-starter-pack`) as the folder unless you pass a custom destination:
@@ -156,18 +137,7 @@ The project installer auto-detects likely commands from repo signals (`package.j
   --build "pnpm build"
 ```
 
-```powershell
-pwsh -File .\scripts\install-project.ps1 C:\code\my-app `
-  --name "your-project" `
-  --owner "your-team" `
-  --primary "pnpm dev" `
-  --test "pnpm test" `
-  --lint "pnpm lint" `
-  --typecheck "pnpm typecheck" `
-  --build "pnpm build"
-```
-
-The project installer also adds local-continuity ignore rules to the target repo `.gitignore` so `.claude/history.md` and `.agent/*.md` state files stay local by default.
+The project installer also adds local-continuity ignore rules to the target repo `.gitignore` so `.agent/*.md` state files (including the single `.agent/HANDOFF.md` continuity file) stay local by default.
 
 ## Optional Global Setup
 
@@ -177,10 +147,6 @@ Install Codex and Claude global files:
 ./scripts/install-global.sh --codex --claude
 ```
 
-```powershell
-pwsh -File .\scripts\install-global.ps1 --codex --claude
-```
-
 Install only one tool:
 
 ```bash
@@ -188,20 +154,12 @@ Install only one tool:
 ./scripts/install-global.sh --claude
 ```
 
-```powershell
-pwsh -File .\scripts\install-global.ps1 --codex
-pwsh -File .\scripts\install-global.ps1 --claude
-```
-
 ## What Gets Added
 
 ### Project-level target repo
 - `AGENTS.md`
 - `CLAUDE.md`
-- `.claude/history.md`
 - `.agent/PLAN.md`
-- `.agent/CONTEXT.md`
-- `.agent/TASKS.md`
 - `.agent/REVIEW.md`
 - `.agent/TEST.md`
 - `.agent/HANDOFF.md`
@@ -209,11 +167,10 @@ pwsh -File .\scripts\install-global.ps1 --claude
 - `.agent/LEARNINGS.md`
 - `.agent/integrations/README.md`
 - `.agent/integrations/run-checkpoint.sh`
-- `.agent/integrations/run-checkpoint.ps1`
-- `.agent/integrations/mempalace-ingest.sh` (stub — replace to enable real MemPalace ingest)
-- `.agent/integrations/mempalace-ingest.ps1` (stub — replace to enable real MemPalace ingest)
 - `.claude/skills/closing-sprint-and-syncing-state/SKILL.md`
 - `.claude/skills/running-novice-safe-git-cycle/SKILL.md`
+- `.claude/skills/applying-simplicity-ladder/SKILL.md`
+- `.claude/skills/scaling-up-with-graphify/SKILL.md`
 - `docs/vendor/README.md`
 - `docs/vendor/supabase.md`
 - `docs/roles/README.md`
@@ -227,8 +184,9 @@ pwsh -File .\scripts\install-global.ps1 --claude
 - `docs/workflows/contracts.md`
 - `docs/workflows/wiki.md`
 - `docs/workflows/graphify.md`
+- `docs/workflows/token-management.md`
 - `docs/glossary.md`
-- `.gitignore` updates for local continuity files (`.claude/history.md` and `.agent/*.md`)
+- `.gitignore` updates for local continuity files (`.agent/*.md`)
 
 `Learning Mode` defaults to `OFF`. Turn it on per task by setting `Learning Mode: CAPTURE` or `Learning Mode: APPLY` in `.agent/PLAN.md` (or by explicit prompt instruction).
 Continuity checkpoints default to sprint closeout, pre-git-cycle, session end, and "context feels ~50% full" as a heuristic trigger.
@@ -246,24 +204,24 @@ Continuity checkpoints default to sprint closeout, pre-git-cycle, session end, a
 ## Contract Pipeline and Optional Integrations
 - `docs/workflows/contracts.md` defines the typed artifact header, continuity checkpoint rules, and cross-artifact linkage rules.
 - Required stage order: `PLAN -> TEST -> REVIEW -> HANDOFF`.
-- Optional MemPalace integration is documented in raw retrieval mode; local files remain the source of truth.
 - Optional stage-skill integration (gstack-inspired) is additive and must keep file-based fallback behavior.
 
 ## Memory
-- `docs/architecture/memory-and-indexing-guide.md` explains which memory/indexing layer owns which facts and when to enable optional backends.
+- `docs/architecture/memory-and-indexing-guide.md` explains which memory/indexing layer owns which facts and when to enable optional layers.
 - Source code, tests, runtime behavior, and active state artifacts remain the source of truth.
-- `.agent/HANDOFF.md` carries the current baton pass; `.claude/history.md` carries the append-only session timeline.
-- `.agent/LEARNINGS.md` is default-off and should capture reusable process observations only when `Learning Mode` is `CAPTURE` or `APPLY`.
-- `.agent/integrations/run-checkpoint.*` flags the required state sync at sprint closeout, pre-git-cycle, or context pressure.
-- MemPalace is an optional retrieval index over completed local artifacts, not a second place to author decisions.
-- Wiki mode and Graphify are orientation/indexing layers; generated claims stay advisory until verified against source.
+- Continuity is **one file**: `.agent/HANDOFF.md` carries the current baton pass on top, with a newest-first dated Session Timeline below a STOP marker. `.agent/PLAN.md` holds the goal, assumptions, and task checklist.
+- `.agent/LEARNINGS.md` is default-off and validation-gated: capture a reusable observation only when `Learning Mode` is `CAPTURE` or `APPLY`, and promote a lesson only after it recurs at least twice or you confirm it.
+- `.agent/integrations/run-checkpoint.sh` is an advisory printer — it lists the required `PLAN`/`HANDOFF` updates at sprint closeout, pre-git-cycle, or context pressure. It does not write state.
+- Wiki mode and Graphify are Tier 2 orientation/indexing layers; generated claims stay advisory until verified against source.
 
 Examples:
 - Local artifact: a handoff records that matter records are created only after `conflict_check.status = approved`, why draft matters for rejected intakes were rejected, what tests proved it, and what remains open.
-- MemPalace: after the handoff is complete, ingest the raw handoff/test/review/history chunks with metadata such as repo, artifact type, source path, timestamp, task title, tags, and commit SHA. A later query for "automated reminders for eligible intakes" can retrieve the old conflict-check decision even if the exact words differ.
-- Manual wiki: use curated pages for stable codebase maps, domain glossary, architecture notes, and cross-links that humans may want to edit.
-- Graphify: use generated `graphify-out/GRAPH_REPORT.md` and focused graph queries for first-pass orientation on larger repos, then verify the result in source before implementation.
-- Non-developer path: ask the agent to "index this codebase with Graphify." The project contract tells the agent to configure `.agent/WIKI.md`, create safe ignore rules, install Graphify only with approval if missing, run the graph build, and report where the output lives.
+- Session timeline: the same `.agent/HANDOFF.md` keeps a short, newest-first dated entry below the STOP marker so a future session can recover what happened without rereading every artifact.
+- Manual wiki (Tier 2): use curated pages for stable codebase maps, domain glossary, architecture notes, and cross-links that humans may want to edit.
+- Graphify (Tier 2): use generated `graphify-out/GRAPH_REPORT.md` and focused graph queries for first-pass orientation on larger repos, then verify the result in source before implementation.
+- Non-developer path: ask the agent to "index this codebase with Graphify" (or run `/possiblaw-starter:scale`). The project contract tells the agent to configure `.agent/WIKI.md`, create safe ignore rules, install Graphify only with approval if missing, run the graph build, and report where the output lives.
+
+> Note: a retrieval backend such as MemPalace is a *possible future optional layer* over completed local artifacts; it is not shipped today.
 
 ## Optional Wiki Mode
 - `docs/workflows/wiki.md` defines how to use a persistent wiki for faster startup context.
@@ -273,7 +231,7 @@ Examples:
 - Graphify output such as `graphify-out/GRAPH_REPORT.md` and `graphify-out/graph.json` is advisory until verified against source.
 - Do not install Graphify always-on assistant hooks, git hooks, or watch mode without explicit user approval.
 - To enable it in a repo, set `Enabled: ON` and update `Vault root (absolute)` in `.agent/WIKI.md`.
-- After vault setup, the wiki root is generated with `{vault_root}/codebases/{repo_name}` and reused for handoff/history sync.
+- After vault setup, the wiki root is generated with `{vault_root}/codebases/{repo_name}` and reused for handoff sync.
 
 ## Safety and Rollback
 - Existing destination files are backed up before overwrite.
@@ -285,10 +243,6 @@ Examples:
 
 ```bash
 ./scripts/verify-pack.sh
-```
-
-```powershell
-pwsh -File .\scripts\verify-pack.ps1
 ```
 
 ## Learning Mode Helper
@@ -303,14 +257,6 @@ Set learning mode in a repo's `.agent/PLAN.md` without manual edits:
 /path/to/agent-starter-pack/scripts/set-learning-mode.sh /path/to/your/repo OFF
 ```
 
-```powershell
-# from inside target repo
-pwsh -File C:\path\to\agent-starter-pack\scripts\set-learning-mode.ps1 CAPTURE
-
-# explicit target repo path
-pwsh -File C:\path\to\agent-starter-pack\scripts\set-learning-mode.ps1 C:\path\to\your\repo OFF
-```
-
 ## Continuity Checkpoint Helper
 
 Flag a sprint-closeout or pre-git checkpoint in a target repo:
@@ -323,15 +269,7 @@ Flag a sprint-closeout or pre-git checkpoint in a target repo:
 /path/to/your/repo/.agent/integrations/run-checkpoint.sh /path/to/your/repo --reason pre-git-cycle
 ```
 
-```powershell
-# from inside target repo
-pwsh -File .\.agent\integrations\run-checkpoint.ps1 -Reason sprint-closeout
-
-# explicit target repo path
-pwsh -File C:\path\to\your\repo\.agent\integrations\run-checkpoint.ps1 C:\path\to\your\repo -Reason pre-git-cycle
-```
-
-The helper does not invent summaries. It flags the required `PLAN`/`HANDOFF`/`history` updates, reads learning mode, shows git scope, and calls a local MemPalace ingest helper only if you add one under `.agent/integrations/`.
+The helper does not invent summaries. It is an advisory checklist printer: it flags the required `.agent/PLAN.md` and `.agent/HANDOFF.md` updates (Current Baton plus a prepended Session Timeline entry), reads learning mode, and shows git scope. It does not write state and does not call any backend.
 
 ## Repository Layout
 
@@ -340,22 +278,17 @@ packs/
   project/                 # Repo-level files
     docs/roles/            # Canonical host-agnostic role contracts
     docs/vendor/           # Local vendor integration references
-    docs/workflows/        # Evals and contract pipeline guidance
+    docs/workflows/        # Evals, contracts, token management, and indexing guidance
     .claude/skills/        # Repo-local workflow skills
-    .agent/integrations/   # Local checkpoint helpers and optional MemPalace hook
+    .agent/integrations/   # Local advisory checkpoint helper (run-checkpoint.sh)
   global/claude/           # ~/.claude curated files
   global/codex/            # ~/.codex curated files
-scripts/
+scripts/                   # Bash only (macOS + Linux)
   bootstrap-project.sh
   install-project.sh
   install-global.sh
   verify-pack.sh
   set-learning-mode.sh
-  bootstrap-project.ps1
-  install-project.ps1
-  install-global.ps1
-  verify-pack.ps1
-  set-learning-mode.ps1
 docs/
   references/              # Full source docs
   architecture/
@@ -368,4 +301,4 @@ docs/
 - `docs/references/claude-agents-README.md`
 
 ## Notes
-- Launch support is macOS, Linux, and Windows (PowerShell 7+).
+- Launch support is macOS and Linux only. Scripts are bash-only; Windows/PowerShell support has been dropped.

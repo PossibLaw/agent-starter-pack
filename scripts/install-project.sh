@@ -16,7 +16,7 @@ Options:
   --lint "<lint_command>"
   --typecheck "<typecheck_command>"
   --build "<build_command>"
-  --preserve-progress   Do not overwrite existing progress files (.agent/*, .claude/history.md)
+  --preserve-progress   Do not overwrite existing progress files (.agent/*)
   --dry-run
   -h, --help
 USAGE
@@ -66,10 +66,7 @@ DRY_RUN=0
 PRESERVE_PROGRESS=0
 
 PROGRESS_REL_FILES=(
-  ".claude/history.md"
   ".agent/PLAN.md"
-  ".agent/CONTEXT.md"
-  ".agent/TASKS.md"
   ".agent/REVIEW.md"
   ".agent/TEST.md"
   ".agent/HANDOFF.md"
@@ -437,11 +434,9 @@ copy_with_backup "$PACK_ROOT/docs/workflows/evals.md" "$TARGET_DIR/docs/workflow
 copy_with_backup "$PACK_ROOT/docs/workflows/contracts.md" "$TARGET_DIR/docs/workflows/contracts.md" "docs/workflows/contracts.md"
 copy_with_backup "$PACK_ROOT/docs/workflows/wiki.md" "$TARGET_DIR/docs/workflows/wiki.md" "docs/workflows/wiki.md"
 copy_with_backup "$PACK_ROOT/docs/workflows/graphify.md" "$TARGET_DIR/docs/workflows/graphify.md" "docs/workflows/graphify.md"
+copy_with_backup "$PACK_ROOT/docs/workflows/token-management.md" "$TARGET_DIR/docs/workflows/token-management.md" "docs/workflows/token-management.md"
 copy_with_backup "$PACK_ROOT/docs/glossary.md" "$TARGET_DIR/docs/glossary.md" "docs/glossary.md"
-copy_with_backup "$PACK_ROOT/.claude/history.md" "$TARGET_DIR/.claude/history.md" ".claude/history.md"
 copy_with_backup "$PACK_ROOT/.agent/PLAN.md" "$TARGET_DIR/.agent/PLAN.md" ".agent/PLAN.md"
-copy_with_backup "$PACK_ROOT/.agent/CONTEXT.md" "$TARGET_DIR/.agent/CONTEXT.md" ".agent/CONTEXT.md"
-copy_with_backup "$PACK_ROOT/.agent/TASKS.md" "$TARGET_DIR/.agent/TASKS.md" ".agent/TASKS.md"
 copy_with_backup "$PACK_ROOT/.agent/REVIEW.md" "$TARGET_DIR/.agent/REVIEW.md" ".agent/REVIEW.md"
 copy_with_backup "$PACK_ROOT/.agent/TEST.md" "$TARGET_DIR/.agent/TEST.md" ".agent/TEST.md"
 TEST_FILE_WAS_COPIED="$LAST_COPY_STATUS"
@@ -450,11 +445,10 @@ copy_with_backup "$PACK_ROOT/.agent/WIKI.md" "$TARGET_DIR/.agent/WIKI.md" ".agen
 copy_with_backup "$PACK_ROOT/.agent/LEARNINGS.md" "$TARGET_DIR/.agent/LEARNINGS.md" ".agent/LEARNINGS.md"
 copy_with_backup "$PACK_ROOT/.agent/integrations/README.md" "$TARGET_DIR/.agent/integrations/README.md" ".agent/integrations/README.md"
 copy_with_backup "$PACK_ROOT/.agent/integrations/run-checkpoint.sh" "$TARGET_DIR/.agent/integrations/run-checkpoint.sh" ".agent/integrations/run-checkpoint.sh"
-copy_with_backup "$PACK_ROOT/.agent/integrations/run-checkpoint.ps1" "$TARGET_DIR/.agent/integrations/run-checkpoint.ps1" ".agent/integrations/run-checkpoint.ps1"
-copy_with_backup "$PACK_ROOT/.agent/integrations/mempalace-ingest.sh" "$TARGET_DIR/.agent/integrations/mempalace-ingest.sh" ".agent/integrations/mempalace-ingest.sh"
-copy_with_backup "$PACK_ROOT/.agent/integrations/mempalace-ingest.ps1" "$TARGET_DIR/.agent/integrations/mempalace-ingest.ps1" ".agent/integrations/mempalace-ingest.ps1"
 copy_with_backup "$REPO_ROOT/skills/closing-sprint-and-syncing-state/SKILL.md" "$TARGET_DIR/.claude/skills/closing-sprint-and-syncing-state/SKILL.md" ".claude/skills/closing-sprint-and-syncing-state/SKILL.md"
 copy_with_backup "$REPO_ROOT/skills/running-novice-safe-git-cycle/SKILL.md" "$TARGET_DIR/.claude/skills/running-novice-safe-git-cycle/SKILL.md" ".claude/skills/running-novice-safe-git-cycle/SKILL.md"
+copy_with_backup "$REPO_ROOT/skills/applying-simplicity-ladder/SKILL.md" "$TARGET_DIR/.claude/skills/applying-simplicity-ladder/SKILL.md" ".claude/skills/applying-simplicity-ladder/SKILL.md"
+copy_with_backup "$REPO_ROOT/skills/scaling-up-with-graphify/SKILL.md" "$TARGET_DIR/.claude/skills/scaling-up-with-graphify/SKILL.md" ".claude/skills/scaling-up-with-graphify/SKILL.md"
 ensure_progress_ignored
 
 if [[ "$DRY_RUN" -eq 0 ]]; then

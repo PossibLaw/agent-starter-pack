@@ -1,6 +1,11 @@
 .DS_Store
 *.bak.*
 
+# Python test/build artifacts (guardrail test suite runs under pytest)
+__pycache__/
+*.pyc
+.pytest_cache/
+
 # Local agent continuity state at the repo root (keep local; do not commit)
 /.claude/
 /.agent/

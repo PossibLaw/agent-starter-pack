@@ -23,17 +23,6 @@
         ]
       }
     ],
-    "PreCompact": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/guardrails/persist-state.py\""
-          }
-        ]
-      }
-    ],
     "SubagentStop": [
       {
         "matcher": "",

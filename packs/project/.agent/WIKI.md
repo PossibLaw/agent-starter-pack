@@ -13,7 +13,6 @@ produces:
   - sync_rule
 feeds_into:
   - .agent/HANDOFF.md
-  - .claude/history.md
 memory:
   include_in_memory: true
   tags: [wiki, config]
