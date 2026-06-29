@@ -83,10 +83,28 @@ This repository includes:
 ### Pick the Right Mode
 
 - Brand new repo: run quick start as-is (no `--preserve-progress`). This creates all starter-pack files.
-- Existing repo, keep progress (PLAN/HANDOFF continuity): add `--preserve-progress`.
+- Existing/older repo: add `--adopt` (alias for `--preserve-progress`) so your existing state files are never overwritten.
 - Existing repo, intentionally reset progress (PLAN/HANDOFF) to fresh templates: run without `--preserve-progress`.
 
 If you run the installer in a brand-new/empty repo (no detectable stack files yet), you may see a warning that commands are `UNCONFIRMED`. This is expected—either initialize the project and re-run, pass explicit `--primary/--test/--lint/--typecheck/--build` overrides, or edit `.agent/TEST.md` and `CLAUDE.md`.
+
+### Adding to an existing or older repo
+
+To retrofit the pack into a repo that already has code, run the installer with `--adopt`:
+
+```bash
+./scripts/install-project.sh /path/to/old-repo --adopt
+```
+
+`--adopt` preserves any existing continuity files and **assesses your codebase size** (it counts source files). When the repo is large (more than ~50 source files), the installer recommends turning on **Tier 2 Scale mode**:
+
+```text
+  SOURCE_FILE_COUNT=320
+NOTE: large codebase detected (320 source files, threshold 50).
+  ... In Claude Code, run: /possiblaw-starter:scale
+```
+
+Scale mode builds a Graphify index so the agent **queries the index instead of re-reading files**, which keeps a big codebase affordable. The SessionStart hook keeps reminding you until Scale mode is on. Small repos get no nudge and stay in the lean Tier 1 workflow. See `docs/workflows/graphify.md` and `docs/workflows/token-management.md`.
 
 ### macOS + Linux (run from inside your target repo)
 
@@ -96,10 +114,10 @@ Brand new repo:
 curl -fsSL https://raw.githubusercontent.com/PossibLaw/agent-starter-pack/main/scripts/bootstrap-project.sh | bash -s -- .
 ```
 
-Existing repo (preserve progress files):
+Existing/older repo (preserve progress + size assessment):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/PossibLaw/agent-starter-pack/main/scripts/bootstrap-project.sh | bash -s -- . --preserve-progress
+curl -fsSL https://raw.githubusercontent.com/PossibLaw/agent-starter-pack/main/scripts/bootstrap-project.sh | bash -s -- . --adopt
 ```
 
 If you prefer not to execute a remote script directly:
@@ -204,7 +222,6 @@ Continuity checkpoints default to sprint closeout, pre-git-cycle, session end, a
 ## Contract Pipeline and Optional Integrations
 - `docs/workflows/contracts.md` defines the typed artifact header, continuity checkpoint rules, and cross-artifact linkage rules.
 - Required stage order: `PLAN -> TEST -> REVIEW -> HANDOFF`.
-- Optional stage-skill integration (gstack-inspired) is additive and must keep file-based fallback behavior.
 
 ## Memory
 - `docs/architecture/memory-and-indexing-guide.md` explains which memory/indexing layer owns which facts and when to enable optional layers.
@@ -218,7 +235,7 @@ Examples:
 - Local artifact: a handoff records that matter records are created only after `conflict_check.status = approved`, why draft matters for rejected intakes were rejected, what tests proved it, and what remains open.
 - Session timeline: the same `.agent/HANDOFF.md` keeps a short, newest-first dated entry below the STOP marker so a future session can recover what happened without rereading every artifact.
 - Manual wiki (Tier 2): use curated pages for stable codebase maps, domain glossary, architecture notes, and cross-links that humans may want to edit.
-- Graphify (Tier 2): use generated `graphify-out/GRAPH_REPORT.md` and focused graph queries for first-pass orientation on larger repos, then verify the result in source before implementation.
+- Graphify (Tier 2): read the generated wiki layer (`graphify-out/wiki/index.md`) and run focused graph queries for first-pass orientation on larger repos, then verify the result in source before implementation.
 - Non-developer path: ask the agent to "index this codebase with Graphify" (or run `/possiblaw-starter:scale`). The project contract tells the agent to configure `.agent/WIKI.md`, create safe ignore rules, install Graphify only with approval if missing, run the graph build, and report where the output lives.
 
 > Note: a retrieval backend such as MemPalace is a *possible future optional layer* over completed local artifacts; it is not shipped today.

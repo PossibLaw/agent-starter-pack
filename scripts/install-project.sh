@@ -17,8 +17,14 @@ Options:
   --typecheck "<typecheck_command>"
   --build "<build_command>"
   --preserve-progress   Do not overwrite existing progress files (.agent/*)
+  --adopt               Adopt into an existing/older repo (alias for --preserve-progress).
+                        Also assesses codebase size and recommends Tier 2 Scale mode (Graphify)
+                        when the repo is large.
   --dry-run
   -h, --help
+
+Adding to an existing/older repo:
+  install-project.sh /path/to/old-repo --adopt
 USAGE
 }
 
@@ -64,6 +70,8 @@ USER_TYPECHECK_COMMAND=""
 USER_BUILD_COMMAND=""
 DRY_RUN=0
 PRESERVE_PROGRESS=0
+SCALE_THRESHOLD=50
+SRC_COUNT=0
 
 PROGRESS_REL_FILES=(
   ".agent/PLAN.md"
@@ -193,6 +201,22 @@ require_option_value() {
   fi
 }
 
+# Count source files in the target repo to decide whether to recommend Tier 2
+# Scale mode (Graphify). Uses the same extension set + threshold as the
+# SessionStart scale nudge in scripts/guardrails/git-status.sh. Best-effort.
+assess_codebase_size() {
+  local dir="$1"
+  local code_re='\.(py|js|jsx|ts|tsx|go|rs|java|rb|php|c|cc|cpp|cxx|h|hpp|cs|swift|kt|scala|m|mm|sh)$'
+  if git -C "$dir" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    SRC_COUNT=$(git -C "$dir" ls-files 2>/dev/null | grep -cE "$code_re" || true)
+  else
+    SRC_COUNT=$(find "$dir" -type f 2>/dev/null \
+      | grep -vE '/(\.git|node_modules|dist|build|vendor|\.venv|venv|target)/' \
+      | grep -cE "$code_re" || true)
+  fi
+  SRC_COUNT=${SRC_COUNT:-0}
+}
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --name)
@@ -234,6 +258,10 @@ while [[ $# -gt 0 ]]; do
       PRESERVE_PROGRESS=1
       shift
       ;;
+    --adopt)
+      PRESERVE_PROGRESS=1
+      shift
+      ;;
     --dry-run)
       DRY_RUN=1
       shift
@@ -252,6 +280,9 @@ done
 
 # Infer commands to reduce setup friction.
 detect_defaults "$TARGET_DIR"
+
+# Assess codebase size to decide whether to recommend Tier 2 Scale mode.
+assess_codebase_size "$TARGET_DIR"
 
 # Explicit CLI flags always win.
 if [[ -n "${USER_PRIMARY_COMMAND// }" ]]; then
@@ -471,7 +502,18 @@ echo "  TEST_COMMAND=$TEST_COMMAND"
 echo "  LINT_COMMAND=$LINT_COMMAND"
 echo "  TYPECHECK_COMMAND=$TYPECHECK_COMMAND"
 echo "  BUILD_COMMAND=$BUILD_COMMAND"
+echo "  SOURCE_FILE_COUNT=$SRC_COUNT"
 warn_if_progress_files_tracked
+
+if [[ "$SRC_COUNT" -gt "$SCALE_THRESHOLD" ]]; then
+  echo ""
+  echo "NOTE: large codebase detected ($SRC_COUNT source files, threshold $SCALE_THRESHOLD)."
+  echo "  This looks like an existing/large repo. Turn on Tier 2 'Scale mode' so the agent"
+  echo "  queries an index instead of re-reading files every session:"
+  echo "    - In Claude Code, run: /possiblaw-starter:scale"
+  echo "    - Reference: docs/workflows/graphify.md and docs/workflows/token-management.md"
+  echo "  (The SessionStart hook will also remind you until Scale mode is on.)"
+fi
 
 if [[ "$PRIMARY_COMMAND" == "UNCONFIRMED" || "$TEST_COMMAND" == "UNCONFIRMED" || "$LINT_COMMAND" == "UNCONFIRMED" || "$TYPECHECK_COMMAND" == "UNCONFIRMED" || "$BUILD_COMMAND" == "UNCONFIRMED" ]]; then
   echo ""
