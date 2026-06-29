@@ -11,13 +11,12 @@ Bootstrap the **current working directory** with PossibLaw Agent Starter Pack pr
 ## What it installs into the repo
 
 - `AGENTS.md` and `CLAUDE.md` — project-level governance (Codex + Claude)
-- `.agent/{PLAN,CONTEXT,TASKS,REVIEW,TEST,HANDOFF,WIKI,LEARNINGS}.md` — state-artifact templates
-- `.agent/integrations/` — continuity-checkpoint helpers (`run-checkpoint.{sh,ps1}`, MemPalace stubs)
+- `.agent/{PLAN,REVIEW,TEST,HANDOFF,WIKI,LEARNINGS}.md` — state-artifact templates (PLAN now also holds the former CONTEXT assumptions and TASKS checklist; HANDOFF is the single continuity file)
+- `.agent/integrations/` — advisory continuity-checkpoint helper (`run-checkpoint.sh`) that prints the PLAN/HANDOFF updates to make
 - `docs/roles/*.md` — six canonical role contracts (product-strategist, engineering-planner, reviewer, security-reviewer, qa-validator, docs-releaser)
-- `docs/workflows/{evals,contracts,wiki,graphify}.md`
+- `docs/workflows/{evals,contracts,wiki,graphify,token-management}.md`
 - `docs/glossary.md` and `docs/vendor/*.md`
-- `.claude/skills/{closing-sprint-and-syncing-state,running-novice-safe-git-cycle}/SKILL.md` — project-local copies for Codex parity
-- `.claude/history.md` — session memory log
+- `.claude/skills/{closing-sprint-and-syncing-state,running-novice-safe-git-cycle,applying-simplicity-ladder,scaling-up-with-graphify}/SKILL.md` — project-local copies for Codex parity
 - `.gitignore` updated so `.agent/*` continuity files stay local
 
 ## What it does NOT touch
@@ -34,7 +33,7 @@ bash "${CLAUDE_PLUGIN_ROOT}/scripts/install-project.sh" "$PWD" $ARGUMENTS
 
 If $ARGUMENTS is empty, this still works — the script defaults to fresh install. Common flags:
 
-- `--preserve-progress` — skip overwriting any existing `.agent/*.md` or `.claude/history.md` (use this when re-running on a repo that already has work in progress)
+- `--preserve-progress` — skip overwriting any existing `.agent/*.md` continuity files (use this when re-running on a repo that already has work in progress)
 - `--dry-run` — show what would be copied without writing anything
 - `--name <project_name>` — project name placeholder substitution (defaults to repo dir name)
 - `--owner <team_or_owner>` — owner placeholder substitution
@@ -47,13 +46,13 @@ If the script reports `DONE: project files installed into <path>`, remind the us
 > Starter-pack files installed. Next steps:
 >
 > 1. Review the diff: `git status && git diff`
-> 2. Commit the governance and templates (the `.agent/*.md` state files are gitignored by design — they hold per-session state):
+> 2. Commit only the shared governance and templates. The `.agent/*` continuity files (PLAN, HANDOFF, etc.) are gitignored by design — they hold per-session local state and must NOT be committed:
 >    ```
->    git add AGENTS.md CLAUDE.md docs/ .agent/integrations/ .claude/skills/ .claude/history.md .gitignore
+>    git add AGENTS.md CLAUDE.md docs/ .claude/skills/ .gitignore
 >    git commit -m "Add PossibLaw starter pack governance + workflow templates"
 >    ```
 > 3. If any commands show as `UNCONFIRMED` in `.agent/TEST.md` or `CLAUDE.md`, fill them in (or re-run init with `--test "..."` etc.)
-> 4. The `closing-sprint-and-syncing-state` skill will keep `PLAN.md` and `HANDOFF.md` current as you work.
+> 4. The `closing-sprint-and-syncing-state` skill will keep `PLAN.md` and the single `HANDOFF.md` continuity file current as you work.
 
 If the script blocks (e.g., target placeholder error, missing pack), surface the error and the suggested fix verbatim — do not paper over it.
 

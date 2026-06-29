@@ -10,8 +10,8 @@ produces:
   - next_actions
   - open_questions
   - decision_summary
+  - session_timeline
 feeds_into:
-  - .claude/history.md
   - .agent/WIKI.md
 memory:
   include_in_memory: true
@@ -20,12 +20,21 @@ memory:
 
 # HANDOFF
 
+This is the single continuity file. The **current baton** (where we are + what's next) lives at the top. The **session timeline** (newest-first, dated) lives below the STOP marker. There is no separate history file — keep both here. Never create sidecar continuity files.
+
+On resume: read from the top and stop at the STOP marker. Read the timeline below it only when you explicitly need history.
+
+## Current Baton (Read First)
+Refresh this section in place at every checkpoint. Keep the newest actionable state here.
+
 ## Status
 - Current phase:
 - Owner:
 - Timestamp (ISO):
 - Overall status: `IN_PROGRESS`
 - Checkpoint reason: `task-end` | `sprint-closeout` | `pre-git-cycle` | `context-50` | `handoff`
+- Tier: `1 (Starter)` | `2 (Scale)`
+- Scale mode: `OFF` | `ON`
 
 ## Suggested Roles
 - `docs-releaser` owns handoff quality, docs alignment, and next-action clarity.
@@ -64,10 +73,8 @@ memory:
 - Recommended next git step:
 
 ## Learning / Memory
-- Learning mode:
+- Learning mode: `OFF` | `CAPTURE` | `APPLY`
 - Learnings updated: `YES` | `NO` | `N/A`
-- MemPalace ingest attempted: `YES` | `NO`
-- MemPalace ingest result:
 
 ## Do-Not-Reread
 - Archive or stale sources to skip unless explicitly requested.
@@ -77,8 +84,25 @@ memory:
 - Test receipts referenced:
 - Review findings referenced:
 
-## Wiki Sync (Required When `.agent/WIKI.md` Enabled)
+## Wiki Sync (Required When `.agent/WIKI.md` Enabled — Tier 2)
 - Wiki root:
 - Wiki index updated: `YES` or `NO`
-- Wiki log updated: `YES` or `NO`
 - Pages updated:
+
+STOP: normal resume context ends here; older entries below are archive.
+
+## Session Timeline (Newest First)
+Prepend one short entry per checkpoint. Keep only the current resume context above the STOP marker; everything dated goes here.
+
+<!-- Format:
+### YYYY-MM-DD — Task title
+- Checkpoint reason: task-end | sprint-closeout | pre-git-cycle | context-50 | handoff
+- Files changed: ...
+- Decisions: ...
+- Current state: ...
+- Next steps: ...
+- Git cycle: not started | reviewing | ready to commit | committed | pushed | PR open
+- Learnings: updated | skipped | not enabled
+-->
+
+<!-- New timeline entries go here, newest first. -->

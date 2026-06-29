@@ -19,6 +19,9 @@ memory:
 
 # PLAN
 
+## Current Plan Snapshot (Read First)
+Keep the active plan in the sections below. On every checkpoint, update this current plan in place or prepend the newest active note above older active notes. Do not create alternate plan files.
+
 ## Objective
 - IN_PROGRESS: <Define target outcome>
 
@@ -67,13 +70,10 @@ If this work involves an LLM/agent/RAG system, also define:
   - context feels roughly 50% full
 - Required checkpoint outputs:
   - update milestone statuses in this file
-  - refresh `.agent/HANDOFF.md`
-  - append `.claude/history.md`
-  - append `.agent/LEARNINGS.md` when learning mode is `CAPTURE` or `APPLY`
-  - run `.agent/integrations/mempalace-ingest.sh` or `.ps1` only if a local backend was added
-- Checkpoint helper (optional):
+  - refresh `.agent/HANDOFF.md` (Current Baton + prepend one Session Timeline entry)
+  - append `.agent/LEARNINGS.md` when learning mode is `CAPTURE` or `APPLY` (gated lessons only)
+- Checkpoint helper (optional, advisory checklist only):
   - `.agent/integrations/run-checkpoint.sh --reason sprint-closeout`
-  - `.agent/integrations/run-checkpoint.ps1 -Reason sprint-closeout`
 
 ## Assumptions
 - [ASSUMPTION]
@@ -87,6 +87,10 @@ If this work involves an LLM/agent/RAG system, also define:
 - Question:
   - Owner:
   - Needed by:
+
+## Task Checklist
+Track in-progress, done, blocked, and unconfirmed work items here (this absorbs the former `TASKS.md`).
+- [ ] Task — status: `TODO` | `IN_PROGRESS` | `DONE` | `BLOCKED` | `UNCONFIRMED`
 
 ## Contract Outputs (Required)
 - Eval IDs defined for `E1`/`E2`/`E3` in `.agent/TEST.md`.
@@ -102,8 +106,13 @@ If this work involves an LLM/agent/RAG system, also define:
 | Implement changes | | PENDING | Requested files updated |
 | Validate outcomes | | PENDING | Checks executed with receipts |
 | Handoff | | PENDING | Risks and next actions documented |
-| Sprint checkpoint | | PENDING | PLAN, HANDOFF, and history synced before pause or ship |
+| Sprint checkpoint | | PENDING | PLAN and HANDOFF synced before pause or ship |
 
 ## Exit Criteria
 - Requested outputs complete and validated.
 - Remaining blockers documented.
+
+STOP: normal resume context ends here; older entries below are archive.
+
+## Historical Archive
+- Move superseded plan notes below this line only when they are no longer active.

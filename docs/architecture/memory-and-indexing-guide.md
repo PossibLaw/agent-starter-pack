@@ -3,36 +3,35 @@
 Use this guide to decide which persistence layer should own a fact, when to turn on optional memory/indexing tools, and how Graphify fits into the Starter Pack.
 
 Status: draft decision guide
-Last reviewed: 2026-04-10
+Last reviewed: 2026-06-29
 Graphify source reviewed: https://github.com/safishamsi/graphify
 
 ## Short Version
 
-The Starter Pack should stay file-first.
+The Starter Pack should stay file-first, and it runs in two tiers: **Tier 1 (Starter, default)** is the everyday file-based workflow; **Tier 2 (Scale, opt-in via `/possiblaw-starter:scale`)** adds Graphify indexing and wiki orientation as a codebase grows.
 
 Canonical memory is the local, reviewable file set:
-- `.agent/PLAN.md`
+- `.agent/PLAN.md` (goal, assumptions, and task checklist — the former CONTEXT and TASKS are folded in here)
 - `.agent/TEST.md`
 - `.agent/REVIEW.md`
-- `.agent/HANDOFF.md`
-- `.claude/history.md`
+- `.agent/HANDOFF.md` (single continuity file: current baton on top, newest-first dated Session Timeline below a STOP marker)
 
 Optional layers must be additive:
-- `.agent/LEARNINGS.md` captures reusable process observations only when learning mode is enabled.
-- Wiki mode accelerates orientation, but source code and tests remain authoritative.
-- MemPalace is an optional retrieval backend over completed local artifacts.
-- Graphify is an optional wiki/indexing backend that can generate a graph report, graph JSON, cache, visualization, and optional wiki pages.
+- `.agent/LEARNINGS.md` captures reusable process observations only when learning mode is enabled, and a lesson is promoted only after it recurs at least twice or the user confirms it (validation-gated).
+- Wiki mode (Tier 2) accelerates orientation, but source code and tests remain authoritative.
+- Graphify (Tier 2) is an optional wiki/indexing backend that can generate a graph report, graph JSON, cache, visualization, and optional wiki pages.
 - Claude Code native memory is outside the Starter Pack contract and should not become the repo source of truth.
+- A retrieval backend such as MemPalace is a deferred future option over completed local artifacts; it is not shipped today.
 
-Default recommendation: keep handoff/history on, keep learnings/wiki/MemPalace/Graphify off until a repo has enough repeated context load pain to justify them.
+Default recommendation: keep the single HANDOFF continuity file on, keep learnings/wiki/Graphify (Tier 2) off until a repo has enough repeated context load pain to justify them.
 
 ## Trust Order
 
 1. Source code, tests, runtime behavior, and committed configuration
-2. Active workflow artifacts: `PLAN.md`, `TEST.md`, `REVIEW.md`, `HANDOFF.md`
+2. Active workflow artifacts: `PLAN.md`, `TEST.md`, `REVIEW.md`, `HANDOFF.md` (including the Session Timeline below the STOP marker in `HANDOFF.md`)
 3. Curated repo docs and manually maintained wiki pages with source citations
-4. `.claude/history.md` and `.agent/LEARNINGS.md`
-5. Generated Graphify output and any MemPalace or Claude native memory retrieval
+4. `.agent/LEARNINGS.md`
+5. Generated Graphify output and any Claude native memory retrieval (a future MemPalace-style retrieval backend would sit here too)
 
 If any lower layer conflicts with a higher layer, trust the higher layer and update or discard the stale lower-layer claim.
 
@@ -41,29 +40,37 @@ If any lower layer conflicts with a higher layer, trust the higher layer and upd
 | Layer | Default | Main job | Owner | Commit? | Read when | Write when |
 | --- | --- | --- | --- | --- | --- | --- |
 | `AGENTS.md` / `CLAUDE.md` | On | Stable startup rules and routing | Human-maintained template | Yes | Every agent session | Rarely, for policy changes |
-| `.agent/PLAN.md` | On demand | Current objective, assumptions, evals, risks | Active task owner | No | Planning or task execution | Before implementation |
+| `.agent/PLAN.md` | On demand | Current objective, assumptions, task checklist, evals, risks | Active task owner | No | Planning or task execution | Before implementation |
 | `.agent/TEST.md` | On demand | Validation commands, eval receipts, security checks | QA/implementer | No | Test/validation work | During verification |
 | `.agent/REVIEW.md` | On demand | Review findings and security checklist | Reviewer | No | Review work | During review |
-| `.agent/HANDOFF.md` | On demand | Current baton pass, decisions, open questions | Final task owner | No | Resume, handoff, parallel worktree | End of meaningful work |
-| `.claude/history.md` | On | Append-only timeline and session memory | Any agent finishing work | No | Resume or context recovery | End of meaningful work |
-| `.agent/LEARNINGS.md` | Off | Reusable observations and proposed improvements | Agent only when enabled | No | Learning mode tasks | CAPTURE/APPLY mode only |
-| Manual wiki | Off | Curated codebase map and concept pages | Agent/human curator | Optional | Deep orientation/repo review | After verified changes |
-| Graphify output | Off | Generated graph/index over code/docs/raw materials | Tool-generated | Usually no | Orientation/query acceleration | Explicit graph refresh |
-| MemPalace | Off | Retrieval over completed artifacts | Local backend | Backend-specific | Repeated retrieval pain | After completed artifacts |
+| `.agent/HANDOFF.md` | On | Current baton (decisions, open questions) on top; newest-first Session Timeline below the STOP marker | Final task owner | No | Resume, handoff, parallel worktree | End of meaningful work |
+| `.agent/LEARNINGS.md` | Off | Reusable observations and proposed improvements (validation-gated) | Agent only when enabled | No | Learning mode tasks | CAPTURE/APPLY mode only |
+| Manual wiki (Tier 2) | Off | Curated codebase map and concept pages | Agent/human curator | Optional | Deep orientation/repo review | After verified changes |
+| Graphify output (Tier 2) | Off | Generated graph/index over code/docs/raw materials | Tool-generated | Usually no | Orientation/query acceleration | Explicit graph refresh |
 | Claude native memory | Tool-specific | Personal/global preferences | Claude Code | Outside repo | Personal behavior only | Never for client/repo facts by default |
 
 ## How Current Memory Works
 
-### Handoff and History
+### Handoff (single continuity file)
 
-`HANDOFF.md` is the structured "what matters next" artifact. It should contain current phase, owner, decisions, constraints, open questions, next actions, and links back to eval/test/review evidence.
+Continuity is **one file**: `.agent/HANDOFF.md`.
 
-`.claude/history.md` is the append-only timeline. It preserves what happened across sessions without asking future agents to reread every artifact. It is useful for resuming work, but it should not override an active handoff.
+- The **Current Baton** on top is the structured "what matters next" artifact. It should contain current phase, owner, decisions, constraints, open questions, next actions, and links back to eval/test/review evidence.
+- The **Session Timeline** below the STOP marker is the newest-first historical timeline. It preserves what happened across sessions without asking future agents to reread every artifact. It is useful for resuming work, but it should not override the active baton above it.
+
+`PLAN.md` and `HANDOFF.md` keep current resume context above this marker:
+
+```text
+STOP: normal resume context ends here; older entries below are archive.
+```
+
+During normal resume, read the newest active section (the Current Baton) and stop at the STOP marker. Read older Session Timeline material only when the user explicitly asks for historical context.
 
 Use this split:
-- Current actionable state goes in `.agent/HANDOFF.md`.
-- Historical timeline goes in `.claude/history.md`.
-- Do not duplicate full plans, test logs, or wiki pages into history.
+- Current actionable state goes in the **Current Baton** of `.agent/HANDOFF.md`.
+- Historical timeline goes in the **Session Timeline** of the same file, newest first, below the STOP marker.
+- Do not duplicate full plans, test logs, or wiki pages into the timeline.
+- Do not create sidecar continuity files (no separate `history.md`); fold current facts into `PLAN.md` and `HANDOFF.md` instead.
 
 ### Learnings
 
@@ -85,21 +92,11 @@ Do not use learnings for:
 - client facts
 - facts that belong in source docs or tests
 
-### MemPalace
+### Retrieval Backend (deferred future option)
 
-MemPalace is currently documented as a default-off backend. The Starter Pack contract says completed file artifacts remain the source of truth, and MemPalace retrieval is advisory.
+A semantic retrieval backend over completed local artifacts (for example MemPalace) is a **deferred future option**. It is **not shipped today** — there are no ingest stubs or hooks in the pack.
 
-Use it only when:
-- the team repeatedly needs old task context across many sessions
-- raw/verbatim retrieval is available
-- retrieved entries cite the source artifact path and timestamp
-
-Do not use MemPalace to create a second writable truth store. The write path should be:
-
-1. Complete local artifacts.
-2. Append history/handoff.
-3. Ingest those completed artifacts into MemPalace, ideally from a continuity checkpoint or sprint-closeout helper.
-4. On retrieval, verify against current local files and source code.
+If such a backend is added later, the principles still hold: completed file artifacts remain the source of truth, retrieval is advisory, retrieved entries must cite the source artifact path and timestamp, and the backend must never become a second writable truth store. The write path would stay: complete local artifacts → update the canonical `HANDOFF.md` (Current Baton + prepended Session Timeline entry) → ingest the completed artifacts → verify retrieval against current local files and source code.
 
 ### Manual Wiki
 
@@ -159,11 +156,11 @@ If Claude memory conflicts with repo files, repo files win.
 | Fact type | Put it here | Not here |
 | --- | --- | --- |
 | Current task objective | `.agent/PLAN.md` | Wiki, Graphify, Claude memory |
-| Current next action | `.agent/HANDOFF.md` | Learnings, Graphify |
-| Test command and receipt | `.agent/TEST.md` | History-only notes |
+| Current next action | `.agent/HANDOFF.md` (Current Baton) | Learnings, Graphify |
+| Test command and receipt | `.agent/TEST.md` | Timeline-only notes |
 | Review finding | `.agent/REVIEW.md` | Wiki-only notes |
-| "What happened last session" | `.claude/history.md` | `AGENTS.md`, `CLAUDE.md` |
-| Reusable process improvement | `.agent/LEARNINGS.md` | Handoff/history |
+| "What happened last session" | `.agent/HANDOFF.md` (Session Timeline) | `AGENTS.md`, `CLAUDE.md` |
+| Reusable process improvement | `.agent/LEARNINGS.md` | Handoff baton/timeline |
 | Architecture overview | Manual wiki or generated Graphify report | Handoff |
 | Source-backed codebase map | Manual wiki or Graphify, with source verification | Claude memory |
 | Stable repo policy | `AGENTS.md` / `CLAUDE.md` / workflow docs | History |
@@ -175,16 +172,16 @@ If Claude memory conflicts with repo files, repo files win.
 
 Keep:
 - `AGENTS.md` and `CLAUDE.md`
-- `.agent/PLAN.md`, `.agent/TEST.md`, `.agent/REVIEW.md`, `.agent/HANDOFF.md`
-- `.claude/history.md`
+- `.agent/PLAN.md`, `.agent/TEST.md`, `.agent/REVIEW.md`, `.agent/HANDOFF.md` (single continuity file)
 - `docs/workflows/contracts.md`
+- `docs/workflows/token-management.md`
 - `docs/workflows/wiki.md`
 
-Default off:
+Default off (Tier 2 or future):
 - `.agent/LEARNINGS.md`
-- manual wiki
-- Graphify
-- MemPalace
+- manual wiki (Tier 2)
+- Graphify (Tier 2)
+- a future retrieval backend (e.g. MemPalace)
 - Claude native memory for repo facts
 
 ### Add Manual Wiki When
@@ -212,13 +209,15 @@ Index this codebase with Graphify.
 
 The agent should then follow the Graphify Indexing Request Contract in `docs/workflows/graphify.md`: enable Graphify in `.agent/WIKI.md`, create safe ignore rules, ask before installing missing tooling, run a one-time graph build, and report the generated output paths.
 
-### Add MemPalace When
+### Consider a Retrieval Backend Later (deferred)
+
+A semantic retrieval backend (e.g. MemPalace) is not shipped today. It would only be worth revisiting when:
 
 - the team needs retrieval across many completed tasks
-- file search through history/handoffs is no longer enough
+- file search through the HANDOFF timeline and handoffs is no longer enough
 - the backend can retrieve verbatim snippets with artifact citations
 
-MemPalace should index completed artifacts, not raw repo content by default.
+Any such backend should index completed artifacts, not raw repo content by default.
 
 ### Use Claude Native Memory Sparingly
 
@@ -228,6 +227,7 @@ Do not depend on it for repo continuity. It is not shared, reviewable, or guaran
 
 ```yaml
 memory_model:
+  tier: 1 # 1 (Starter, default) | 2 (Scale, opt-in via /possiblaw-starter:scale)
   source_of_truth:
     - source_code
     - tests
@@ -236,11 +236,11 @@ memory_model:
     - .agent/TEST.md
     - .agent/REVIEW.md
     - .agent/HANDOFF.md
-  session_timeline: .claude/history.md
-  learning_mode: OFF # OFF | CAPTURE | APPLY
-  wiki_mode: OFF # OFF | ON
-  wiki_backend: manual # manual | graphify
-  mempalace: OFF
+  session_timeline: .agent/HANDOFF.md # Session Timeline below the STOP marker
+  learning_mode: OFF # OFF | CAPTURE | APPLY (validation-gated promotion)
+  wiki_mode: OFF # OFF | ON (Tier 2)
+  wiki_backend: manual # manual | graphify (Tier 2)
+  retrieval_backend: none # deferred future option (e.g. MemPalace)
   claude_native_memory_for_repo_facts: OFF
 ```
 
@@ -260,8 +260,8 @@ If any answer is unclear, keep the layer off.
 
 ## Proposed Starter Pack Direction
 
-1. Keep the file-based contract pipeline as canonical.
-2. Keep learnings, manual wiki, Graphify, and MemPalace default-off.
+1. Keep the file-based contract pipeline as canonical (Tier 1).
+2. Keep learnings, manual wiki, and Graphify default-off; gate Graphify/wiki behind Tier 2 (`/possiblaw-starter:scale`). A retrieval backend (e.g. MemPalace) stays a deferred future option, not shipped today.
 3. Add `Wiki backend: manual | graphify` to `.agent/WIKI.md`.
 4. Treat Graphify as a backend for wiki/index generation, with no always-on hooks unless explicitly approved.
 5. Do not add Ix to the Starter Pack for now.

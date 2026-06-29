@@ -32,6 +32,31 @@ Working tree changes:
 $STATUS"
 fi
 
+# --- Tier 2 scale nudge -------------------------------------------------------
+# If this is a large codebase that is not already in Scale mode, append ONE soft
+# suggestion to index it with Graphify. Best-effort and non-fatal: it never errors
+# if git or .agent/HANDOFF.md is absent, and it is just an informational line.
+SCALE_THRESHOLD=50
+ALREADY_SCALED=0
+
+if [ -d "graphify-out" ]; then
+    ALREADY_SCALED=1
+fi
+if [ -f ".agent/HANDOFF.md" ] && grep -q "Scale mode: ON" ".agent/HANDOFF.md" 2>/dev/null; then
+    ALREADY_SCALED=1
+fi
+
+if [ "$ALREADY_SCALED" -eq 0 ]; then
+    CODE_RE='\.(py|js|jsx|ts|tsx|go|rs|java|rb|php|c|cc|cpp|cxx|h|hpp|cs|swift|kt|scala|m|mm|sh)$'
+    SRC_COUNT=$(git ls-files 2>/dev/null | grep -cE "$CODE_RE" || true)
+    SRC_COUNT=${SRC_COUNT:-0}
+    if [ "$SRC_COUNT" -gt "$SCALE_THRESHOLD" ]; then
+        CONTEXT="$CONTEXT
+
+📈 Large codebase detected ($SRC_COUNT files). Consider /possiblaw-starter:scale to index it with Graphify so the agent stops re-reading files."
+    fi
+fi
+
 # Escape for JSON
 CONTEXT_ESCAPED=$(echo "$CONTEXT" | python3 -c "import sys,json; print(json.dumps(sys.stdin.read()))")
 

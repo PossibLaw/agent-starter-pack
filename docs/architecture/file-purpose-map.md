@@ -8,36 +8,40 @@
 - `docs/vendor/README.md`: rules for using local vendor docs as authoritative defaults.
 - `docs/vendor/supabase.md`: Supabase-specific integration and security reference.
 - `docs/workflows/evals.md`: evals-driven development guide (define “done”, design evals, and iterate safely).
-- `docs/workflows/contracts.md`: typed state-artifact pipeline (`PLAN -> TEST -> REVIEW -> HANDOFF`) plus continuity checkpoint and optional memory/skill integration rules.
-- `docs/workflows/wiki.md`: optional wiki-mode workflow for persistent context acceleration with code-first verification.
-- `docs/workflows/graphify.md`: optional Graphify indexing workflow and non-developer request contract.
+- `docs/workflows/contracts.md`: typed state-artifact pipeline (`PLAN -> TEST -> REVIEW -> HANDOFF`) plus continuity checkpoint and optional skill integration rules.
+- `docs/workflows/token-management.md`: token/context budgeting guide so the harness stays fast and cheap (Tier 1, always on).
+- `docs/workflows/wiki.md`: optional Tier-2 wiki-mode workflow for persistent context acceleration with code-first verification.
+- `docs/workflows/graphify.md`: optional Tier-2 Graphify indexing workflow and non-developer request contract.
 - `docs/glossary.md`: short, beginner-friendly glossary of terms used across the pack.
-- `.agent/PLAN.md`: planning artifact template.
-- `.agent/CONTEXT.md`: working context and decisions template.
-- `.agent/TASKS.md`: task board with status markers.
+- `.agent/PLAN.md`: planning artifact template (objective, assumptions, and task checklist — absorbs the former CONTEXT and TASKS files).
 - `.agent/REVIEW.md`: review + security checklist.
 - `.agent/TEST.md`: validation matrix and security checks.
-- `.agent/HANDOFF.md`: baton pass template.
-- `.agent/WIKI.md`: optional wiki-mode config (vault path, wiki root, sync rules).
-- `.agent/LEARNINGS.md`: optional learning log for reusable observations and improvement proposals.
-- `.agent/integrations/*`: local checkpoint helpers plus shipped MemPalace ingest stubs (replace to enable real ingestion).
-- `.claude/history.md`: cross-session memory log.
-- `.claude/skills/*/SKILL.md`: repo-local workflow skills for repeated procedures.
+- `.agent/HANDOFF.md`: single continuity file — Current Baton on top, newest-first Session Timeline below a STOP marker (absorbs the former `.claude/history.md`).
+- `.agent/WIKI.md`: optional Tier-2 wiki-mode config (vault path, wiki root, sync rules).
+- `.agent/LEARNINGS.md`: optional, validation-gated learning log for reusable observations and improvement proposals.
+- `.agent/integrations/*`: local advisory checkpoint helper (`run-checkpoint.sh`) that prints the required PLAN/HANDOFF updates; it does not write state or call a backend.
+- `.claude/skills/*/SKILL.md`: repo-local workflow skills for repeated procedures (sprint closeout, novice-safe git cycle, the simplicity ladder, scaling up with Graphify).
 
 ## Global Pack (`packs/global`)
 - `codex/.codex/AGENTS.md`: Codex user-level global policy.
 - `claude/.claude/CLAUDE.md`: Claude user-level global policy.
 - `claude/.claude/agents/*.md`: reusable global sub-agents.
 
-## Scripts
+## Scripts (bash only — macOS + Linux)
+- `scripts/bootstrap-project.sh`: clones the pack to a temp dir and runs the project installer.
 - `scripts/install-project.sh`: installs project hierarchy into any repo.
 - `scripts/install-global.sh`: optional global hierarchy installer.
 - `scripts/verify-pack.sh`: structural and safety checks.
 - `scripts/set-learning-mode.sh`: updates `.agent/PLAN.md` learning mode (`OFF`, `CAPTURE`, `APPLY`).
-- `scripts/install-project.ps1`: Windows PowerShell installer for project hierarchy.
-- `scripts/install-global.ps1`: Windows PowerShell installer for global files.
-- `scripts/verify-pack.ps1`: Windows PowerShell structural and safety checks.
-- `scripts/set-learning-mode.ps1`: Windows PowerShell learning mode updater.
+
+## Plugin Components (top-level)
+- `.claude-plugin/plugin.json`: Claude Code plugin manifest (`possiblaw-starter`).
+- `commands/init.md`: `/possiblaw-starter:init` — scaffolds project files into the current repo.
+- `commands/scale.md`: `/possiblaw-starter:scale` — raises the repo to Tier 2 (Scale mode: Graphify + wiki).
+- `commands/guardrails.md`: `/possiblaw-starter:guardrails` — views active Tier-1 safety hooks.
+- `skills/applying-simplicity-ladder/SKILL.md`: the always-on simplicity-ladder procedure.
+- `skills/scaling-up-with-graphify/SKILL.md`: Tier-2 procedure for indexing a larger codebase.
+- `agents/*.md`: host-agnostic specialist agents promoted to the top level.
 
 ## Repository Docs
 - `docs/architecture/memory-and-indexing-guide.md`: decision guide for repo memory layers, optional indexing, and Graphify fit.

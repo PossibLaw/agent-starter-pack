@@ -8,8 +8,13 @@ REQUIRED_FILES=(
   "README.md"
   "CHANGELOG.md"
   ".claude-plugin/plugin.json"
+  "commands/init.md"
+  "commands/guardrails.md"
+  "commands/scale.md"
   "skills/closing-sprint-and-syncing-state/SKILL.md"
   "skills/running-novice-safe-git-cycle/SKILL.md"
+  "skills/applying-simplicity-ladder/SKILL.md"
+  "skills/scaling-up-with-graphify/SKILL.md"
   "hooks/hooks.json"
   "scripts/guardrails/validate-bash.py"
   "tests/guardrails/test_validate_bash.py"
@@ -18,11 +23,6 @@ REQUIRED_FILES=(
   "scripts/install-global.sh"
   "scripts/verify-pack.sh"
   "scripts/set-learning-mode.sh"
-  "scripts/bootstrap-project.ps1"
-  "scripts/install-project.ps1"
-  "scripts/install-global.ps1"
-  "scripts/verify-pack.ps1"
-  "scripts/set-learning-mode.ps1"
   "packs/project/AGENTS.md"
   "packs/project/CLAUDE.md"
   "packs/project/docs/roles/README.md"
@@ -38,11 +38,9 @@ REQUIRED_FILES=(
   "packs/project/docs/workflows/contracts.md"
   "packs/project/docs/workflows/wiki.md"
   "packs/project/docs/workflows/graphify.md"
+  "packs/project/docs/workflows/token-management.md"
   "packs/project/docs/glossary.md"
-  "packs/project/.claude/history.md"
   "packs/project/.agent/PLAN.md"
-  "packs/project/.agent/CONTEXT.md"
-  "packs/project/.agent/TASKS.md"
   "packs/project/.agent/REVIEW.md"
   "packs/project/.agent/TEST.md"
   "packs/project/.agent/HANDOFF.md"
@@ -50,9 +48,6 @@ REQUIRED_FILES=(
   "packs/project/.agent/LEARNINGS.md"
   "packs/project/.agent/integrations/README.md"
   "packs/project/.agent/integrations/run-checkpoint.sh"
-  "packs/project/.agent/integrations/run-checkpoint.ps1"
-  "packs/project/.agent/integrations/mempalace-ingest.sh"
-  "packs/project/.agent/integrations/mempalace-ingest.ps1"
   "packs/global/codex/.codex/AGENTS.md"
   "packs/global/claude/.claude/CLAUDE.md"
 )
@@ -65,6 +60,18 @@ FORBIDDEN_PATTERNS=(
   "packs/global/codex/.codex/auth.json"
   "packs/global/codex/.codex/history.jsonl"
   "packs/global/codex/.codex/sessions"
+  "packs/project/.claude/history.md"
+  "packs/project/.agent/CONTEXT.md"
+  "packs/project/.agent/TASKS.md"
+  "packs/project/.agent/integrations/mempalace-ingest.sh"
+  "packs/project/.agent/integrations/mempalace-ingest.ps1"
+  "packs/project/.agent/integrations/run-checkpoint.ps1"
+  "scripts/verify-pack.ps1"
+  "scripts/install-project.ps1"
+  "scripts/install-global.ps1"
+  "scripts/bootstrap-project.ps1"
+  "scripts/set-learning-mode.ps1"
+  "scripts/guardrails/persist-state.py"
 )
 
 missing=0
@@ -80,7 +87,7 @@ fi
 
 for rel in "${FORBIDDEN_PATTERNS[@]}"; do
   if [[ -e "$REPO_ROOT/$rel" ]]; then
-    echo "BLOCKED: forbidden path present: $rel"
+    echo "BLOCKED: forbidden path present (should have been removed): $rel"
     exit 1
   fi
 done
@@ -97,6 +104,8 @@ if command -v rg >/dev/null 2>&1; then
   has_rg=1
 fi
 
+STOP_MARKER="STOP: normal resume context ends here; older entries below are archive."
+
 allowed_placeholders='<(PROJECT_NAME|TEAM_OR_OWNER|PRIMARY_COMMAND|TEST_COMMAND|LINT_COMMAND|TYPECHECK_COMMAND|BUILD_COMMAND)>'
 if [[ "$has_rg" -eq 1 ]]; then
   unexpected="$(rg -n '<[A-Z_]+>' "$REPO_ROOT/packs" | rg -v "$allowed_placeholders" || true)"
@@ -108,6 +117,26 @@ if [[ -n "$unexpected" ]]; then
   echo "$unexpected"
   exit 1
 fi
+
+# Stale references that must not survive the v3 refresh (scoped to the active pack + harness files).
+forbid_text() {
+  local pattern="$1"
+  local hits
+  local scope=("$REPO_ROOT/packs/project" "$REPO_ROOT/skills" "$REPO_ROOT/commands" "$REPO_ROOT/hooks")
+  if [[ "$has_rg" -eq 1 ]]; then
+    hits="$(rg -l --fixed-strings "$pattern" "${scope[@]}" 2>/dev/null || true)"
+  else
+    hits="$(grep -RIl -- "$pattern" "${scope[@]}" 2>/dev/null || true)"
+  fi
+  if [[ -n "$hits" ]]; then
+    echo "BLOCKED: stale reference '$pattern' still present in:"
+    echo "$hits"
+    exit 1
+  fi
+}
+forbid_text "mempalace-ingest"
+forbid_text ".claude/history.md"
+forbid_text "run-checkpoint.ps1"
 
 require_text() {
   local file="$1"
@@ -127,42 +156,59 @@ require_text() {
   fi
 }
 
-require_text "$REPO_ROOT/packs/project/CLAUDE.md" "## Vendor References" "missing vendor section in packs/project/CLAUDE.md"
-require_text "$REPO_ROOT/packs/project/AGENTS.md" "## Vendor References" "missing vendor section in packs/project/AGENTS.md"
+# Instruction contracts (Claude + cross-tool mirror stay in sync)
+for f in CLAUDE.md AGENTS.md; do
+  require_text "$REPO_ROOT/packs/project/$f" "## Vendor References" "missing vendor section in packs/project/$f"
+  require_text "$REPO_ROOT/packs/project/$f" "## Contract Pipeline (Required)" "missing contract pipeline section in packs/project/$f"
+  require_text "$REPO_ROOT/packs/project/$f" "## Continuity Checkpoint Contract" "missing checkpoint section in packs/project/$f"
+  require_text "$REPO_ROOT/packs/project/$f" "## Two Tiers" "missing two-tier model in packs/project/$f"
+  require_text "$REPO_ROOT/packs/project/$f" "## Token Discipline (Always On)" "missing token discipline section in packs/project/$f"
+  require_text "$REPO_ROOT/packs/project/$f" "## Simplicity Ladder (Always On)" "missing simplicity ladder section in packs/project/$f"
+  require_text "$REPO_ROOT/packs/project/$f" "## Scale Mode (Tier 2, Default OFF)" "missing scale mode section in packs/project/$f"
+  require_text "$REPO_ROOT/packs/project/$f" "docs/workflows/graphify.md" "missing graphify trigger in packs/project/$f"
+  require_text "$REPO_ROOT/packs/project/$f" "docs/workflows/token-management.md" "missing token-management trigger in packs/project/$f"
+  require_text "$REPO_ROOT/packs/project/$f" ".agent/WIKI.md" "missing wiki config pointer in packs/project/$f"
+done
+
 require_text "$REPO_ROOT/packs/project/docs/roles/README.md" "## Canonical Roles" "missing canonical role table in packs/project/docs/roles/README.md"
-require_text "$REPO_ROOT/packs/project/CLAUDE.md" "## Contract Pipeline (Required)" "missing contract pipeline section in packs/project/CLAUDE.md"
-require_text "$REPO_ROOT/packs/project/AGENTS.md" "## Contract Pipeline (Required)" "missing contract pipeline section in packs/project/AGENTS.md"
-require_text "$REPO_ROOT/packs/project/CLAUDE.md" "## Continuity Checkpoint Contract" "missing checkpoint section in packs/project/CLAUDE.md"
-require_text "$REPO_ROOT/packs/project/AGENTS.md" "## Continuity Checkpoint Contract" "missing checkpoint section in packs/project/AGENTS.md"
-require_text "$REPO_ROOT/packs/project/CLAUDE.md" "## Optional Wiki Mode (Default OFF)" "missing wiki mode section in packs/project/CLAUDE.md"
-require_text "$REPO_ROOT/packs/project/AGENTS.md" "## Optional Wiki Mode (Default OFF)" "missing wiki mode section in packs/project/AGENTS.md"
-require_text "$REPO_ROOT/packs/project/CLAUDE.md" ".agent/WIKI.md" "missing wiki config pointer in packs/project/CLAUDE.md"
-require_text "$REPO_ROOT/packs/project/AGENTS.md" ".agent/WIKI.md" "missing wiki config pointer in packs/project/AGENTS.md"
-require_text "$REPO_ROOT/packs/project/docs/workflows/contracts.md" "## Optional Memory Backend (MemPalace)" "missing mempalace section in packs/project/docs/workflows/contracts.md"
-require_text "$REPO_ROOT/packs/project/docs/workflows/contracts.md" "## Continuity Checkpoints (Required)" "missing checkpoint section in packs/project/docs/workflows/contracts.md"
-require_text "$REPO_ROOT/packs/project/docs/workflows/contracts.md" "## Optional Skill Workflow Integration (gstack-inspired)" "missing gstack section in packs/project/docs/workflows/contracts.md"
-require_text "$REPO_ROOT/packs/project/docs/workflows/contracts.md" "## Optional Wiki Mode Integration (Karpathy Pattern)" "missing wiki integration section in packs/project/docs/workflows/contracts.md"
+
+# Continuity contract
+require_text "$REPO_ROOT/packs/project/docs/workflows/contracts.md" "## Single-File Continuity Contract (Required)" "missing single-file continuity contract in contracts.md"
+require_text "$REPO_ROOT/packs/project/docs/workflows/contracts.md" "## Continuity Checkpoints (Required)" "missing checkpoint section in contracts.md"
+require_text "$REPO_ROOT/packs/project/docs/workflows/contracts.md" "## Scale Mode (Tier 2, Default OFF)" "missing scale mode section in contracts.md"
 require_text "$REPO_ROOT/packs/project/docs/workflows/wiki.md" "## Trust Order (Required)" "missing trust order section in packs/project/docs/workflows/wiki.md"
-require_text "$REPO_ROOT/packs/project/docs/workflows/graphify.md" "## Graphify Indexing Request Contract" "missing graphify indexing request contract in packs/project/docs/workflows/graphify.md"
+require_text "$REPO_ROOT/packs/project/docs/workflows/graphify.md" "graphifyy" "graphify.md not refreshed to upstream package name graphifyy"
+require_text "$REPO_ROOT/packs/project/docs/workflows/token-management.md" "# Token Management" "missing title in packs/project/docs/workflows/token-management.md"
+
+# State artifacts
 require_text "$REPO_ROOT/packs/project/.agent/WIKI.md" "artifact_type: wiki_config" "missing wiki config artifact_type in packs/project/.agent/WIKI.md"
 require_text "$REPO_ROOT/packs/project/.agent/WIKI.md" 'Vault root (absolute): `UNCONFIRMED`' "missing vault-path setup marker in packs/project/.agent/WIKI.md"
-require_text "$REPO_ROOT/packs/project/CLAUDE.md" "Graphify codebase indexing request" "missing graphify startup trigger in packs/project/CLAUDE.md"
-require_text "$REPO_ROOT/packs/project/AGENTS.md" "Graphify codebase indexing request" "missing graphify startup trigger in packs/project/AGENTS.md"
 require_text "$REPO_ROOT/packs/project/.agent/PLAN.md" "contract_version: 1" "missing contract header in packs/project/.agent/PLAN.md"
 require_text "$REPO_ROOT/packs/project/.agent/PLAN.md" "artifact_type: plan" "missing plan artifact_type in packs/project/.agent/PLAN.md"
-require_text "$REPO_ROOT/packs/project/.agent/PLAN.md" "## Continuity Checkpoint" "missing checkpoint section in packs/project/.agent/PLAN.md"
+require_text "$REPO_ROOT/packs/project/.agent/PLAN.md" "## Task Checklist" "missing task checklist (folded TASKS) in packs/project/.agent/PLAN.md"
+require_text "$REPO_ROOT/packs/project/.agent/PLAN.md" "$STOP_MARKER" "missing newest-first stop marker in packs/project/.agent/PLAN.md"
 require_text "$REPO_ROOT/packs/project/.agent/TEST.md" "artifact_type: test" "missing test artifact_type in packs/project/.agent/TEST.md"
 require_text "$REPO_ROOT/packs/project/.agent/REVIEW.md" "artifact_type: review" "missing review artifact_type in packs/project/.agent/REVIEW.md"
 require_text "$REPO_ROOT/packs/project/.agent/HANDOFF.md" "artifact_type: handoff" "missing handoff artifact_type in packs/project/.agent/HANDOFF.md"
 require_text "$REPO_ROOT/packs/project/.agent/HANDOFF.md" "## Sprint / Git Cycle" "missing sprint git section in packs/project/.agent/HANDOFF.md"
-require_text "$REPO_ROOT/packs/project/.agent/integrations/README.md" "Optional MemPalace Hook" "missing MemPalace hook contract in integrations README"
+require_text "$REPO_ROOT/packs/project/.agent/HANDOFF.md" "## Session Timeline (Newest First)" "missing merged session timeline in packs/project/.agent/HANDOFF.md"
+require_text "$REPO_ROOT/packs/project/.agent/HANDOFF.md" "$STOP_MARKER" "missing newest-first stop marker in packs/project/.agent/HANDOFF.md"
+require_text "$REPO_ROOT/packs/project/.agent/LEARNINGS.md" "## Promotion Gate (Required)" "missing validation/promotion gate in packs/project/.agent/LEARNINGS.md"
+require_text "$REPO_ROOT/packs/project/.agent/integrations/README.md" "run-checkpoint" "missing run-checkpoint reference in integrations README"
+
+# Skills
 require_text "$REPO_ROOT/skills/closing-sprint-and-syncing-state/SKILL.md" "name: closing-sprint-and-syncing-state" "missing closing sprint skill metadata"
 require_text "$REPO_ROOT/skills/running-novice-safe-git-cycle/SKILL.md" "name: running-novice-safe-git-cycle" "missing git cycle skill metadata"
+require_text "$REPO_ROOT/skills/applying-simplicity-ladder/SKILL.md" "name: applying-simplicity-ladder" "missing simplicity ladder skill metadata"
+require_text "$REPO_ROOT/skills/scaling-up-with-graphify/SKILL.md" "name: scaling-up-with-graphify" "missing scale mode skill metadata"
+
+# Plugin manifest
 require_text "$REPO_ROOT/.claude-plugin/plugin.json" '"name": "possiblaw-starter"' "missing plugin name in .claude-plugin/plugin.json"
+require_text "$REPO_ROOT/.claude-plugin/plugin.json" '"version": "3.0.0"' "plugin.json not bumped to version 3.0.0"
 
 agent_md_count="$(find "$REPO_ROOT/agents" -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')"
-if [[ "$agent_md_count" -lt 10 ]]; then
-  echo "BLOCKED: expected at least 10 agent .md files in agents/, found $agent_md_count"
+if [[ "$agent_md_count" -lt 8 ]]; then
+  echo "BLOCKED: expected at least 8 agent .md files in agents/, found $agent_md_count"
   exit 1
 fi
 

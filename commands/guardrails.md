@@ -4,19 +4,19 @@ argument-hint: [optional status or rule check]
 allowed-tools: Read
 ---
 
-# /possiblaw-guardrails:guardrails
+# /possiblaw-starter:guardrails
 
 View the active safety guardrails protecting your workspace.
 
 ## Overview
 
-The PossibLaw guardrails plugin operates globally by installing safety hooks in your environment. These hooks intercept dangerous actions before they execute.
+The `possiblaw-starter` plugin installs Tier-1 safety hooks globally in your environment. These hooks intercept dangerous or risky actions before they execute.
 
 ## Active Protections
 
-By default, the guardrails plugin monitors for:
-1. **Destructive Commands:** Blocks dangerous commands like `rm -rf`.
-2. **Stop Prompts Validation:** Safely manages state when waiting for user input.
-3. **Sensitive File Edits:** Warns when credentials or critical files are modified.
+By default, the base hooks (`hooks/hooks.json`) monitor for:
+1. **Destructive Commands (validate-bash):** Blocks dangerous commands like `rm -rf`.
+2. **Sensitive File Edits (protect-files):** Warns when credentials or critical files are modified.
+3. **Format on Write (format-check):** Applies formatting checks when files are written.
 
 To see the exact rules and prompt changes applied, review your local `.claude/settings.json` or the plugin `hooks/` config files.

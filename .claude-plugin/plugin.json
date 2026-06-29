@@ -1,7 +1,7 @@
 {
   "name": "possiblaw-starter",
-  "version": "2.1.0",
-  "description": "Dual-host (Claude + Codex) governance pack with state-artifact pipeline (PLAN/TEST/REVIEW/HANDOFF), role registry, continuity checkpoints, and runtime guardrails (Claude only).",
+  "version": "3.0.0",
+  "description": "Two-tier progressive governance pack (Claude + Codex) with state-artifact pipeline (PLAN/TEST/REVIEW/HANDOFF), single-file continuity, simplicity ladder, role registry, continuity checkpoints, and runtime guardrails (Claude only).",
   "author": {"name": "PossibLaw"},
   "homepage": "https://github.com/PossibLaw/PossibLaw-Plugins",
   "repository": "https://github.com/PossibLaw/agent-starter-pack.git",
