@@ -1,30 +1,59 @@
 # PossibLaw Agent Starter Pack
 
-Install a complete Claude + Codex instruction hierarchy into any repository without writing files from scratch.
+Drop a complete, tool-agnostic instruction hierarchy — planning, testing, review, and handoff workflows — into any repository without writing files from scratch. It works with Claude Code, Codex, Cursor, or any assistant that reads `AGENTS.md`/`CLAUDE.md`.
 
-Built to make AI-assisted software delivery consistent and reliable, this pack standardizes planning, testing, review, and handoff workflows for both Codex and Claude.
-It was created by reviewing and distilling hundreds of pages of guides and best-practice references (captured under `docs/references/`) into practical, reusable templates.
+It was built by distilling hundreds of pages of best-practice references (captured under `docs/references/`) into practical, reusable templates.
 
-## Quick install (Claude Code)
+---
+
+## Deploy It (Start Here)
+
+Pick one path. **Both scaffold the same files** (`AGENTS.md`, `CLAUDE.md`, `.agent/*`, `docs/roles/`, `docs/workflows/`, `.claude/skills/`) into your repo and auto-detect your stack (Node/Python/Go/Rust) to pre-fill test/lint/build commands.
+
+### Path A — One-line install into any repo (recommended)
+
+Works with **any** assistant. Run this **from inside your target repo**:
+
+```bash
+# New/empty repo — scaffold everything
+curl -fsSL https://raw.githubusercontent.com/PossibLaw/agent-starter-pack/main/scripts/bootstrap-project.sh | bash -s -- .
+
+# Existing repo with code — keep your progress files
+curl -fsSL https://raw.githubusercontent.com/PossibLaw/agent-starter-pack/main/scripts/bootstrap-project.sh | bash -s -- . --adopt
+```
+
+That's the whole install. Prefer not to pipe a remote script, or want overrides (`--name`, `--dry-run`, explicit commands)? See [Install options & advanced usage](#install-options--advanced-usage).
+
+### Path B — Claude Code plugin (adds slash commands)
+
+If you use Claude Code and want `/`-command convenience plus always-on runtime guardrails:
 
 ```
 /plugin marketplace add PossibLaw/PossibLaw-Plugins
 /plugin install possiblaw-starter@possiblaw-plugins
 ```
 
-This installs the plugin: runtime guardrails (destructive-command blocker, sensitive-file protection, format-on-write), host-agnostic agents, and repo-local skills — all available globally to every Claude Code session.
-
-Then, **inside any project repo where you want the state-artifact pipeline + governance files**, run:
+Then, inside any repo you want scaffolded, run:
 
 ```
 /possiblaw-starter:init
 ```
 
-This scaffolds `AGENTS.md`, `CLAUDE.md`, `.agent/{PLAN,TEST,REVIEW,HANDOFF,...}.md`, `docs/roles/`, `docs/workflows/`, `docs/glossary.md`, and `.claude/skills/` into the current working directory. It auto-detects your stack (Node/Python/Go/Rust) and pre-fills test/lint/build commands. Pass `--preserve-progress` to skip overwriting existing state files; pass `--dry-run` to preview.
+The plugin also adds runtime guardrails (destructive-command blocker, sensitive-file protection, format-on-write) to every Claude Code session.
 
-Codex users skip the plugin entirely and use the bootstrap installer below — Codex parity is preserved because `packs/global/codex/` and `packs/project/AGENTS.md` ship unchanged.
+> **Tier 2 hooks (off by default):** the optional `hooks/tier2-hooks.json` (validate-task, validate-subagent, sanitize-input, git-status SessionStart) ships but is **not active by default**. Enable it by merging its entries into your `.claude/settings.json`. The base `hooks/hooks.json` guardrails are on by default once the plugin is installed.
 
-> **Tier 2 hooks (off by default):** the optional `hooks/tier2-hooks.json` (validate-task, validate-subagent, sanitize-input, git-status SessionStart) is shipped but **not active by default**. To enable them, merge the entries from `hooks/tier2-hooks.json` into your `.claude/settings.json` (or symlink the file into the plugin's hooks loader). The base `hooks/hooks.json` (destructive-command blocker, sensitive-file protection, format-on-write) is on by default once the plugin is installed.
+### Which path should I use?
+
+| | Path A — Script | Path B — Plugin |
+|---|---|---|
+| **Assistant** | Claude, Codex, Cursor, any `AGENTS.md` tool | Claude Code only |
+| **Install** | One `curl` command, per repo | Marketplace install once, then `/init` per repo |
+| **Adds slash commands** | No | Yes (`/possiblaw-starter:*`) |
+| **Runtime guardrail hooks** | No (files only) | Yes |
+| **Best for** | Any repo, any tool, CI, non-Claude teams | Claude Code users who want the full experience |
+
+Optional user-level defaults (Codex/Claude global files) are covered under [Optional Global Setup](#optional-global-setup).
 
 ## Two Tiers (How This Pack Grows With You)
 
@@ -33,7 +62,7 @@ The harness is built for non-developer legal users and starts simple. It has two
 - **Tier 1 — Starter (default):** the everyday workflow most projects ever need — `PLAN → TEST → REVIEW → HANDOFF`, a single continuity file, runtime guardrails, the **simplicity ladder** (prefer the simplest thing that works: reuse before writing new code), and always-on token discipline.
 - **Tier 2 — Scale (opt-in, gated as the codebase grows):** indexed retrieval with Graphify, wiki orientation, and deeper review. When a repo gets large the harness suggests `/possiblaw-starter:scale`; you opt in. Tier 2 never removes Tier 1 rules — it only adds to them.
 
-Learnings are **validation-gated**: a lesson is promoted into `.agent/LEARNINGS.md` only if it recurred at least twice or you explicitly confirmed it, so the learnings file stays small and trustworthy.
+Learnings are **validation-gated**: auto-captured notes land in an Inbox, and a lesson is promoted into a category in `.agent/LEARNINGS.md` only if it recurred at least twice or you explicitly confirmed it. The template opens with a compass (what to capture / what not to), organizes promoted lessons into categories, and includes a review loop — so the learnings file stays small, trustworthy, and reviewable.
 
 ## Canonical Role Model
 
@@ -78,23 +107,19 @@ This repository includes:
 - Full reference/source docs used to design this workflow.
 - Architecture decision guides, including `docs/architecture/memory-and-indexing-guide.md`.
 
-## Quick Start (Project Files)
+## Install options & advanced usage
 
-### Pick the Right Mode
+The [one-line install](#path-a--one-line-install-into-any-repo-recommended) above covers most cases. This section documents the modes, flags, and alternatives.
 
-- Brand new repo: run quick start as-is (no `--preserve-progress`). This creates all starter-pack files.
-- Existing/older repo: add `--adopt` (alias for `--preserve-progress`) so your existing state files are never overwritten.
-- Existing repo, intentionally reset progress (PLAN/HANDOFF) to fresh templates: run without `--preserve-progress`.
+### Pick the right mode
+
+- **Brand new repo:** run the installer as-is (no `--adopt`). This creates all starter-pack files.
+- **Existing/older repo:** add `--adopt` (alias for `--preserve-progress`) so your existing state files are never overwritten.
+- **Existing repo, intentionally reset progress** (PLAN/HANDOFF) to fresh templates: run without `--adopt`.
 
 If you run the installer in a brand-new/empty repo (no detectable stack files yet), you may see a warning that commands are `UNCONFIRMED`. This is expected—either initialize the project and re-run, pass explicit `--primary/--test/--lint/--typecheck/--build` overrides, or edit `.agent/TEST.md` and `CLAUDE.md`.
 
-### Adding to an existing or older repo
-
-To retrofit the pack into a repo that already has code, run the installer with `--adopt`:
-
-```bash
-./scripts/install-project.sh /path/to/old-repo --adopt
-```
+### Adopt into an existing or older repo
 
 `--adopt` preserves any existing continuity files and **assesses your codebase size** (it counts source files). When the repo is large (more than ~50 source files), the installer recommends turning on **Tier 2 Scale mode**:
 
@@ -106,19 +131,7 @@ NOTE: large codebase detected (320 source files, threshold 50).
 
 Scale mode builds a Graphify index so the agent **queries the index instead of re-reading files**, which keeps a big codebase affordable. The SessionStart hook keeps reminding you until Scale mode is on. Small repos get no nudge and stay in the lean Tier 1 workflow. See `docs/workflows/graphify.md` and `docs/workflows/token-management.md`.
 
-### macOS + Linux (run from inside your target repo)
-
-Brand new repo:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/PossibLaw/agent-starter-pack/main/scripts/bootstrap-project.sh | bash -s -- .
-```
-
-Existing/older repo (preserve progress + size assessment):
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/PossibLaw/agent-starter-pack/main/scripts/bootstrap-project.sh | bash -s -- . --adopt
-```
+### Install without piping a remote script
 
 If you prefer not to execute a remote script directly:
 
@@ -227,7 +240,7 @@ Continuity checkpoints default to sprint closeout, pre-git-cycle, session end, a
 - `docs/architecture/memory-and-indexing-guide.md` explains which memory/indexing layer owns which facts and when to enable optional layers.
 - Source code, tests, runtime behavior, and active state artifacts remain the source of truth.
 - Continuity is **one file**: `.agent/HANDOFF.md` carries the current baton pass on top, with a newest-first dated Session Timeline below a STOP marker. `.agent/PLAN.md` holds the goal, assumptions, and task checklist.
-- `.agent/LEARNINGS.md` is default-off and validation-gated: capture a reusable observation only when `Learning Mode` is `CAPTURE` or `APPLY`, and promote a lesson only after it recurs at least twice or you confirm it.
+- `.agent/LEARNINGS.md` is default-off and validation-gated: capture a reusable observation only when `Learning Mode` is `CAPTURE` or `APPLY`. Auto-captured notes stage in an Inbox and are promoted into a category only after a lesson recurs at least twice or you confirm it. The template opens with a compass (what to capture / what not to) and carries a review loop for periodic triage.
 - `.agent/integrations/run-checkpoint.sh` is an advisory printer — it lists the required `PLAN`/`HANDOFF` updates at sprint closeout, pre-git-cycle, or context pressure. It does not write state.
 - Wiki mode and Graphify are Tier 2 orientation/indexing layers; generated claims stay advisory until verified against source.
 
