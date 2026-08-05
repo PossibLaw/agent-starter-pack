@@ -23,10 +23,10 @@ Shared, version-controlled continuity file. Current baton on top; dated Session 
 ## Current Baton (Read First)
 
 ## Status
-- Current phase: shared HANDOFF policy and README command-copy cleanup complete; ready for commit
+- Current phase: draft PR #4 open for shared HANDOFF policy and README command-copy cleanup
 - Owner: repository maintainers
 - Timestamp (ISO): 2026-08-04
-- Overall status: `READY_FOR_COMMIT`
+- Overall status: `PR_OPEN`
 - Checkpoint reason: `task-end`
 - Tier: `1 (Starter)`
 - Scale mode: `OFF`
@@ -48,15 +48,15 @@ Shared, version-controlled continuity file. Current baton on top; dated Session 
 - None for this change.
 
 ## Next Actions
-1. Commit the policy/docs change together with the now-trackable `.agent/HANDOFF.md`.
-2. Push/open a PR only when the repository owner requests the remote step.
+1. Review draft PR #4: https://github.com/PossibLaw/agent-starter-pack/pull/4
+2. Mark it ready and merge to `main` after approval.
 
 ## Sprint / Git Cycle
 - Sprint label: shared handoff continuity
 - Sprint status: `COMPLETE`
-- Git cycle status: `READY_TO_COMMIT`
+- Git cycle status: `DRAFT_PR_OPEN`
 - Branch: `codex/share-handoff-history`
-- Recommended next git step: review and create one focused commit
+- Recommended next git step: review PR #4, mark ready, and merge to `main`
 
 ## Learning / Memory
 - Learning mode: `OFF`
@@ -78,9 +78,9 @@ STOP: normal resume context ends here; older entries below are archive.
 - Checkpoint reason: task-end
 - Files changed: ignore policy, installer and verification fixture, project instructions/contracts, init/onboarding/glossary/changelog, README, git-cycle skill, and the root HANDOFF now exposed for tracking.
 - Decisions: only `.agent/HANDOFF.md` is shared; other `.agent/*.md` working state stays local; custom broader ignore rules produce a warning.
-- Current state: implementation complete and `./scripts/verify-pack.sh` passes; skill validation passes; pytest is unavailable in the installed Python runtimes.
-- Next steps: review and commit, then push/PR only if requested.
-- Git cycle: ready to commit.
+- Current state: draft PR #4 is open; implementation and `./scripts/verify-pack.sh` pass; skill validation passes; pytest is unavailable in the installed Python runtimes.
+- Next steps: review PR #4, mark ready, and merge to `main` after approval.
+- Git cycle: draft PR open.
 - Learnings: not enabled.
 
 ### 2026-06-29 — v3.0.0 first-principles refresh (two-tier progressive harness)
