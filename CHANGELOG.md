@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## Unreleased
+- Made `.agent/HANDOFF.md` the shared, version-controlled continuity record so every developer receives the current baton and newest-first session history. Other `.agent/*.md` working-state files remain local and ignored by default.
+- Updated the project installer to remove its legacy `.agent/HANDOFF.md` ignore entry while preserving local-state and unrelated ignore rules, with a verification fixture covering the migration.
+- Split README command sequences into one-command code blocks so each command has its own copy action.
+
 ## 2026-06-29 — v3.0.0 — First-principles refresh (two-tier progressive harness)
 - Reframed the pack as a **two-tier progressive harness** for non-developer legal users: **Tier 1 (Starter, default)** keeps the `PLAN → TEST → REVIEW → HANDOFF` workflow with single-file continuity, guardrails, the simplicity ladder, and token discipline; **Tier 2 (Scale, opt-in)** adds Graphify indexing, wiki orientation, and deeper review. Added the `/possiblaw-starter:scale` command (`commands/scale.md`) as the gate the harness suggests as a codebase grows. Bumped `.claude-plugin/plugin.json` to `3.0.0`.
 - **Merged continuity into one file.** `.claude/history.md` is removed; its newest-first session timeline now lives below a STOP marker inside `.agent/HANDOFF.md` (current baton on top). Updated `docs/architecture/memory-and-indexing-guide.md`, README, glossary, and the checkpoint helper accordingly.

@@ -7,8 +7,15 @@ It was created by reviewing and distilling hundreds of pages of guides and best-
 
 ## Quick install (Claude Code)
 
-```
+Add the plugin marketplace:
+
+```text
 /plugin marketplace add PossibLaw/PossibLaw-Plugins
+```
+
+Install the starter plugin:
+
+```text
 /plugin install possiblaw-starter@possiblaw-plugins
 ```
 
@@ -16,7 +23,7 @@ This installs the plugin: runtime guardrails (destructive-command blocker, sensi
 
 Then, **inside any project repo where you want the state-artifact pipeline + governance files**, run:
 
-```
+```text
 /possiblaw-starter:init
 ```
 
@@ -31,7 +38,7 @@ Codex users skip the plugin entirely and use the bootstrap installer below — C
 The harness is built for non-developer legal users and starts simple. It has two tiers, and it grows with your codebase instead of overwhelming you up front.
 
 - **Tier 1 — Starter (default):** the everyday workflow most projects ever need — `PLAN → TEST → REVIEW → HANDOFF`, a single continuity file, runtime guardrails, the **simplicity ladder** (prefer the simplest thing that works: reuse before writing new code), and always-on token discipline.
-- **Tier 2 — Scale (opt-in, gated as the codebase grows):** indexed retrieval with Graphify, wiki orientation, and deeper review. When a repo gets large the harness suggests `/possiblaw-starter:scale`; you opt in. Tier 2 never removes Tier 1 rules — it only adds to them.
+- **Tier 2 — Scale (opt-in, gated as the codebase grows):** indexed retrieval with Graphify, wiki orientation, and deeper review. When a repo gets large the harness suggests Scale mode; you opt in. Tier 2 never removes Tier 1 rules — it only adds to them.
 
 Learnings are **validation-gated**: a lesson is promoted into `.agent/LEARNINGS.md` only if it recurred at least twice or you explicitly confirmed it, so the learnings file stays small and trustworthy.
 
@@ -104,6 +111,12 @@ NOTE: large codebase detected (320 source files, threshold 50).
   ... In Claude Code, run: /possiblaw-starter:scale
 ```
 
+Run the suggested Scale command:
+
+```text
+/possiblaw-starter:scale
+```
+
 Scale mode builds a Graphify index so the agent **queries the index instead of re-reading files**, which keeps a big codebase affordable. The SessionStart hook keeps reminding you until Scale mode is on. Small repos get no nudge and stay in the lean Tier 1 workflow. See `docs/workflows/graphify.md` and `docs/workflows/token-management.md`.
 
 ### macOS + Linux (run from inside your target repo)
@@ -124,7 +137,13 @@ If you prefer not to execute a remote script directly:
 
 ```bash
 git clone --depth 1 https://github.com/PossibLaw/agent-starter-pack.git /tmp/agent-starter-pack
+```
+
+```bash
 /tmp/agent-starter-pack/scripts/install-project.sh .
+```
+
+```bash
 rm -rf /tmp/agent-starter-pack
 ```
 
@@ -132,7 +151,13 @@ rm -rf /tmp/agent-starter-pack
 
 ```bash
 git clone https://github.com/PossibLaw/agent-starter-pack.git
+```
+
+```bash
 cd agent-starter-pack
+```
+
+```bash
 ./scripts/install-project.sh ~/code/my-app
 ```
 
@@ -155,7 +180,7 @@ The project installer auto-detects likely commands from repo signals (`package.j
   --build "pnpm build"
 ```
 
-The project installer also adds local-continuity ignore rules to the target repo `.gitignore` so `.agent/*.md` state files (including the single `.agent/HANDOFF.md` continuity file) stay local by default.
+The project installer keeps `.agent/HANDOFF.md` trackable so every developer receives the current baton and session history. Other `.agent/*.md` working-state files remain local and ignored by default. When re-run in a repo created by an older pack version, the installer removes the exact legacy `.agent/HANDOFF.md` ignore rule while preserving unrelated ignore rules. Do not put credentials, secrets, or raw private client data in the shared handoff.
 
 ## Optional Global Setup
 
@@ -167,8 +192,15 @@ Install Codex and Claude global files:
 
 Install only one tool:
 
+Codex:
+
 ```bash
 ./scripts/install-global.sh --codex
+```
+
+Claude:
+
+```bash
 ./scripts/install-global.sh --claude
 ```
 
@@ -204,7 +236,7 @@ Install only one tool:
 - `docs/workflows/graphify.md`
 - `docs/workflows/token-management.md`
 - `docs/glossary.md`
-- `.gitignore` updates for local continuity files (`.agent/*.md`)
+- A trackable `.agent/HANDOFF.md` for team continuity; other `.agent/*.md` working state remains local
 
 `Learning Mode` defaults to `OFF`. Turn it on per task by setting `Learning Mode: CAPTURE` or `Learning Mode: APPLY` in `.agent/PLAN.md` (or by explicit prompt instruction).
 Continuity checkpoints default to sprint closeout, pre-git-cycle, session end, and "context feels ~50% full" as a heuristic trigger.
@@ -232,11 +264,11 @@ Continuity checkpoints default to sprint closeout, pre-git-cycle, session end, a
 - Wiki mode and Graphify are Tier 2 orientation/indexing layers; generated claims stay advisory until verified against source.
 
 Examples:
-- Local artifact: a handoff records that matter records are created only after `conflict_check.status = approved`, why draft matters for rejected intakes were rejected, what tests proved it, and what remains open.
+- Shared artifact: a handoff records that matter records are created only after `conflict_check.status = approved`, why draft matters for rejected intakes were rejected, what tests proved it, and what remains open.
 - Session timeline: the same `.agent/HANDOFF.md` keeps a short, newest-first dated entry below the STOP marker so a future session can recover what happened without rereading every artifact.
 - Manual wiki (Tier 2): use curated pages for stable codebase maps, domain glossary, architecture notes, and cross-links that humans may want to edit.
 - Graphify (Tier 2): read the generated wiki layer (`graphify-out/wiki/index.md`) and run focused graph queries for first-pass orientation on larger repos, then verify the result in source before implementation.
-- Non-developer path: ask the agent to "index this codebase with Graphify" (or run `/possiblaw-starter:scale`). The project contract tells the agent to configure `.agent/WIKI.md`, create safe ignore rules, install Graphify only with approval if missing, run the graph build, and report where the output lives.
+- Non-developer path: ask the agent to "index this codebase with Graphify" (or use the Scale command shown above). The project contract tells the agent to configure `.agent/WIKI.md`, create safe ignore rules, install Graphify only with approval if missing, run the graph build, and report where the output lives.
 
 > Note: a retrieval backend such as MemPalace is a *possible future optional layer* over completed local artifacts; it is not shipped today.
 
@@ -266,11 +298,15 @@ Examples:
 
 Set learning mode in a repo's `.agent/PLAN.md` without manual edits:
 
-```bash
-# from inside target repo
-/path/to/agent-starter-pack/scripts/set-learning-mode.sh CAPTURE
+From inside the target repo:
 
-# explicit target repo path
+```bash
+/path/to/agent-starter-pack/scripts/set-learning-mode.sh CAPTURE
+```
+
+With an explicit target repo path:
+
+```bash
 /path/to/agent-starter-pack/scripts/set-learning-mode.sh /path/to/your/repo OFF
 ```
 
@@ -278,11 +314,15 @@ Set learning mode in a repo's `.agent/PLAN.md` without manual edits:
 
 Flag a sprint-closeout or pre-git checkpoint in a target repo:
 
-```bash
-# from inside target repo
-./.agent/integrations/run-checkpoint.sh --reason sprint-closeout
+From inside the target repo:
 
-# explicit target repo path
+```bash
+./.agent/integrations/run-checkpoint.sh --reason sprint-closeout
+```
+
+With an explicit target repo path:
+
+```bash
 /path/to/your/repo/.agent/integrations/run-checkpoint.sh /path/to/your/repo --reason pre-git-cycle
 ```
 

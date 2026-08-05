@@ -61,11 +61,13 @@ memory:
 
 ## Single-File Continuity Contract (Required)
 
-Continuity is **two files**, both local and newest-first:
-- the **goal** lives in `.agent/PLAN.md` (what we are building, milestones, eval IDs)
-- **where we are** lives in `.agent/HANDOFF.md` (current state + next actions on top; the newest-first session timeline below the archive marker)
+Project state uses **two newest-first files**:
+- the local working **goal** lives in `.agent/PLAN.md` (what we are building, milestones, eval IDs)
+- shared **continuity** lives in the version-controlled `.agent/HANDOFF.md` (current state + next actions on top; the newest-first session timeline below the archive marker)
 
 `.agent/HANDOFF.md` is the single continuity file. It replaces the older split between a separate handoff file and a separate session-history timeline — keep both the active baton and the dated timeline in this one file. Do not create alternate continuity sidecars (extra handoff append files, dated handoff files, separate active-plan files, or a separate history file). If such a file already exists, fold any still-current facts into `HANDOFF.md` and leave stale details below the archive boundary.
+
+Commit relevant `HANDOFF.md` changes with the work they describe so every contributor receives the same current state. Keep the other `.agent/*.md` working-state files local unless team policy explicitly says otherwise. Before committing the handoff, remove credentials, secrets, raw private client data, and machine-specific paths. Concurrent handoff updates should be merged without dropping valid entries, then restored to newest-first order.
 
 Keep the latest active state at the top of each continuity file. Preserve older entries below this exact marker:
 

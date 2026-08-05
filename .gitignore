@@ -6,6 +6,8 @@ __pycache__/
 *.pyc
 .pytest_cache/
 
-# Local agent continuity state at the repo root (keep local; do not commit)
 /.claude/
-/.agent/
+
+# Local agent working state; HANDOFF.md is shared with the team
+/.agent/*
+!/.agent/HANDOFF.md

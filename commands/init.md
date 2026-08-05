@@ -17,7 +17,7 @@ Bootstrap the **current working directory** with PossibLaw Agent Starter Pack pr
 - `docs/workflows/{evals,contracts,wiki,graphify,token-management}.md`
 - `docs/glossary.md` and `docs/vendor/*.md`
 - `.claude/skills/{closing-sprint-and-syncing-state,running-novice-safe-git-cycle,applying-simplicity-ladder,scaling-up-with-graphify}/SKILL.md` — project-local copies for Codex parity
-- `.gitignore` updated so `.agent/*` continuity files stay local
+- `.agent/HANDOFF.md` remains trackable for team continuity; other `.agent/*` working-state files stay local
 
 ## What it does NOT touch
 
@@ -46,9 +46,11 @@ If the script reports `DONE: project files installed into <path>`, remind the us
 > Starter-pack files installed. Next steps:
 >
 > 1. Review the diff: `git status && git diff`
-> 2. Commit only the shared governance and templates. The `.agent/*` continuity files (PLAN, HANDOFF, etc.) are gitignored by design — they hold per-session local state and must NOT be committed:
+> 2. Commit the shared governance, templates, and `.agent/HANDOFF.md` so other contributors receive the current baton and session history. Review the handoff first and remove credentials, secrets, raw private client data, and machine-specific paths:
 >    ```
->    git add AGENTS.md CLAUDE.md docs/ .claude/skills/ .gitignore
+>    git add AGENTS.md CLAUDE.md docs/ .agent/HANDOFF.md .claude/skills/ .gitignore
+>    ```
+>    ```
 >    git commit -m "Add PossibLaw starter pack governance + workflow templates"
 >    ```
 > 3. If any commands show as `UNCONFIRMED` in `.agent/TEST.md` or `CLAUDE.md`, fill them in (or re-run init with `--test "..."` etc.)

@@ -7,6 +7,7 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 REQUIRED_FILES=(
   "README.md"
   "CHANGELOG.md"
+  ".agent/HANDOFF.md"
   ".claude-plugin/plugin.json"
   "commands/init.md"
   "commands/guardrails.md"
@@ -92,12 +93,82 @@ for rel in "${FORBIDDEN_PATTERNS[@]}"; do
   fi
 done
 
+if git -C "$REPO_ROOT" check-ignore -q .agent/HANDOFF.md; then
+  echo "BLOCKED: root .agent/HANDOFF.md must be trackable for team continuity"
+  exit 1
+fi
+if ! git -C "$REPO_ROOT" check-ignore -q .agent/PLAN.md; then
+  echo "BLOCKED: root .agent/PLAN.md must remain local and ignored"
+  exit 1
+fi
+
 for script in "$REPO_ROOT/scripts/bootstrap-project.sh" "$REPO_ROOT/scripts/install-project.sh" "$REPO_ROOT/scripts/install-global.sh" "$REPO_ROOT/scripts/verify-pack.sh" "$REPO_ROOT/scripts/set-learning-mode.sh"; do
   if [[ ! -x "$script" ]]; then
     echo "BLOCKED: script is not executable: ${script#$REPO_ROOT/}"
     exit 1
   fi
 done
+
+# Installer policy: HANDOFF.md is shared, while local state and unrelated ignore rules stay intact.
+INSTALL_TEST_ROOT="$(mktemp -d "${TMPDIR:-/tmp}/possiblaw-install-test.XXXXXX")"
+trap 'rm -rf "$INSTALL_TEST_ROOT"' EXIT
+INSTALL_TEST_TARGET="$INSTALL_TEST_ROOT/target"
+mkdir -p "$INSTALL_TEST_TARGET"
+git -C "$INSTALL_TEST_TARGET" init -q
+printf '%s\n' \
+  '.env*' \
+  '.agent/private-notes.md' \
+  '# Local agent continuity files (keep local; do not commit)' \
+  '.claude/history.md' \
+  '.agent/PLAN.md' \
+  '.agent/CONTEXT.md' \
+  '.agent/TASKS.md' \
+  '.agent/REVIEW.md' \
+  '.agent/TEST.md' \
+  '.agent/HANDOFF.md' \
+  '.agent/WIKI.md' \
+  '.agent/LEARNINGS.md' >"$INSTALL_TEST_TARGET/.gitignore"
+
+"$REPO_ROOT/scripts/install-project.sh" "$INSTALL_TEST_TARGET" >/dev/null
+
+if git -C "$INSTALL_TEST_TARGET" check-ignore -q .agent/HANDOFF.md; then
+  echo "BLOCKED: installer still gitignores shared continuity file: .agent/HANDOFF.md"
+  exit 1
+fi
+
+for rel in .agent/PLAN.md .agent/REVIEW.md .agent/TEST.md .agent/WIKI.md .agent/LEARNINGS.md .env.local .agent/private-notes.md; do
+  if ! git -C "$INSTALL_TEST_TARGET" check-ignore -q "$rel"; then
+    echo "BLOCKED: installer failed to preserve local/unrelated ignore rule: $rel"
+    exit 1
+  fi
+done
+
+INSTALL_FRESH_TARGET="$INSTALL_TEST_ROOT/fresh-target"
+mkdir -p "$INSTALL_FRESH_TARGET"
+git -C "$INSTALL_FRESH_TARGET" init -q
+"$REPO_ROOT/scripts/install-project.sh" "$INSTALL_FRESH_TARGET" >/dev/null
+if git -C "$INSTALL_FRESH_TARGET" check-ignore -q .agent/HANDOFF.md; then
+  echo "BLOCKED: fresh install gitignores shared continuity file: .agent/HANDOFF.md"
+  exit 1
+fi
+if ! git -C "$INSTALL_FRESH_TARGET" check-ignore -q .agent/PLAN.md; then
+  echo "BLOCKED: fresh install exposes local working state: .agent/PLAN.md"
+  exit 1
+fi
+
+INSTALL_CUSTOM_TARGET="$INSTALL_TEST_ROOT/custom-target"
+mkdir -p "$INSTALL_CUSTOM_TARGET"
+git -C "$INSTALL_CUSTOM_TARGET" init -q
+printf '%s\n' '.agent/' >"$INSTALL_CUSTOM_TARGET/.gitignore"
+CUSTOM_INSTALL_OUTPUT="$("$REPO_ROOT/scripts/install-project.sh" "$INSTALL_CUSTOM_TARGET")"
+if ! git -C "$INSTALL_CUSTOM_TARGET" check-ignore -q .agent/HANDOFF.md; then
+  echo "BLOCKED: installer unexpectedly removed a broader custom ignore rule"
+  exit 1
+fi
+if [[ "$CUSTOM_INSTALL_OUTPUT" != *"WARNING: .agent/HANDOFF.md is still ignored by a broader custom rule."* ]]; then
+  echo "BLOCKED: installer did not warn about broader custom rule hiding .agent/HANDOFF.md"
+  exit 1
+fi
 
 has_rg=0
 if command -v rg >/dev/null 2>&1; then
@@ -137,6 +208,8 @@ forbid_text() {
 forbid_text "mempalace-ingest"
 forbid_text ".claude/history.md"
 forbid_text "run-checkpoint.ps1"
+forbid_text "Local Continuity Files (Do Not Commit)"
+forbid_text "continuity stays local"
 
 require_text() {
   local file="$1"
@@ -161,6 +234,7 @@ for f in CLAUDE.md AGENTS.md; do
   require_text "$REPO_ROOT/packs/project/$f" "## Vendor References" "missing vendor section in packs/project/$f"
   require_text "$REPO_ROOT/packs/project/$f" "## Contract Pipeline (Required)" "missing contract pipeline section in packs/project/$f"
   require_text "$REPO_ROOT/packs/project/$f" "## Continuity Checkpoint Contract" "missing checkpoint section in packs/project/$f"
+  require_text "$REPO_ROOT/packs/project/$f" "## Shared Handoff and Local Working State" "missing shared handoff policy in packs/project/$f"
   require_text "$REPO_ROOT/packs/project/$f" "## Two Tiers" "missing two-tier model in packs/project/$f"
   require_text "$REPO_ROOT/packs/project/$f" "## Token Discipline (Always On)" "missing token discipline section in packs/project/$f"
   require_text "$REPO_ROOT/packs/project/$f" "## Simplicity Ladder (Always On)" "missing simplicity ladder section in packs/project/$f"
@@ -190,6 +264,7 @@ require_text "$REPO_ROOT/packs/project/.agent/PLAN.md" "$STOP_MARKER" "missing n
 require_text "$REPO_ROOT/packs/project/.agent/TEST.md" "artifact_type: test" "missing test artifact_type in packs/project/.agent/TEST.md"
 require_text "$REPO_ROOT/packs/project/.agent/REVIEW.md" "artifact_type: review" "missing review artifact_type in packs/project/.agent/REVIEW.md"
 require_text "$REPO_ROOT/packs/project/.agent/HANDOFF.md" "artifact_type: handoff" "missing handoff artifact_type in packs/project/.agent/HANDOFF.md"
+require_text "$REPO_ROOT/packs/project/.agent/HANDOFF.md" "shared, version-controlled continuity record" "missing shared continuity policy in packs/project/.agent/HANDOFF.md"
 require_text "$REPO_ROOT/packs/project/.agent/HANDOFF.md" "## Sprint / Git Cycle" "missing sprint git section in packs/project/.agent/HANDOFF.md"
 require_text "$REPO_ROOT/packs/project/.agent/HANDOFF.md" "## Session Timeline (Newest First)" "missing merged session timeline in packs/project/.agent/HANDOFF.md"
 require_text "$REPO_ROOT/packs/project/.agent/HANDOFF.md" "$STOP_MARKER" "missing newest-first stop marker in packs/project/.agent/HANDOFF.md"

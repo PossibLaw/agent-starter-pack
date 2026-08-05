@@ -8,9 +8,9 @@ Short, beginner-friendly definitions of terms used across this starter pack's in
 - **Artifact**: A Markdown file under `.agent/` or `.claude/` that the agent writes and reads to stay coherent across sessions. Examples: `PLAN.md`, `TEST.md`, `HANDOFF.md`. Artifacts are the pack's working memory.
 - **Contract**: A typed agreement between files in the pack — e.g., `TEST.md` must reference eval IDs from `PLAN.md`. See `docs/workflows/contracts.md`.
 - **Role**: A named job (e.g., `reviewer`, `qa-validator`). Each role has a canonical contract under `docs/roles/` plus thin Claude/Codex wrappers.
-- **Handoff / continuity file**: The single continuity file `.agent/HANDOFF.md`. The **Current Baton** on top holds decisions, open questions, and next actions for the next session; below a STOP marker is a newest-first dated **Session Timeline**. (This single file replaces the older separate handoff and session-history files.)
+- **Handoff / continuity file**: The shared, version-controlled continuity file `.agent/HANDOFF.md`. The **Current Baton** on top holds decisions, open questions, and next actions for the next session; below a STOP marker is a newest-first dated **Session Timeline**. (This single file replaces the older separate handoff and session-history files.)
 - **Continuity checkpoint**: A forced save point (update `.agent/PLAN.md` and `.agent/HANDOFF.md` — Current Baton plus a prepended Session Timeline entry) at sprint close, before a git cycle, before ending a session, or when context fills up.
-- **Progress file**: Local-only continuity files (`.agent/PLAN.md`, `.agent/HANDOFF.md`, etc.) that should not be committed.
+- **Progress file**: A local working-state file such as `.agent/PLAN.md`, `.agent/TEST.md`, or `.agent/REVIEW.md`. The exception is `.agent/HANDOFF.md`, which is shared and version-controlled for team continuity.
 
 ## Testing and evaluation terms
 

@@ -25,10 +25,12 @@
   - `./scripts/install-project.sh /path/to/repo --preserve-progress`
   - `pwsh -File .\scripts\install-project.ps1 C:\path\to\repo --preserve-progress`
 
-## Continuity files are still showing up in `git status`
-- New installs auto-add `.gitignore` rules for `.claude/history.md` and `.agent/*.md`.
-- If these files were already tracked in git, untrack them once:
-  - `git rm --cached .claude/history.md .agent/PLAN.md .agent/CONTEXT.md .agent/TASKS.md .agent/REVIEW.md .agent/TEST.md .agent/HANDOFF.md .agent/LEARNINGS.md`
+## `.agent/HANDOFF.md` does not show up in `git status`
+- New installs keep `.agent/HANDOFF.md` trackable while other `.agent/*.md` working-state files remain ignored.
+- Re-run the current project installer to remove the exact legacy handoff ignore rule:
+  - `./scripts/install-project.sh /path/to/repo --preserve-progress`
+- If the handoff remains ignored, find the broader custom rule and narrow it without exposing the other working-state files:
+  - `git check-ignore -v .agent/HANDOFF.md`
 
 ## Windows users
 - Use the PowerShell script variants in `scripts/*.ps1`.

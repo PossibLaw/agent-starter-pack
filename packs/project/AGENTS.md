@@ -59,7 +59,7 @@ Analyze thoroughly; build minimally.
 - Shared contracts in `docs/roles/`, `docs/workflows/`, and `docs/vendor/` apply to every tool.
 
 ## Session Memory
-Continuity lives in one file: `${REPO_ROOT}/.agent/HANDOFF.md` (local-only, gitignored).
+Continuity lives in one shared, version-controlled file: `${REPO_ROOT}/.agent/HANDOFF.md`.
 
 Before pausing, handing off, or moving into a git cycle, refresh:
 - `${REPO_ROOT}/.agent/PLAN.md` milestone status and sprint status.
@@ -68,15 +68,16 @@ Before pausing, handing off, or moving into a git cycle, refresh:
 
 When resuming prior work, read the Current Baton of `${REPO_ROOT}/.agent/HANDOFF.md` first and stop at the STOP marker.
 
-## Local Continuity Files (Do Not Commit)
-- Keep these files local and out of commits/PRs:
+## Shared Handoff and Local Working State
+- Keep `.agent/HANDOFF.md` version-controlled and include relevant updates in commits/PRs so collaborators inherit the current baton and session history.
+- Keep these working-state files local and out of commits/PRs:
   - `.agent/PLAN.md`
   - `.agent/REVIEW.md`
   - `.agent/TEST.md`
-  - `.agent/HANDOFF.md`
   - `.agent/WIKI.md`
   - `.agent/LEARNINGS.md`
-- If any are already tracked, untrack them with `git rm --cached <path>`.
+- Before committing the handoff, remove credentials, secrets, raw private client data, and machine-specific paths; use `UNCONFIRMED` or a portable placeholder when needed.
+- When concurrent handoff edits conflict, preserve valid entries from each contributor and restore the required newest-first order.
 
 ## Optional Learning Loop (Default OFF, Validation-Gated)
 - Default: `Learning Mode` is `OFF`.
@@ -163,7 +164,7 @@ Never do:
 - Use focused branches and atomic commits.
 - Attach validation evidence to PRs/handoffs.
 - Never commit credentials.
-- Never commit `.agent/*` (continuity stays local).
+- Commit relevant `.agent/HANDOFF.md` updates; keep other `.agent/*` working-state files local unless the user explicitly changes that policy.
 - For novice-safe shipping, run this order:
   1. `git status --short`
   2. review `git diff --stat` and files changed
