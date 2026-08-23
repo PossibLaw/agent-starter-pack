@@ -61,7 +61,7 @@ Analyze thoroughly; build minimally. The full procedure is the `applying-simplic
 
 ## Tool Ownership
 - Claude reads: `CLAUDE.md` (this file), `~/.claude/CLAUDE.md` (global), `.claude/agents/*.md`, `.claude/skills/*/SKILL.md`.
-- `AGENTS.md` is the cross-tool mirror of this contract (read by Codex and other AGENTS.md-aware tools). Keep the two in sync; if they diverge, this file and `AGENTS.md` should say the same thing.
+- `AGENTS.md` is the cross-tool mirror of this contract (read by Codex and other AGENTS.md-aware tools). Keep the two in sync, with one deliberate difference: `AGENTS.md` carries the full TDD and boundary text because those tools may have no global layer; this file points to `~/.claude/CLAUDE.md` for it instead.
 - Shared contracts in `docs/roles/`, `docs/workflows/`, and `docs/vendor/` apply to every tool.
 
 ## Session Memory
@@ -188,27 +188,14 @@ Supporting specialists (not canonical roles — use when a canonical role is not
 - For validation/test tasks, run `.agent/TEST.md` security checks when work touches auth, data access, input handling, API surface, or deployment/runtime settings.
 
 ## TDD and Eval Contract
-- For code changes, use TDD when feasible: start with a failing test/eval, implement the minimum code to pass, then refactor while checks stay green.
-- Never assume eval inputs, acceptance criteria, fixtures, or expected outputs; mark unknowns as `UNCONFIRMED` and resolve with a targeted user question.
-- For any new or changed behavior, provide an end-user eval walkthrough before implementation using plain language plus Given/When/Then, including happy path, edge case, and failure/security case.
-- Minimize user friction: infer likely test/eval commands and fixtures from repository signals first; ask the user only targeted follow-ups for unresolved unknowns.
-- If an eval plan is missing or vague, follow `docs/workflows/evals.md` and propose a minimal 3-eval set (happy, edge, failure/security) before implementation.
+- The TDD rule, the `UNCONFIRMED` rule, and the Given/When/Then eval walkthrough are global policy in `~/.claude/CLAUDE.md` (TDD and Evals). Not repeated here.
+- Repo-specific: if an eval plan is missing or vague, follow `docs/workflows/evals.md` and propose a minimal 3-eval set (happy, edge, failure/security) before implementation.
 
 ## Boundary Rules
-Always do:
-- Keep edits scoped to requested files.
-- Reference exact paths and commands.
-- Mark unknowns as `UNCONFIRMED`.
-
-Ask first:
-- Destructive operations or schema-changing edits.
-- Large refactors outside the stated objective.
-
-Never do:
-- Invent evidence or claim completion without validation.
-- Remove failing tests to force a pass.
-- Expose secrets.
-- Read instruction files not triggered by the current task.
+- Safety boundaries (secrets, scope, ask-first on destructive or schema changes, never claim completion without evidence) are global policy in `~/.claude/CLAUDE.md` (Safety Boundaries). Not repeated here.
+- Repo-specific, never do:
+  - Remove failing tests to force a pass.
+  - Read instruction files not triggered by the current task (see Startup Contract).
 
 ## Local Norms
 - Persist repeated user corrections here so they survive across sessions.
