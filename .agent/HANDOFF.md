@@ -23,15 +23,17 @@ Shared, version-controlled continuity file. Current baton on top; dated Session 
 ## Current Baton (Read First)
 
 ## Status
-- Current phase: v4.0.0 — renamed to **PossibNow Dev Harness** + shared-handoff commit guard; branch merged with `origin/main` (#2, #3, #5), pushed, PR #4 ready for squash-merge
+- Current phase: v4.0.0 shipped (PR #4 merged `6846875`); Graphify workflow refreshed to the CLI on branch `chore/graphify-cli-workflow`, PR open HELD for the maintainer's merge word
 - Owner: repository maintainers
-- Timestamp (ISO): 2026-08-24
+- Timestamp (ISO): 2026-08-24T18:50-05:00
 - Overall status: `PR_OPEN`
 - Checkpoint reason: `pre-git-cycle`
 - Tier: `1 (Starter)`
 - Scale mode: `OFF`
 
 ## What Was Completed
+- Item: Graphify docs and command now drive the CLI directly (verified against `graphify 0.9.49`): `packs/project/docs/workflows/graphify.md`, `skills/scaling-up-with-graphify/SKILL.md`, `commands/scale.md` (build with `graphify update .` + `graphify export wiki`; query with `affected`/`explain`/`query --context call`/`path --undirected`/`god-nodes`; rebuild after every merge to `main`; exclude prose, keep `tests/`; upstream slash skill and hooks stay off; copy-paste bootstrap prompt); one Scale Mode bullet in `packs/project/{CLAUDE,AGENTS}.md`; CHANGELOG entry, no version bump (docs only). Source: the trazomo repo's first real Tier 2 build (659 files) on 2026-08-24.
+  - Evidence: `./scripts/verify-pack.sh` → `141 passed` + `DONE: verification passed` on the branch; the same doc and skill were applied to trazomo in the same session.
 - Item: renamed the pack to PossibNow Dev Harness — plugin id `possiblaw-starter` → `possibnow-dev-harness`, slash commands `/possibnow-dev-harness:init|scale|guardrails`, version `4.0.0`, README/hero/docs/agents/roles/commands/scripts updated; GitHub repo renamed to `PossibLaw/possibnow-dev-harness` (old URLs redirect) and local `origin` repointed.
   - Evidence: stale-name sweep clean outside CHANGELOG history and `docs/references/`; `scripts/verify-pack.sh` forbids `possiblaw-starter` / `Agent Starter Pack` in active pack files and passes.
 - Item: `.agent/HANDOFF.md` must ship with every commit — `check_handoff_commit` in `scripts/guardrails/validate-bash.py` blocks `git commit` while the handoff is untracked or has unstaged edits (honors `-a`/`--all`, inline `git add` that covers the file via git-relative paths + inode identity; silent outside git repos or without a handoff). Rule stated for Codex/humans in `packs/project/{CLAUDE,AGENTS}.md`, `contracts.md`, both skills, the handoff template, `commands/init.md`, `commands/guardrails.md`, README, troubleshooting.
@@ -77,6 +79,10 @@ Shared, version-controlled continuity file. Current baton on top; dated Session 
 - Review findings referenced: none open
 
 STOP: normal resume context ends here; older entries below are archive.
+
+### 2026-08-24 — Graphify workflow refreshed to the CLI (branch `chore/graphify-cli-workflow`)
+
+Trazomo's first real Tier 2 build showed the docs described the upstream `/graphify` slash skill at ~v0.1.8 (never installed by the harness) with build flags that no longer exist. Rewrote the graphify doc, the scale skill, and the scale command around the 0.9.49 CLI, added the rebuild-after-merge rule, the prose-out/tests-in ignore guidance, the reasons the upstream Claude hooks stay off, and a bootstrap prompt for other repos. verify-pack green. PR opened HELD.
 
 ## Session Timeline (Newest First)
 

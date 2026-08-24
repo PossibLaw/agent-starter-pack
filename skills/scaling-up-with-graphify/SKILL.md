@@ -21,32 +21,45 @@ Full reference: `docs/workflows/graphify.md`.
    files) or orientation keeps costing real time. Small repos stay in Tier 1.
 2. **Ask before installing.** Get the user's approval before installing any tool.
 3. **Install the Graphify CLI** (package name is `graphifyy` — the double-y is
-   correct; the CLI entry point is `graphify`):
+   correct; the CLI entry point is `graphify`), then confirm with `graphify --version`:
    - `uv tool install graphifyy` (preferred), or
    - `pipx install graphifyy`, or
    - `pip install graphifyy`
-4. **Build the index** with `/graphify .` at the repo root. Run inside the IDE
-   session: no API key is needed and extraction uses tree-sitter locally, so the
-   code never leaves the machine.
-5. **Query the index instead of re-reading files:**
-   - `/graphify query "..."` — ask about the code
-   - `/graphify path "A" "B"` — how two things connect
-   - `/graphify explain "Thing"` — explain a symbol/module
-   - read the pre-summarized wiki layer first: `graphify-out/wiki/index.md`
-   - optional MCP server: `/graphify ./ --mcp` (tools: `query_graph`, `get_node`,
-     `get_neighbors`, `shortest_path`, `god_nodes`)
-6. **Record the mode.** Set `Tier: 2 (Scale)` and `Scale mode: ON` in
-   `.agent/HANDOFF.md`, and set `Wiki backend: graphify` in `.agent/WIKI.md`.
-7. **Treat output as advisory.** Verify any graph- or wiki-derived claim against
-   the source before implementing. If they disagree, the source wins.
+4. **Prepare exclusions, then build** from the repo root with the CLI directly (the
+   upstream slash skill is not needed): write `.graphifyignore` (baseline in the
+   doc; exclude prose and media, keep `tests/`), add `graphify-out/` to
+   `.gitignore`, then run `graphify update .` followed by `graphify export wiki`.
+   No API key is needed and extraction uses tree-sitter locally, so the code never
+   leaves the machine. Use `graphify update . --force` after editing
+   `.graphifyignore` or deleting code.
+5. **Query the index instead of re-reading files** (wiki first:
+   `graphify-out/wiki/index.md`):
+   - `graphify affected "path/to/file.ts"`: what depends on it and which tests cover it
+   - `graphify explain "path/to/file.ts"`: imports in and out of a module
+   - `graphify query "..." --context call --budget 900`: where a mechanism lives (always narrow)
+   - `graphify path "A" "B" --undirected`: how two things connect
+   - `graphify god-nodes`: the core abstractions
+   - optional slash skill, hooks, MCP server, watch mode: explicit approval only
+6. **Keep it fresh.** After every merge to `main`: `graphify update .` then
+   `graphify export wiki`. Branches are not in the graph until they merge.
+7. **Record the mode.** Set `Tier: 2 (Scale)` and `Scale mode: ON` in
+   `.agent/HANDOFF.md` with the rebuild rule and the query commands, and set
+   `Wiki backend: graphify` in `.agent/WIKI.md`.
+8. **Treat output as advisory.** The graph knows structure, not intent. Verify any
+   graph- or wiki-derived claim against the source before implementing. If they
+   disagree, the source wins.
 
 ## Outputs
 - a built index under `graphify-out/` with a usable wiki layer
 - `.agent/HANDOFF.md` and `.agent/WIKI.md` updated to reflect Scale mode
-- the agent answering "where does X live?" by query, not by re-reading files
+- the agent answering "where does X live?" and "what does X affect?" by query, not by re-reading files
 
 ## Common Mistakes
-- installing anything without explicit user approval
+- installing anything without explicit user approval (the upstream slash skill installs hooks)
+- including prose in the graph so headings outnumber code nodes
+- excluding `tests/` and losing the "which tests cover this" answer from `affected`
+- running `query` without `--context call` and drowning in hundreds of nodes
 - re-reading source files after the index already exists
+- letting the graph go stale after merges
 - treating graph/wiki output as authoritative instead of verifying against source
 - enabling Scale mode on a small repo that Tier 1 already handles
