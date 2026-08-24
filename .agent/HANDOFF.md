@@ -23,40 +23,46 @@ Shared, version-controlled continuity file. Current baton on top; dated Session 
 ## Current Baton (Read First)
 
 ## Status
-- Current phase: draft PR #4 open for shared HANDOFF policy and README command-copy cleanup
+- Current phase: v4.0.0 — renamed to **PossibNow Dev Harness** + shared-handoff commit guard; committed on `codex/share-handoff-history`, push/PR update pending
 - Owner: repository maintainers
-- Timestamp (ISO): 2026-08-04
-- Overall status: `PR_OPEN`
-- Checkpoint reason: `task-end`
+- Timestamp (ISO): 2026-08-24
+- Overall status: `COMMITTED`
+- Checkpoint reason: `pre-git-cycle`
 - Tier: `1 (Starter)`
 - Scale mode: `OFF`
 
 ## What Was Completed
-- Item: made `.agent/HANDOFF.md` the only shared, trackable agent-state document while keeping PLAN/TEST/REVIEW/WIKI/LEARNINGS local.
-  - Evidence: installer migration, fresh-install, and broader-custom-rule fixtures pass in `./scripts/verify-pack.sh`.
-- Item: split README command sequences into one-command code blocks.
-  - Evidence: every executable README block now contains one shell/slash command; multi-line installer overrides remain one continued command.
-- Item: aligned project instructions, workflow contract, onboarding, init command, glossary, changelog, and git-cycle skill with the shared-handoff policy.
-  - Evidence: pack verification and skill validation pass.
+- Item: renamed the pack to PossibNow Dev Harness — plugin id `possiblaw-starter` → `possibnow-dev-harness`, slash commands `/possibnow-dev-harness:init|scale|guardrails`, version `4.0.0`, README/hero/docs/agents/roles/commands/scripts updated; GitHub repo renamed to `PossibLaw/possibnow-dev-harness` (old URLs redirect) and local `origin` repointed.
+  - Evidence: stale-name sweep clean outside CHANGELOG history and `docs/references/`; `scripts/verify-pack.sh` forbids `possiblaw-starter` / `Agent Starter Pack` in active pack files and passes.
+- Item: `.agent/HANDOFF.md` must ship with every commit — `check_handoff_commit` in `scripts/guardrails/validate-bash.py` blocks `git commit` while the handoff is untracked or has unstaged edits (honors `-a`/`--all`, inline `git add` that covers the file via git-relative paths + inode identity; silent outside git repos or without a handoff). Rule stated for Codex/humans in `packs/project/{CLAUDE,AGENTS}.md`, `contracts.md`, both skills, the handoff template, `commands/init.md`, `commands/guardrails.md`, README, troubleshooting.
+  - Evidence: 34 new pytest cases (141 total) pass via `/usr/bin/python3 -m pytest tests/guardrails -q`; live check in this repo: bare `git commit` → BLOCKED, `git add .agent/HANDOFF.md && git commit` → allowed.
+- Item: `scripts/verify-pack.sh` now runs the guardrail pytest suite when a python3 with pytest exists; `.github/workflows/verify-pack.yml` drops the dead Windows leg (`verify-pack.ps1` no longer exists) and installs pytest. Removed stale PowerShell steps from onboarding docs.
+  - Evidence: `./scripts/verify-pack.sh` → `141 passed` + `DONE: verification passed`.
+- Item: marketplace patch for `PossibLaw/PossibLaw-Plugins` drafted (not applied) — new plugin id, source repo, version 4.0.0, README rename note.
+  - Evidence: `git diff` of a scratch clone, 110 lines; see Next Actions.
 
 ## Decisions
-- Decision: `.agent/HANDOFF.md` is shared and version-controlled because it carries the current baton and newest-first history. Status: `CONFIRMED`
-- Decision: all other `.agent/*.md` working-state documents remain local and ignored by default. Status: `CONFIRMED`
-- Decision: broader custom ignore rules are preserved; the installer warns when one still hides HANDOFF instead of silently changing unrelated repository policy. Status: `CONFIRMED`
+- Decision: full identity rename (plugin id + slash commands + GitHub repo), not display-name only. Status: `CONFIRMED` (user, 2026-08-24)
+- Decision: enforcement = Claude Code guardrail in `validate-bash.py` + contract wording for Codex/humans; no git pre-commit hook installer. Status: `CONFIRMED` (user, 2026-08-24)
+- Decision: GitHub org stays `PossibLaw`; only the product is "PossibNow". Status: `PROVISIONAL` (assumed; not asked)
+- Decision: local checkout folder `PossibLaw-Agent-Starter-Pack` left as-is (renaming the live working directory mid-session is unsafe); user renames it. Status: `CONFIRMED`
+- Decision: CHANGELOG history keeps the old names; only the v4.0.0 entry and current docs use the new name. Status: `CONFIRMED`
 
 ## Open Questions
-- None for this change.
+- None blocking. Note: system `/usr/bin/python3` (3.9) has pytest; Homebrew `python3` does not — `verify-pack.sh` picks the first candidate that can import pytest.
 
 ## Next Actions
-1. Review draft PR #4: https://github.com/PossibLaw/agent-starter-pack/pull/4
-2. Mark it ready and merge to `main` after approval.
+1. `git push origin codex/share-handoff-history` — updates draft PR #4 (https://github.com/PossibLaw/possibnow-dev-harness/pull/4) with the v4.0.0 work; retitle the PR to "v4.0.0: PossibNow Dev Harness rename + enforced shared handoff".
+2. Apply the marketplace patch in `PossibLaw/PossibLaw-Plugins` (`.claude-plugin/marketplace.json` + `README.md`), run its `./scripts/validate-marketplace.sh`, push. Until then `/plugin install possibnow-dev-harness@possiblaw-plugins` will not resolve.
+3. Mark PR #4 ready, merge to `main`, tag `v4.0.0`.
+4. Locally: `/plugin uninstall possiblaw-starter@possiblaw-plugins` then `/plugin install possibnow-dev-harness@possiblaw-plugins`; optionally rename the checkout folder: `mv ~/PossibLaw-Agent-Starter-Pack ~/possibnow-dev-harness`.
 
 ## Sprint / Git Cycle
-- Sprint label: shared handoff continuity
+- Sprint label: v4.0.0 rename + enforced shared handoff
 - Sprint status: `COMPLETE`
-- Git cycle status: `DRAFT_PR_OPEN`
+- Git cycle status: `COMMITTED`
 - Branch: `codex/share-handoff-history`
-- Recommended next git step: review PR #4, mark ready, and merge to `main`
+- Recommended next git step: push the branch, then review/retitle PR #4
 
 ## Learning / Memory
 - Learning mode: `OFF`
@@ -64,15 +70,25 @@ Shared, version-controlled continuity file. Current baton on top; dated Session 
 
 ## Do-Not-Reread
 - Old reference docs under `docs/references/` unless a sourcing question arises.
+- CHANGELOG entries before v4.0.0 for naming questions — they intentionally keep the historical names.
 
 ## Contract Links (Required)
-- Eval IDs covered: legacy migration, fresh install, broader custom ignore rule, README one-command blocks
-- Test receipts referenced: `./scripts/verify-pack.sh` (PASS); shell syntax (PASS); skill validation (PASS); guardrail pytest `UNCONFIRMED` because pytest is unavailable in the active and bundled Python runtimes
+- Eval IDs covered: handoff guard (untracked, unstaged, staged+dirty, `-a`, inline add incl. symlink/abs/subdir, non-repo, no-handoff, non-commit git), rename sweep, installer fixtures (legacy migration, fresh install, broader custom ignore)
+- Test receipts referenced: `./scripts/verify-pack.sh` (PASS, includes `141 passed`); `bash -n` on all scripts (PASS); JSON manifests (PASS); YAML workflow parse (PASS); live guard check in this repo (BLOCKED / allowed as expected)
 - Review findings referenced: none open
 
 STOP: normal resume context ends here; older entries below are archive.
 
 ## Session Timeline (Newest First)
+
+### 2026-08-24 — v4.0.0: PossibNow Dev Harness rename + enforced shared handoff
+- Checkpoint reason: pre-git-cycle
+- Files changed: plugin manifest (id/version/description), README, hero.svg, CHANGELOG, commands/*, agents/*, hooks/*.json, docs (architecture, onboarding), packs/project (CLAUDE/AGENTS/contracts/glossary/roles/wiki/HANDOFF template), both continuity skills, `scripts/{bootstrap-project,verify-pack,install-project}.sh`, `scripts/guardrails/{validate-bash.py,git-status.sh}`, `tests/guardrails/test_validate_bash.py`, CI workflow.
+- Decisions: full identity rename (confirmed); GitHub repo renamed; enforcement via Claude guardrail + contract wording; no pre-commit hook installer; org name unchanged (provisional).
+- Current state: committed locally on `codex/share-handoff-history`; verify-pack + 141 tests pass; marketplace patch drafted, not applied; branch not yet pushed.
+- Next steps: push, apply marketplace patch, retitle/mark PR #4 ready, merge, tag v4.0.0, reinstall plugin under the new id.
+- Git cycle: committed.
+- Learnings: not enabled.
 
 ### 2026-08-04 — Shared HANDOFF continuity + copyable README commands
 - Checkpoint reason: task-end

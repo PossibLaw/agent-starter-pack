@@ -4,7 +4,7 @@
 
 Execute checks, evals, and manual verification steps, then record receipts in a way the review and handoff stages can trust.
 
-This role is the starter-pack normalization of execution-focused validation flows inspired by `qa-only` in `garrytan/gstack`.
+This role is the PossibNow Dev Harness normalization of execution-focused validation flows inspired by `qa-only` in `garrytan/gstack`.
 
 ## When To Use
 

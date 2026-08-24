@@ -52,7 +52,7 @@ Think of it in two tiers:
 ## Bottom line
 
 The **Tier 1** levers are always on — you get them for free on every project. The
-**Tier 2** levers switch on when you enable Scale mode with `/possiblaw-starter:scale`
+**Tier 2** levers switch on when you enable Scale mode with `/possibnow-dev-harness:scale`
 and keep context flat as the codebase grows.
 
 See also: `docs/workflows/contracts.md` (the continuity pipeline and the STOP

@@ -541,7 +541,7 @@ if [[ "$SRC_COUNT" -gt "$SCALE_THRESHOLD" ]]; then
   echo "NOTE: large codebase detected ($SRC_COUNT source files, threshold $SCALE_THRESHOLD)."
   echo "  This looks like an existing/large repo. Turn on Tier 2 'Scale mode' so the agent"
   echo "  queries an index instead of re-reading files every session:"
-  echo "    - In Claude Code, run: /possiblaw-starter:scale"
+  echo "    - In Claude Code, run: /possibnow-dev-harness:scale"
   echo "    - Reference: docs/workflows/graphify.md and docs/workflows/token-management.md"
   echo "  (The SessionStart hook will also remind you until Scale mode is on.)"
 fi

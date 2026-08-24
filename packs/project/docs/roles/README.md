@@ -1,6 +1,6 @@
 # Canonical Role Registry
 
-This directory is the source of truth for host-agnostic delivery roles in the starter pack.
+This directory is the source of truth for host-agnostic delivery roles in the PossibNow Dev Harness.
 
 Rules:
 - Put the role contract here first.

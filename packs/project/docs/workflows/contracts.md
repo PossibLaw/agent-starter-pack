@@ -67,7 +67,7 @@ Project state uses **two newest-first files**:
 
 `.agent/HANDOFF.md` is the single continuity file. It replaces the older split between a separate handoff file and a separate session-history timeline — keep both the active baton and the dated timeline in this one file. Do not create alternate continuity sidecars (extra handoff append files, dated handoff files, separate active-plan files, or a separate history file). If such a file already exists, fold any still-current facts into `HANDOFF.md` and leave stale details below the archive boundary.
 
-Commit relevant `HANDOFF.md` changes with the work they describe so every contributor receives the same current state. Keep the other `.agent/*.md` working-state files local unless team policy explicitly says otherwise. Before committing the handoff, remove credentials, secrets, raw private client data, and machine-specific paths. Concurrent handoff updates should be merged without dropping valid entries, then restored to newest-first order.
+Every commit must carry the current `HANDOFF.md`: stage it (`git add .agent/HANDOFF.md`) with the work it describes so every contributor and every coding agent receives the same current state. In Claude Code the `validate-bash` guardrail refuses a `git commit` that would leave `.agent/HANDOFF.md` untracked or with unstaged edits; other hosts follow the same rule by contract. Keep the other `.agent/*.md` working-state files local unless team policy explicitly says otherwise.
 
 Keep the latest active state at the top of each continuity file. Preserve older entries below this exact marker:
 
@@ -96,7 +96,7 @@ Treat the checkpoint as a guardrail, not busywork. It exists to preserve state b
 
 ## Canonical Role Mapping
 
-The starter pack uses a shared role registry in `docs/roles/`.
+The harness uses a shared role registry in `docs/roles/`.
 
 - `product-strategist` and `engineering-planner` feed `PLAN.md`.
 - `qa-validator` feeds `TEST.md`.
@@ -112,7 +112,7 @@ Host-specific wrappers should stay thin:
 
 Scale mode is the gate that raises a growing project from Tier 1 to Tier 2. The harness suggests it when a repo crosses a size threshold (roughly 40–50 source files, or when you begin working inside an existing large codebase). It is a soft suggestion, never a hard block.
 
-When suggested or requested (`/possiblaw-starter:scale`):
+When suggested or requested (`/possibnow-dev-harness:scale`):
 - build a queryable index of the codebase with Graphify and prefer querying it over re-reading files (see `docs/workflows/graphify.md`)
 - record `Scale mode: ON` in `.agent/HANDOFF.md` and configure `.agent/WIKI.md`
 - keep all Tier 1 continuity and guardrail rules in force

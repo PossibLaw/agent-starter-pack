@@ -14,7 +14,7 @@ must be verified against source before you implement anything.
 
 ## When to Use
 
-Turn this on with `/possiblaw-starter:scale` when:
+Turn this on with `/possibnow-dev-harness:scale` when:
 
 - the repo is large (roughly 40–50+ source files) and "where does X live?" keeps
   costing real search time, or

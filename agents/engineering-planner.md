@@ -1,6 +1,6 @@
 ---
 name: Engineering Planner
-description: Thin Claude wrapper for the starter-pack engineering planner role. Use for implementation plans, architecture tradeoffs, milestone order, and eval design.
+description: Thin Claude wrapper for the PossibNow Dev Harness engineering planner role. Use for implementation plans, architecture tradeoffs, milestone order, and eval design.
 agent: true
 ---
 

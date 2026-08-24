@@ -189,7 +189,7 @@ if [[ -n "$unexpected" ]]; then
   exit 1
 fi
 
-# Stale references that must not survive the v3 refresh (scoped to the active pack + harness files).
+# Stale references that must not survive the v3 refresh / v4 rename (scoped to the active pack + harness files).
 forbid_text() {
   local pattern="$1"
   local hits
@@ -210,6 +210,8 @@ forbid_text ".claude/history.md"
 forbid_text "run-checkpoint.ps1"
 forbid_text "Local Continuity Files (Do Not Commit)"
 forbid_text "continuity stays local"
+forbid_text "possiblaw-starter"
+forbid_text "Agent Starter Pack"
 
 require_text() {
   local file="$1"
@@ -278,8 +280,13 @@ require_text "$REPO_ROOT/skills/applying-simplicity-ladder/SKILL.md" "name: appl
 require_text "$REPO_ROOT/skills/scaling-up-with-graphify/SKILL.md" "name: scaling-up-with-graphify" "missing scale mode skill metadata"
 
 # Plugin manifest
-require_text "$REPO_ROOT/.claude-plugin/plugin.json" '"name": "possiblaw-starter"' "missing plugin name in .claude-plugin/plugin.json"
-require_text "$REPO_ROOT/.claude-plugin/plugin.json" '"version": "3.0.0"' "plugin.json not bumped to version 3.0.0"
+require_text "$REPO_ROOT/.claude-plugin/plugin.json" '"name": "possibnow-dev-harness"' "missing plugin name in .claude-plugin/plugin.json"
+require_text "$REPO_ROOT/.claude-plugin/plugin.json" '"version": "4.0.0"' "plugin.json not bumped to version 4.0.0"
+
+# Shared handoff commit guard (Claude runtime) and its tests
+require_text "$REPO_ROOT/scripts/guardrails/validate-bash.py" "def check_handoff_commit" "missing shared-handoff commit guard in scripts/guardrails/validate-bash.py"
+require_text "$REPO_ROOT/tests/guardrails/test_validate_bash.py" "test_commit_blocked_when_handoff_untracked" "missing shared-handoff commit guard tests in tests/guardrails/test_validate_bash.py"
+require_text "$REPO_ROOT/hooks/hooks.json" "validate-bash.py" "validate-bash hook not wired in hooks/hooks.json"
 
 agent_md_count="$(find "$REPO_ROOT/agents" -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')"
 if [[ "$agent_md_count" -lt 8 ]]; then
@@ -293,5 +300,22 @@ if [[ ! -x "$REPO_ROOT/scripts/guardrails/validate-bash.py" ]]; then
 fi
 require_text "$REPO_ROOT/packs/global/claude/.claude/CLAUDE.md" "For vendor setup/API/security guidance, verify against official vendor docs and cite source date." "missing vendor recency rule in packs/global/claude/.claude/CLAUDE.md"
 require_text "$REPO_ROOT/packs/global/codex/.codex/AGENTS.md" "For vendor setup/API/security guidance, verify against official vendor docs and cite source date." "missing vendor recency rule in packs/global/codex/.codex/AGENTS.md"
+
+# Guardrail unit tests: run with the first python3 that has pytest; otherwise report the gap.
+PYTEST_PY=""
+for candidate in python3 /usr/bin/python3 /opt/homebrew/bin/python3; do
+  if command -v "$candidate" >/dev/null 2>&1 && "$candidate" -c 'import pytest' >/dev/null 2>&1; then
+    PYTEST_PY="$candidate"
+    break
+  fi
+done
+if [[ -n "$PYTEST_PY" ]]; then
+  if ! (cd "$REPO_ROOT" && "$PYTEST_PY" -m pytest tests/guardrails -q -p no:cacheprovider); then
+    echo "BLOCKED: guardrail unit tests failed (tests/guardrails)"
+    exit 1
+  fi
+else
+  echo "NOTE: pytest not found for any python3 candidate; guardrail unit tests skipped (UNCONFIRMED)"
+fi
 
 echo "DONE: verification passed"

@@ -24,7 +24,7 @@ Configure the backend in `.agent/WIKI.md`:
 - `manual`: the default Markdown/Obsidian workflow. Agents or humans maintain `index.md`, `log.md`, and `pages/*`.
 - `graphify`: optional generated graph backend. Graphify may create `graphify-out/`, `GRAPH_REPORT.md`, `graph.json`, cache files, visualizations, and optional wiki pages.
 
-Do not enable service-backed or always-on memory/indexing by default. Ix is intentionally out of scope for this Starter Pack workflow unless the project later adopts a separate advanced integration.
+Do not enable service-backed or always-on memory/indexing by default. Ix is intentionally out of scope for this Dev Harness workflow unless the project later adopts a separate advanced integration.
 
 ## Setup
 

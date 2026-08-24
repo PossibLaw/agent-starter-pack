@@ -1,8 +1,10 @@
 """Tests for validate-bash.py hook script."""
 
 import json
+import os
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 import pytest
@@ -10,14 +12,29 @@ import pytest
 SCRIPT = str(Path(__file__).resolve().parent.parent.parent / "scripts" / "guardrails" / "validate-bash.py")
 
 
-def run_hook(command: str) -> subprocess.CompletedProcess:
-    """Run validate-bash.py with a simulated tool input payload."""
-    payload = json.dumps({"tool_name": "Bash", "tool_input": {"command": command}})
+def _clean_env() -> dict:
+    """Environment without the Claude project pointer so tests never inspect the host repo."""
+    env = dict(os.environ)
+    env.pop("CLAUDE_PROJECT_DIR", None)
+    return env
+
+
+def run_hook(command: str, cwd=None, env=None) -> subprocess.CompletedProcess:
+    """Run validate-bash.py with a simulated tool input payload.
+
+    ``cwd`` defaults to an empty, non-git temp directory so generic command checks
+    are isolated from whatever repository the test suite happens to run inside.
+    """
+    if cwd is None:
+        cwd = tempfile.mkdtemp(prefix="validate-bash-")
+    payload = {"tool_name": "Bash", "tool_input": {"command": command}, "cwd": cwd}
     return subprocess.run(
         [sys.executable, SCRIPT],
-        input=payload,
+        input=json.dumps(payload),
         capture_output=True,
         text=True,
+        cwd=cwd,
+        env=env if env is not None else _clean_env(),
     )
 
 
@@ -131,3 +148,221 @@ def test_missing_command_field():
         text=True,
     )
     assert proc.returncode == 0
+
+
+# --- Shared handoff commit guard ---
+#
+# .agent/HANDOFF.md is the shared, version-controlled continuity file. A `git commit`
+# that would leave it untracked or with unstaged edits is blocked so teammates and
+# other coding agents always receive the current baton.
+
+HANDOFF_REL = ".agent/HANDOFF.md"
+
+
+def _git(repo: Path, *args: str) -> str:
+    return subprocess.run(
+        ["git", "-C", str(repo), *args], check=True, capture_output=True, text=True
+    ).stdout
+
+
+@pytest.fixture
+def repo(tmp_path: Path) -> Path:
+    """A git repo whose .agent/HANDOFF.md is committed and clean."""
+    _git(tmp_path, "init", "-q")
+    _git(tmp_path, "config", "user.email", "test@example.com")
+    _git(tmp_path, "config", "user.name", "Test")
+    _git(tmp_path, "config", "commit.gpgsign", "false")
+    handoff = tmp_path / HANDOFF_REL
+    handoff.parent.mkdir(parents=True)
+    handoff.write_text("# HANDOFF\n")
+    (tmp_path / "app.py").write_text("print('hi')\n")
+    _git(tmp_path, "add", "-A")
+    _git(tmp_path, "commit", "-q", "-m", "init")
+    return tmp_path
+
+
+def _edit_handoff(repo: Path) -> None:
+    (repo / HANDOFF_REL).write_text("# HANDOFF\n- new baton\n")
+
+
+def assert_blocked(result: subprocess.CompletedProcess) -> None:
+    assert result.returncode == 2, f"expected block, got rc={result.returncode} stderr={result.stderr!r}"
+    assert "BLOCKED" in result.stderr
+    assert HANDOFF_REL in result.stderr
+
+
+def assert_allowed(result: subprocess.CompletedProcess) -> None:
+    assert result.returncode == 0, f"expected allow, got rc={result.returncode} stderr={result.stderr!r}"
+    assert "permissionDecision" not in result.stdout
+
+
+def test_commit_allowed_when_handoff_clean(repo):
+    assert_allowed(run_hook("git commit -m 'work'", cwd=str(repo)))
+
+
+def test_commit_blocked_when_handoff_untracked(tmp_path):
+    _git(tmp_path, "init", "-q")
+    handoff = tmp_path / HANDOFF_REL
+    handoff.parent.mkdir(parents=True)
+    handoff.write_text("# HANDOFF\n")
+    result = run_hook("git commit -m 'first'", cwd=str(tmp_path))
+    assert_blocked(result)
+    assert "untracked" in result.stderr
+    assert "git add .agent/HANDOFF.md" in result.stderr
+
+
+def test_commit_blocked_when_handoff_modified_but_unstaged(repo):
+    _edit_handoff(repo)
+    result = run_hook("git commit -m 'work'", cwd=str(repo))
+    assert_blocked(result)
+    assert "unstaged" in result.stderr
+    assert "git add .agent/HANDOFF.md" in result.stderr
+
+
+def test_commit_allowed_when_handoff_edit_is_staged(repo):
+    _edit_handoff(repo)
+    _git(repo, "add", HANDOFF_REL)
+    assert_allowed(run_hook("git commit -m 'work'", cwd=str(repo)))
+
+
+def test_commit_blocked_when_staged_handoff_has_further_unstaged_edits(repo):
+    _edit_handoff(repo)
+    _git(repo, "add", HANDOFF_REL)
+    (repo / HANDOFF_REL).write_text("# HANDOFF\n- newer baton\n")
+    assert_blocked(run_hook("git commit -m 'work'", cwd=str(repo)))
+
+
+@pytest.mark.parametrize("command", ["git commit -a -m 'work'", "git commit -am 'work'", "git commit --all -m 'work'"])
+def test_commit_all_flag_stages_modified_handoff(repo, command):
+    _edit_handoff(repo)
+    assert_allowed(run_hook(command, cwd=str(repo)))
+
+
+def test_commit_all_flag_does_not_cover_untracked_handoff(tmp_path):
+    _git(tmp_path, "init", "-q")
+    handoff = tmp_path / HANDOFF_REL
+    handoff.parent.mkdir(parents=True)
+    handoff.write_text("# HANDOFF\n")
+    assert_blocked(run_hook("git commit -am 'first'", cwd=str(tmp_path)))
+
+
+@pytest.mark.parametrize(
+    "command",
+    [
+        "git add .agent/HANDOFF.md && git commit -m 'work'",
+        "git add ./.agent/HANDOFF.md && git commit -m 'work'",
+        "git add .agent && git commit -m 'work'",
+        "git add -A && git commit -m 'work'",
+        "git add --all && git commit -m 'work'",
+        "git add . && git commit -m 'work'",
+        "git add -u && git commit -m 'work'",
+        "git add app.py .agent/HANDOFF.md; git commit -m 'work'",
+    ],
+    ids=lambda c: c[:40],
+)
+def test_inline_add_that_stages_handoff_allows_commit(repo, command):
+    _edit_handoff(repo)
+    assert_allowed(run_hook(command, cwd=str(repo)))
+
+
+@pytest.mark.parametrize(
+    "command",
+    [
+        "git add app.py && git commit -m 'work'",
+        "git add src/ && git commit -m 'work'",
+    ],
+    ids=lambda c: c[:40],
+)
+def test_inline_add_that_skips_handoff_still_blocks(repo, command):
+    _edit_handoff(repo)
+    assert_blocked(run_hook(command, cwd=str(repo)))
+
+
+def test_inline_add_update_does_not_cover_untracked_handoff(tmp_path):
+    _git(tmp_path, "init", "-q")
+    handoff = tmp_path / HANDOFF_REL
+    handoff.parent.mkdir(parents=True)
+    handoff.write_text("# HANDOFF\n")
+    assert_blocked(run_hook("git add -u && git commit -m 'first'", cwd=str(tmp_path)))
+
+
+def test_commit_from_subdirectory_still_checks_repo_root_handoff(repo):
+    _edit_handoff(repo)
+    sub = repo / "src"
+    sub.mkdir()
+    assert_blocked(run_hook("git commit -m 'work'", cwd=str(sub)))
+
+
+def test_git_dash_c_path_is_respected(repo, tmp_path):
+    _edit_handoff(repo)
+    elsewhere = tmp_path / "elsewhere"
+    elsewhere.mkdir()
+    assert_blocked(run_hook(f"git -C {repo} commit -m 'work'", cwd=str(elsewhere)))
+
+
+def test_cwd_falls_back_to_claude_project_dir_env(repo):
+    _edit_handoff(repo)
+    env = _clean_env()
+    env["CLAUDE_PROJECT_DIR"] = str(repo)
+    payload = json.dumps({"tool_name": "Bash", "tool_input": {"command": "git commit -m 'work'"}})
+    scratch = tempfile.mkdtemp(prefix="validate-bash-")
+    result = subprocess.run(
+        [sys.executable, SCRIPT], input=payload, capture_output=True, text=True, cwd=scratch, env=env
+    )
+    assert_blocked(result)
+
+
+def test_commit_outside_git_repo_is_allowed(tmp_path):
+    (tmp_path / HANDOFF_REL).parent.mkdir(parents=True)
+    (tmp_path / HANDOFF_REL).write_text("# HANDOFF\n")
+    assert_allowed(run_hook("git commit -m 'work'", cwd=str(tmp_path)))
+
+
+def test_commit_in_repo_without_handoff_is_allowed(tmp_path):
+    _git(tmp_path, "init", "-q")
+    (tmp_path / "app.py").write_text("x = 1\n")
+    assert_allowed(run_hook("git commit -m 'work'", cwd=str(tmp_path)))
+
+
+@pytest.mark.parametrize("command", ["git status", "git add app.py", "git push origin feature", "git log --oneline"])
+def test_non_commit_git_commands_do_not_trigger_handoff_guard(repo, command):
+    _edit_handoff(repo)
+    assert_allowed(run_hook(command, cwd=str(repo)))
+
+
+def test_commit_message_containing_operators_is_parsed_safely(repo):
+    _edit_handoff(repo)
+    _git(repo, "add", HANDOFF_REL)
+    assert_allowed(run_hook("git commit -m 'fix a && b; c | d'", cwd=str(repo)))
+
+
+# --- Path-identity edge cases: cwd string differs from git's toplevel string ---
+# (symlinked checkout, case-insensitive filesystem). Coverage must be decided by
+# git-relative paths / inodes, never by comparing raw path strings.
+
+
+def test_inline_add_allows_when_cwd_is_a_symlink_to_the_repo(repo, tmp_path):
+    _edit_handoff(repo)
+    link = tmp_path / "link-to-repo"
+    link.symlink_to(repo, target_is_directory=True)
+    assert_allowed(run_hook("git add .agent/HANDOFF.md && git commit -m 'work'", cwd=str(link)))
+
+
+def test_inline_add_with_absolute_path_allows(repo):
+    _edit_handoff(repo)
+    assert_allowed(run_hook(f"git add {repo / HANDOFF_REL} && git commit -m 'work'", cwd=str(repo)))
+
+
+def test_inline_add_dot_from_subdirectory_does_not_cover_handoff(repo):
+    _edit_handoff(repo)
+    sub = repo / "src"
+    sub.mkdir()
+    (sub / "a.py").write_text("x = 1\n")
+    assert_blocked(run_hook("git add . && git commit -m 'work'", cwd=str(sub)))
+
+
+def test_inline_add_relative_parent_path_from_subdirectory_allows(repo):
+    _edit_handoff(repo)
+    sub = repo / "src"
+    sub.mkdir()
+    assert_allowed(run_hook("git add ../.agent/HANDOFF.md && git commit -m 'work'", cwd=str(sub)))

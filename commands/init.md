@@ -1,12 +1,12 @@
 ---
-description: Initialize the current repo with PossibLaw starter-pack project files (.agent/ state templates, AGENTS.md, CLAUDE.md, docs/roles, docs/workflows, docs/glossary, .claude/skills). Auto-detects stack and pre-fills test/lint/typecheck/build commands.
+description: Initialize the current repo with PossibNow Dev Harness project files (.agent/ state templates, AGENTS.md, CLAUDE.md, docs/roles, docs/workflows, docs/glossary, .claude/skills). Auto-detects stack and pre-fills test/lint/typecheck/build commands.
 argument-hint: [--preserve-progress] [--dry-run] [--name NAME] [--owner OWNER] [--primary CMD] [--test CMD] [--lint CMD] [--typecheck CMD] [--build CMD]
 allowed-tools: Bash
 ---
 
-# /possiblaw-starter:init
+# /possibnow-dev-harness:init
 
-Bootstrap the **current working directory** with PossibLaw Agent Starter Pack project files. Run this once after installing the plugin so your repo has the state-artifact pipeline (PLAN/TEST/REVIEW/HANDOFF), the project-level governance files, and the host-agnostic role and workflow contracts.
+Bootstrap the **current working directory** with PossibNow Dev Harness project files. Run this once after installing the plugin so your repo has the state-artifact pipeline (PLAN/TEST/REVIEW/HANDOFF), the project-level governance files, and the host-agnostic role and workflow contracts.
 
 ## What it installs into the repo
 
@@ -17,7 +17,7 @@ Bootstrap the **current working directory** with PossibLaw Agent Starter Pack pr
 - `docs/workflows/{evals,contracts,wiki,graphify,token-management}.md`
 - `docs/glossary.md` and `docs/vendor/*.md`
 - `.claude/skills/{closing-sprint-and-syncing-state,running-novice-safe-git-cycle,applying-simplicity-ladder,scaling-up-with-graphify}/SKILL.md` — project-local copies for Codex parity
-- `.agent/HANDOFF.md` remains trackable for team continuity; other `.agent/*` working-state files stay local
+- `.agent/HANDOFF.md` remains trackable for team continuity and must ship with every commit (the Claude Code guardrail blocks `git commit` while it is untracked or unstaged); other `.agent/*` working-state files stay local
 
 ## What it does NOT touch
 
@@ -43,7 +43,7 @@ If $ARGUMENTS is empty, this still works — the script defaults to fresh instal
 
 If the script reports `DONE: project files installed into <path>`, remind the user with this exact text:
 
-> Starter-pack files installed. Next steps:
+> PossibNow Dev Harness files installed. Next steps:
 >
 > 1. Review the diff: `git status && git diff`
 > 2. Commit the shared governance, templates, and `.agent/HANDOFF.md` so other contributors receive the current baton and session history. Review the handoff first and remove credentials, secrets, raw private client data, and machine-specific paths:
@@ -51,13 +51,14 @@ If the script reports `DONE: project files installed into <path>`, remind the us
 >    git add AGENTS.md CLAUDE.md docs/ .agent/HANDOFF.md .claude/skills/ .gitignore
 >    ```
 >    ```
->    git commit -m "Add PossibLaw starter pack governance + workflow templates"
+>    git commit -m "Add PossibNow Dev Harness governance + workflow templates"
 >    ```
 > 3. If any commands show as `UNCONFIRMED` in `.agent/TEST.md` or `CLAUDE.md`, fill them in (or re-run init with `--test "..."` etc.)
 > 4. The `closing-sprint-and-syncing-state` skill will keep `PLAN.md` and the single `HANDOFF.md` continuity file current as you work.
+> 5. From now on, every commit must carry `.agent/HANDOFF.md`: refresh the Current Baton, `git add .agent/HANDOFF.md`, then commit. In Claude Code the guardrail refuses a commit that would leave the handoff untracked or unstaged.
 
 If the script blocks (e.g., target placeholder error, missing pack), surface the error and the suggested fix verbatim — do not paper over it.
 
 ## When NOT to use this command
 
-If the user is opening a repo that already has the starter pack installed (presence of `AGENTS.md` + `.agent/PLAN.md`), do not re-run init blindly. Either run with `--preserve-progress` or skip — re-running without that flag will back up existing files (`.bak.<timestamp>`) but still overwrite, which is rarely what the user wants mid-project.
+If the user is opening a repo that already has the harness installed (presence of `AGENTS.md` + `.agent/PLAN.md`), do not re-run init blindly. Either run with `--preserve-progress` or skip — re-running without that flag will back up existing files (`.bak.<timestamp>`) but still overwrite, which is rarely what the user wants mid-project.

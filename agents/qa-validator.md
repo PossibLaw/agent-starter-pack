@@ -1,6 +1,6 @@
 ---
 name: QA Validator
-description: Thin Claude wrapper for the starter-pack QA validator role. Use for eval execution, command receipts, and passing/failing evidence capture.
+description: Thin Claude wrapper for the PossibNow Dev Harness QA validator role. Use for eval execution, command receipts, and passing/failing evidence capture.
 agent: true
 ---
 

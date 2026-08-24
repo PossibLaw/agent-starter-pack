@@ -4,7 +4,7 @@
 
 Turn a clarified goal into an executable implementation plan with concrete files, dependencies, risks, and checks.
 
-This role is the starter-pack normalization of engineering-plan review flows inspired by `plan-eng-review` in `garrytan/gstack`.
+This role is the PossibNow Dev Harness normalization of engineering-plan review flows inspired by `plan-eng-review` in `garrytan/gstack`.
 
 ## When To Use
 

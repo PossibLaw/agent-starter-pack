@@ -1,6 +1,6 @@
 ---
 name: Reviewer
-description: Thin Claude wrapper for the starter-pack reviewer role. Use after implementation or before handoff to catch defects, regressions, and evidence gaps. Strictly read-only.
+description: Thin Claude wrapper for the PossibNow Dev Harness reviewer role. Use after implementation or before handoff to catch defects, regressions, and evidence gaps. Strictly read-only.
 agent: true
 ---
 

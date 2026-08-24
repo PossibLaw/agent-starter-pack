@@ -53,7 +53,7 @@ if [ "$ALREADY_SCALED" -eq 0 ]; then
     if [ "$SRC_COUNT" -gt "$SCALE_THRESHOLD" ]; then
         CONTEXT="$CONTEXT
 
-📈 Large codebase detected ($SRC_COUNT files). Consider /possiblaw-starter:scale to index it with Graphify so the agent stops re-reading files."
+📈 Large codebase detected ($SRC_COUNT files). Consider /possibnow-dev-harness:scale to index it with Graphify so the agent stops re-reading files."
     fi
 fi
 

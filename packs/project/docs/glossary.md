@@ -1,6 +1,6 @@
 # Glossary
 
-Short, beginner-friendly definitions of terms used across this starter pack's instruction files.
+Short, beginner-friendly definitions of terms used across the PossibNow Dev Harness instruction files.
 
 ## Core workflow terms
 
@@ -31,7 +31,7 @@ Short, beginner-friendly definitions of terms used across this starter pack's in
 ## Pack-specific terms
 
 - **Tier 1 / Tier 2**: The two tiers of the harness. **Tier 1 (Starter, default)** is the everyday workflow most projects need — `PLAN → TEST → REVIEW → HANDOFF`, single-file continuity, guardrails, the simplicity ladder, and token discipline. **Tier 2 (Scale, opt-in)** adds Graphify indexing, wiki orientation, and deeper review. Tier 2 only adds to Tier 1; it never removes its rules.
-- **Scale mode**: Tier 2, default OFF. Turn it on with `/possiblaw-starter:scale` when the codebase grows large (roughly 40–50+ source files) or you start working in an existing large repo. It builds a queryable Graphify index and configures `.agent/WIKI.md` so you query the index instead of re-reading files.
+- **Scale mode**: Tier 2, default OFF. Turn it on with `/possibnow-dev-harness:scale` when the codebase grows large (roughly 40–50+ source files) or you start working in an existing large repo. It builds a queryable Graphify index and configures `.agent/WIKI.md` so you query the index instead of re-reading files.
 - **Simplicity ladder**: An always-on Tier-1 rule: after understanding the problem, prefer the simplest option that works, in order — skip unneeded work → reuse existing code → standard library → native platform feature → existing dependency → small one-liner → only then a minimal new solution. See the `applying-simplicity-ladder` skill.
 - **Token management**: Keeping the prompt/context small and the prompt cache warm so the harness stays fast and cheap — read only the top of `.agent/HANDOFF.md` on resume, load files on demand, keep stable blocks stable. See `docs/workflows/token-management.md`.
 - **Graphify**: Optional Tier-2 code-indexing tool that builds a queryable knowledge graph of the repo. Output is advisory. See `docs/workflows/graphify.md`.

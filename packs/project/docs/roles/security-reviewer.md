@@ -4,7 +4,7 @@
 
 Review changes from an attacker mindset and force explicit security validation when trust boundaries are touched.
 
-This role is the starter-pack normalization of security-lead review flows inspired by `cso` in `garrytan/gstack`.
+This role is the PossibNow Dev Harness normalization of security-lead review flows inspired by `cso` in `garrytan/gstack`.
 
 ## When To Use
 

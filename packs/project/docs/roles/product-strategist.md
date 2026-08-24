@@ -4,7 +4,7 @@
 
 Clarify the user problem, business value, scope boundaries, and success criteria before implementation starts.
 
-This role is the starter-pack normalization of strategy-style planning flows inspired by `office-hours` and `plan-ceo-review` in `garrytan/gstack`.
+This role is the PossibNow Dev Harness normalization of strategy-style planning flows inspired by `office-hours` and `plan-ceo-review` in `garrytan/gstack`.
 
 ## When To Use
 

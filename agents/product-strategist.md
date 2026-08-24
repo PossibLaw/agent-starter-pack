@@ -1,6 +1,6 @@
 ---
 name: Product Strategist
-description: Thin Claude wrapper for the starter-pack product strategist role. Use for product framing, scope challenge, success criteria, and smallest-valuable-slice planning before implementation.
+description: Thin Claude wrapper for the PossibNow Dev Harness product strategist role. Use for product framing, scope challenge, success criteria, and smallest-valuable-slice planning before implementation.
 agent: true
 ---
 

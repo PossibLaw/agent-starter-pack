@@ -1,5 +1,5 @@
 {
-  "description": "PossibLaw guardrails Tier 2 — opt-in hooks for session context, input sanitization, state persistence, and subagent/task validation",
+  "description": "PossibNow Dev Harness guardrails Tier 2 — opt-in hooks for session context, input sanitization, state persistence, and subagent/task validation",
   "hooks": {
     "SessionStart": [
       {
