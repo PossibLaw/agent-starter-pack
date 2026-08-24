@@ -23,10 +23,10 @@ Shared, version-controlled continuity file. Current baton on top; dated Session 
 ## Current Baton (Read First)
 
 ## Status
-- Current phase: v4.0.0 — renamed to **PossibNow Dev Harness** + shared-handoff commit guard; committed on `codex/share-handoff-history`, push/PR update pending
+- Current phase: v4.0.0 — renamed to **PossibNow Dev Harness** + shared-handoff commit guard; branch merged with `origin/main` (#2, #3, #5), pushed, PR #4 ready for squash-merge
 - Owner: repository maintainers
 - Timestamp (ISO): 2026-08-24
-- Overall status: `COMMITTED`
+- Overall status: `PR_OPEN`
 - Checkpoint reason: `pre-git-cycle`
 - Tier: `1 (Starter)`
 - Scale mode: `OFF`
@@ -52,17 +52,16 @@ Shared, version-controlled continuity file. Current baton on top; dated Session 
 - None blocking. Note: system `/usr/bin/python3` (3.9) has pytest; Homebrew `python3` does not — `verify-pack.sh` picks the first candidate that can import pytest.
 
 ## Next Actions
-1. `git push origin codex/share-handoff-history` — updates draft PR #4 (https://github.com/PossibLaw/possibnow-dev-harness/pull/4) with the v4.0.0 work; retitle the PR to "v4.0.0: PossibNow Dev Harness rename + enforced shared handoff".
+1. Squash-merge PR #4 (https://github.com/PossibLaw/possibnow-dev-harness/pull/4) into `main` once CI is green; delete the branch.
 2. Apply the marketplace patch in `PossibLaw/PossibLaw-Plugins` (`.claude-plugin/marketplace.json` + `README.md`), run its `./scripts/validate-marketplace.sh`, push. Until then `/plugin install possibnow-dev-harness@possiblaw-plugins` will not resolve.
-3. Mark PR #4 ready, merge to `main`, tag `v4.0.0`.
-4. Locally: `/plugin uninstall possiblaw-starter@possiblaw-plugins` then `/plugin install possibnow-dev-harness@possiblaw-plugins`; optionally rename the checkout folder: `mv ~/PossibLaw-Agent-Starter-Pack ~/possibnow-dev-harness`.
+3. Locally: `/plugin uninstall possiblaw-starter@possiblaw-plugins` then `/plugin install possibnow-dev-harness@possiblaw-plugins`; optionally rename the checkout folder: `mv ~/PossibLaw-Agent-Starter-Pack ~/possibnow-dev-harness`.
 
 ## Sprint / Git Cycle
 - Sprint label: v4.0.0 rename + enforced shared handoff
 - Sprint status: `COMPLETE`
-- Git cycle status: `COMMITTED`
+- Git cycle status: `PR_OPEN`
 - Branch: `codex/share-handoff-history`
-- Recommended next git step: push the branch, then review/retitle PR #4
+- Recommended next git step: squash-merge PR #4 into `main`, delete the branch
 
 ## Learning / Memory
 - Learning mode: `OFF`
@@ -85,9 +84,9 @@ STOP: normal resume context ends here; older entries below are archive.
 - Checkpoint reason: pre-git-cycle
 - Files changed: plugin manifest (id/version/description), README, hero.svg, CHANGELOG, commands/*, agents/*, hooks/*.json, docs (architecture, onboarding), packs/project (CLAUDE/AGENTS/contracts/glossary/roles/wiki/HANDOFF template), both continuity skills, `scripts/{bootstrap-project,verify-pack,install-project}.sh`, `scripts/guardrails/{validate-bash.py,git-status.sh}`, `tests/guardrails/test_validate_bash.py`, CI workflow.
 - Decisions: full identity rename (confirmed); GitHub repo renamed; enforcement via Claude guardrail + contract wording; no pre-commit hook installer; org name unchanged (provisional).
-- Current state: committed locally on `codex/share-handoff-history`; verify-pack + 141 tests pass; marketplace patch drafted, not applied; branch not yet pushed.
-- Next steps: push, apply marketplace patch, retitle/mark PR #4 ready, merge, tag v4.0.0, reinstall plugin under the new id.
-- Git cycle: committed.
+- Current state: branch merged with `origin/main` (README restructure #3 re-based onto the v4 wording; its stale "handoff stays local" sentences corrected), pushed; verify-pack + 141 tests pass on the merged tree; PR #4 ready; marketplace patch drafted, not applied.
+- Next steps: squash-merge PR #4, apply marketplace patch, reinstall plugin under new id, rename local folder.
+- Git cycle: PR open.
 - Learnings: not enabled.
 
 ### 2026-08-04 — Shared HANDOFF continuity + copyable README commands
