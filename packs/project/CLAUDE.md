@@ -6,7 +6,7 @@ Repo Root (absolute path, required): /path/to/your/repo
 
 ## Two Tiers (How This Pack Grows With You)
 - **Tier 1 — Starter (default):** small-app workflow — `PLAN → TEST → REVIEW → HANDOFF`, single-file continuity, guardrails, and the simplicity ladder. This is everything most projects need.
-- **Tier 2 — Scale (gated as the codebase grows):** indexed retrieval (Graphify), wiki orientation, deeper review. When a repo gets large the harness will suggest `/possiblaw-starter:scale`; you opt in. Tier 2 never removes Tier 1 rules — it adds to them.
+- **Tier 2 — Scale (gated as the codebase grows):** indexed retrieval (Graphify), wiki orientation, deeper review. When a repo gets large the harness will suggest `/possibnow-dev-harness:scale`; you opt in. Tier 2 never removes Tier 1 rules — it adds to them.
 
 ## Startup Contract
 1. This file is the only startup instruction. Do not read other files unless triggered.
@@ -65,7 +65,7 @@ Analyze thoroughly; build minimally. The full procedure is the `applying-simplic
 - Shared contracts in `docs/roles/`, `docs/workflows/`, and `docs/vendor/` apply to every tool.
 
 ## Session Memory
-Continuity lives in one file: `${REPO_ROOT}/.agent/HANDOFF.md` (local-only, gitignored).
+Continuity lives in one shared, version-controlled file: `${REPO_ROOT}/.agent/HANDOFF.md`.
 
 Before pausing, handing off, or moving into a git cycle, refresh:
 - `${REPO_ROOT}/.agent/PLAN.md` milestone status and sprint status.
@@ -74,15 +74,17 @@ Before pausing, handing off, or moving into a git cycle, refresh:
 
 When resuming prior work, read the Current Baton of `${REPO_ROOT}/.agent/HANDOFF.md` first and stop at the STOP marker.
 
-## Local Continuity Files (Do Not Commit)
-- Keep these files local and out of commits/PRs:
+## Shared Handoff and Local Working State
+- `.agent/HANDOFF.md` is version-controlled and **must be committed with every change it describes** — teammates and other coding agents receive the current baton only through git. Before every `git commit`, refresh the Current Baton and run `git add .agent/HANDOFF.md`; never leave the handoff untracked or with unstaged edits.
+- In Claude Code, the harness guardrail (`validate-bash`) blocks `git commit` while `.agent/HANDOFF.md` is untracked or has unstaged edits. Codex and other AGENTS.md-aware tools have no runtime hook, so they follow the same rule by contract.
+- Keep these working-state files local and out of commits/PRs:
   - `.agent/PLAN.md`
   - `.agent/REVIEW.md`
   - `.agent/TEST.md`
-  - `.agent/HANDOFF.md`
   - `.agent/WIKI.md`
   - `.agent/LEARNINGS.md`
-- If any are already tracked, untrack them with `git rm --cached <path>`.
+- Before committing the handoff, remove credentials, secrets, raw private client data, and machine-specific paths; use `UNCONFIRMED` or a portable placeholder when needed.
+- When concurrent handoff edits conflict, preserve valid entries from each contributor and restore the required newest-first order.
 
 ## Optional Learning Loop (Default OFF, Validation-Gated)
 - Default: `Learning Mode` is `OFF`.
@@ -153,7 +155,7 @@ Supporting specialists (not canonical roles — use when a canonical role is not
 - If present, the optional helper `.agent/integrations/run-checkpoint.sh` prints the required updates as a checklist; it does not write state for you.
 
 ## Scale Mode (Tier 2, Default OFF)
-- For small projects, stay in Tier 1. When the codebase grows large (roughly 40–50+ source files) or you start working inside an existing large codebase, switch on Scale mode with `/possiblaw-starter:scale`.
+- For small projects, stay in Tier 1. When the codebase grows large (roughly 40–50+ source files) or you start working inside an existing large codebase, switch on Scale mode with `/possibnow-dev-harness:scale`.
 - Scale mode builds a queryable index of the code (Graphify) so you query the index instead of re-reading files, and configures `.agent/WIKI.md`. See `docs/workflows/graphify.md`.
 - Record `Tier: 2 (Scale)` and `Scale mode: ON` in `.agent/HANDOFF.md` when enabled.
 
@@ -173,12 +175,12 @@ Supporting specialists (not canonical roles — use when a canonical role is not
 - Use focused branches and atomic commits.
 - Attach validation evidence to PRs and handoffs.
 - Never commit credentials.
-- Never commit `.agent/*` (continuity stays local).
+- Always commit `.agent/HANDOFF.md` with the work (`git add .agent/HANDOFF.md` before every `git commit`); keep other `.agent/*` working-state files local unless the user explicitly changes that policy.
 - For novice-safe shipping, run this order:
   1. `git status --short`
   2. review `git diff --stat` and files changed
   3. run relevant checks
-  4. refresh the PLAN + HANDOFF checkpoint
+  4. refresh the PLAN + HANDOFF checkpoint, then `git add .agent/HANDOFF.md`
   5. commit a focused change
   6. push the branch and open or update a PR when a remote exists
 - If the local helper exists, prefer `.agent/integrations/run-checkpoint.sh --reason pre-git-cycle`.

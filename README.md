@@ -1,8 +1,10 @@
-# PossibLaw Agent Starter Pack
+# PossibNow Dev Harness
 
 Drop a complete, tool-agnostic instruction hierarchy — planning, testing, review, and handoff workflows — into any repository without writing files from scratch. It works with Claude Code, Codex, Cursor, or any assistant that reads `AGENTS.md`/`CLAUDE.md`.
 
 It was built by distilling hundreds of pages of best-practice references (captured under `docs/references/`) into practical, reusable templates.
+
+> **Renamed in v4.0.0** — formerly *PossibLaw Agent Starter Pack* (plugin id `possiblaw-starter`). The plugin id is now `possibnow-dev-harness`, slash commands are `/possibnow-dev-harness:*`, and the repo lives at `PossibLaw/possibnow-dev-harness` (old URLs redirect). If you had the old plugin installed: `/plugin uninstall possiblaw-starter@possiblaw-plugins`, then install the new id below.
 
 ---
 
@@ -16,10 +18,10 @@ Works with **any** assistant. Run this **from inside your target repo**:
 
 ```bash
 # New/empty repo — scaffold everything
-curl -fsSL https://raw.githubusercontent.com/PossibLaw/agent-starter-pack/main/scripts/bootstrap-project.sh | bash -s -- .
+curl -fsSL https://raw.githubusercontent.com/PossibLaw/possibnow-dev-harness/main/scripts/bootstrap-project.sh | bash -s -- .
 
 # Existing repo with code — keep your progress files
-curl -fsSL https://raw.githubusercontent.com/PossibLaw/agent-starter-pack/main/scripts/bootstrap-project.sh | bash -s -- . --adopt
+curl -fsSL https://raw.githubusercontent.com/PossibLaw/possibnow-dev-harness/main/scripts/bootstrap-project.sh | bash -s -- . --adopt
 ```
 
 That's the whole install. Prefer not to pipe a remote script, or want overrides (`--name`, `--dry-run`, explicit commands)? See [Install options & advanced usage](#install-options--advanced-usage).
@@ -30,16 +32,16 @@ If you use Claude Code and want `/`-command convenience plus always-on runtime g
 
 ```
 /plugin marketplace add PossibLaw/PossibLaw-Plugins
-/plugin install possiblaw-starter@possiblaw-plugins
+/plugin install possibnow-dev-harness@possiblaw-plugins
 ```
 
 Then, inside any repo you want scaffolded, run:
 
 ```
-/possiblaw-starter:init
+/possibnow-dev-harness:init
 ```
 
-The plugin also adds runtime guardrails (destructive-command blocker, sensitive-file protection, format-on-write) to every Claude Code session.
+The plugin also adds runtime guardrails (destructive-command blocker, sensitive-file protection, format-on-write, and a shared-handoff commit guard that refuses `git commit` while `.agent/HANDOFF.md` is untracked or unstaged) to every Claude Code session.
 
 > **Tier 2 hooks (off by default):** the optional `hooks/tier2-hooks.json` (validate-task, validate-subagent, sanitize-input, git-status SessionStart) ships but is **not active by default**. Enable it by merging its entries into your `.claude/settings.json`. The base `hooks/hooks.json` guardrails are on by default once the plugin is installed.
 
@@ -49,7 +51,7 @@ The plugin also adds runtime guardrails (destructive-command blocker, sensitive-
 |---|---|---|
 | **Assistant** | Claude, Codex, Cursor, any `AGENTS.md` tool | Claude Code only |
 | **Install** | One `curl` command, per repo | Marketplace install once, then `/init` per repo |
-| **Adds slash commands** | No | Yes (`/possiblaw-starter:*`) |
+| **Adds slash commands** | No | Yes (`/possibnow-dev-harness:*`) |
 | **Runtime guardrail hooks** | No (files only) | Yes |
 | **Best for** | Any repo, any tool, CI, non-Claude teams | Claude Code users who want the full experience |
 
@@ -60,13 +62,13 @@ Optional user-level defaults (Codex/Claude global files) are covered under [Opti
 The harness is built for non-developer legal users and starts simple. It has two tiers, and it grows with your codebase instead of overwhelming you up front.
 
 - **Tier 1 — Starter (default):** the everyday workflow most projects ever need — `PLAN → TEST → REVIEW → HANDOFF`, a single continuity file, runtime guardrails, the **simplicity ladder** (prefer the simplest thing that works: reuse before writing new code), and always-on token discipline.
-- **Tier 2 — Scale (opt-in, gated as the codebase grows):** indexed retrieval with Graphify, wiki orientation, and deeper review. When a repo gets large the harness suggests `/possiblaw-starter:scale`; you opt in. Tier 2 never removes Tier 1 rules — it only adds to them.
+- **Tier 2 — Scale (opt-in, gated as the codebase grows):** indexed retrieval with Graphify, wiki orientation, and deeper review. When a repo gets large the harness suggests `/possibnow-dev-harness:scale`; you opt in. Tier 2 never removes Tier 1 rules — it only adds to them.
 
 Learnings are **validation-gated**: auto-captured notes land in an Inbox, and a lesson is promoted into a category in `.agent/LEARNINGS.md` only if it recurred at least twice or you explicitly confirmed it. The template opens with a compass (what to capture / what not to), organizes promoted lessons into categories, and includes a review loop — so the learnings file stays small, trustworthy, and reviewable.
 
 ## Canonical Role Model
 
-The starter pack is the canonical home for host-agnostic delivery roles.
+The dev harness is the canonical home for host-agnostic delivery roles.
 
 - Shared role contracts live in `packs/project/docs/roles/*.md`.
 - Codex routing lives in `packs/project/AGENTS.md`.
@@ -113,7 +115,7 @@ The [one-line install](#path-a--one-line-install-into-any-repo-recommended) abov
 
 ### Pick the right mode
 
-- **Brand new repo:** run the installer as-is (no `--adopt`). This creates all starter-pack files.
+- **Brand new repo:** run the installer as-is (no `--adopt`). This creates all harness files.
 - **Existing/older repo:** add `--adopt` (alias for `--preserve-progress`) so your existing state files are never overwritten.
 - **Existing repo, intentionally reset progress** (PLAN/HANDOFF) to fresh templates: run without `--adopt`.
 
@@ -126,7 +128,7 @@ If you run the installer in a brand-new/empty repo (no detectable stack files ye
 ```text
   SOURCE_FILE_COUNT=320
 NOTE: large codebase detected (320 source files, threshold 50).
-  ... In Claude Code, run: /possiblaw-starter:scale
+  ... In Claude Code, run: /possibnow-dev-harness:scale
 ```
 
 Scale mode builds a Graphify index so the agent **queries the index instead of re-reading files**, which keeps a big codebase affordable. The SessionStart hook keeps reminding you until Scale mode is on. Small repos get no nudge and stay in the lean Tier 1 workflow. See `docs/workflows/graphify.md` and `docs/workflows/token-management.md`.
@@ -136,23 +138,23 @@ Scale mode builds a Graphify index so the agent **queries the index instead of r
 If you prefer not to execute a remote script directly:
 
 ```bash
-git clone --depth 1 https://github.com/PossibLaw/agent-starter-pack.git /tmp/agent-starter-pack
-/tmp/agent-starter-pack/scripts/install-project.sh .
-rm -rf /tmp/agent-starter-pack
+git clone --depth 1 https://github.com/PossibLaw/possibnow-dev-harness.git /tmp/possibnow-dev-harness
+/tmp/possibnow-dev-harness/scripts/install-project.sh .
+rm -rf /tmp/possibnow-dev-harness
 ```
 
-### Manual install from a local starter-pack clone
+### Manual install from a local harness clone
 
 ```bash
-git clone https://github.com/PossibLaw/agent-starter-pack.git
-cd agent-starter-pack
+git clone https://github.com/PossibLaw/possibnow-dev-harness.git
+cd possibnow-dev-harness
 ./scripts/install-project.sh ~/code/my-app
 ```
 
-Tip: `git clone` uses the repository name (`agent-starter-pack`) as the folder unless you pass a custom destination:
+Tip: `git clone` uses the repository name (`possibnow-dev-harness`) as the folder unless you pass a custom destination:
 
 ```bash
-git clone https://github.com/PossibLaw/agent-starter-pack.git PossibLaw-Agent-Starter-Pack
+git clone https://github.com/PossibLaw/possibnow-dev-harness.git my-dev-harness
 ```
 
 The project installer auto-detects likely commands from repo signals (`package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`, lockfiles). Use overrides only when you want explicit values:
@@ -168,7 +170,9 @@ The project installer auto-detects likely commands from repo signals (`package.j
   --build "pnpm build"
 ```
 
-The project installer also adds local-continuity ignore rules to the target repo `.gitignore` so `.agent/*.md` state files (including the single `.agent/HANDOFF.md` continuity file) stay local by default.
+The project installer keeps `.agent/HANDOFF.md` trackable so every developer and every coding agent receives the current baton and session history; the other `.agent/*.md` working-state files stay local and ignored by default. When re-run in a repo created by an older pack version, it removes the exact legacy `.agent/HANDOFF.md` ignore rule while preserving unrelated rules. Do not put credentials, secrets, or raw private client data in the shared handoff.
+
+**Every commit must carry the handoff.** Refresh the Current Baton, run `git add .agent/HANDOFF.md`, then commit. In Claude Code the `validate-bash` guardrail refuses a `git commit` that would leave `.agent/HANDOFF.md` untracked or with unstaged edits (it honors `git commit -a` and an inline `git add` that covers the file, and never fires in repos without a handoff). Codex and other AGENTS.md-aware tools have no runtime hook, so `AGENTS.md` and `docs/workflows/contracts.md` state the same rule for them.
 
 ## Optional Global Setup
 
@@ -217,7 +221,7 @@ Install only one tool:
 - `docs/workflows/graphify.md`
 - `docs/workflows/token-management.md`
 - `docs/glossary.md`
-- `.gitignore` updates for local continuity files (`.agent/*.md`)
+- `.gitignore` updates: `.agent/*.md` working state stays local; `.agent/HANDOFF.md` is shared and must ride in every commit (guardrail-enforced in Claude Code)
 
 `Learning Mode` defaults to `OFF`. Turn it on per task by setting `Learning Mode: CAPTURE` or `Learning Mode: APPLY` in `.agent/PLAN.md` (or by explicit prompt instruction).
 Continuity checkpoints default to sprint closeout, pre-git-cycle, session end, and "context feels ~50% full" as a heuristic trigger.
@@ -249,7 +253,7 @@ Examples:
 - Session timeline: the same `.agent/HANDOFF.md` keeps a short, newest-first dated entry below the STOP marker so a future session can recover what happened without rereading every artifact.
 - Manual wiki (Tier 2): use curated pages for stable codebase maps, domain glossary, architecture notes, and cross-links that humans may want to edit.
 - Graphify (Tier 2): read the generated wiki layer (`graphify-out/wiki/index.md`) and run focused graph queries for first-pass orientation on larger repos, then verify the result in source before implementation.
-- Non-developer path: ask the agent to "index this codebase with Graphify" (or run `/possiblaw-starter:scale`). The project contract tells the agent to configure `.agent/WIKI.md`, create safe ignore rules, install Graphify only with approval if missing, run the graph build, and report where the output lives.
+- Non-developer path: ask the agent to "index this codebase with Graphify" (or run `/possibnow-dev-harness:scale`). The project contract tells the agent to configure `.agent/WIKI.md`, create safe ignore rules, install Graphify only with approval if missing, run the graph build, and report where the output lives.
 
 > Note: a retrieval backend such as MemPalace is a *possible future optional layer* over completed local artifacts; it is not shipped today.
 
@@ -269,10 +273,16 @@ Examples:
 - Installers only copy curated files from `packs/`.
 - Runtime files, auth files, logs, and caches are never installed.
 
-## Verify This Pack
+## Verify This Harness
 
 ```bash
 ./scripts/verify-pack.sh
+```
+
+`verify-pack.sh` also runs the guardrail unit tests (`tests/guardrails/`) when a `python3` with pytest is available, and reports `UNCONFIRMED` otherwise. To run them directly:
+
+```bash
+python3 -m pytest tests/guardrails -q
 ```
 
 ## Learning Mode Helper
@@ -281,10 +291,10 @@ Set learning mode in a repo's `.agent/PLAN.md` without manual edits:
 
 ```bash
 # from inside target repo
-/path/to/agent-starter-pack/scripts/set-learning-mode.sh CAPTURE
+/path/to/possibnow-dev-harness/scripts/set-learning-mode.sh CAPTURE
 
 # explicit target repo path
-/path/to/agent-starter-pack/scripts/set-learning-mode.sh /path/to/your/repo OFF
+/path/to/possibnow-dev-harness/scripts/set-learning-mode.sh /path/to/your/repo OFF
 ```
 
 ## Continuity Checkpoint Helper

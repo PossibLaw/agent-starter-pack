@@ -1,6 +1,6 @@
 ---
 name: Docs Releaser
-description: Thin Claude wrapper for the starter-pack docs releaser role. Use for handoff quality, release notes, changelog updates, and final docs alignment after validation.
+description: Thin Claude wrapper for the PossibNow Dev Harness docs releaser role. Use for handoff quality, release notes, changelog updates, and final docs alignment after validation.
 agent: true
 ---
 

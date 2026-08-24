@@ -17,7 +17,7 @@ description: Use when a sprint is ending, a session is pausing, or context is ge
 3. Refresh the **Current Baton** at the top of `.agent/HANDOFF.md`: decisions, open questions, exact constraints, next actions, and git-cycle state.
 4. Prepend one short dated entry to the **Session Timeline** below the stop marker in `.agent/HANDOFF.md` (do not duplicate full artifacts; this timeline replaces the old separate history file).
 5. If learning mode is `CAPTURE` or `APPLY`, add only lessons that pass the promotion gate in `.agent/LEARNINGS.md` (recurred ≥2× or explicitly confirmed).
-6. If code or docs are being shipped next, flag the standard git cycle and leave the next git step explicit.
+6. If code or docs are being shipped next, flag the standard git cycle and leave the next git step explicit — the refreshed `.agent/HANDOFF.md` must be staged with that commit.
 
 ## Outputs
 - `PLAN.md` milestone state reflects reality

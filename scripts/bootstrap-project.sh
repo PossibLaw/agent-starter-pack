@@ -3,7 +3,7 @@ set -euo pipefail
 
 usage() {
   cat <<'USAGE'
-Clone the starter pack to a temporary directory and install project files.
+Clone the PossibNow Dev Harness to a temporary directory and install project files.
 
 Usage:
   bootstrap-project.sh [target-repo] [install-project options]
@@ -14,8 +14,9 @@ Examples:
   bootstrap-project.sh /path/to/repo --owner "team-name"
 
 Environment overrides:
-  STARTER_PACK_REPO_URL  Git URL to clone (default: official GitHub repo)
-  STARTER_PACK_REF       Branch/tag/ref to clone (default: main)
+  DEV_HARNESS_REPO_URL   Git URL to clone (default: official GitHub repo)
+  DEV_HARNESS_REF        Branch/tag/ref to clone (default: main)
+  (STARTER_PACK_REPO_URL / STARTER_PACK_REF are still honored as legacy aliases)
 USAGE
 }
 
@@ -46,9 +47,9 @@ if ! command -v git >/dev/null 2>&1; then
 fi
 
 TARGET_DIR_ABS="$(cd "$TARGET_DIR" && pwd)"
-REPO_URL="${STARTER_PACK_REPO_URL:-https://github.com/PossibLaw/agent-starter-pack.git}"
-REPO_REF="${STARTER_PACK_REF:-main}"
-TMP_ROOT="$(mktemp -d "${TMPDIR:-/tmp}/agent-starter-pack.XXXXXX")"
+REPO_URL="${DEV_HARNESS_REPO_URL:-${STARTER_PACK_REPO_URL:-https://github.com/PossibLaw/possibnow-dev-harness.git}}"
+REPO_REF="${DEV_HARNESS_REF:-${STARTER_PACK_REF:-main}}"
+TMP_ROOT="$(mktemp -d "${TMPDIR:-/tmp}/possibnow-dev-harness.XXXXXX")"
 CLONE_DIR="$TMP_ROOT/repo"
 
 cleanup() {
@@ -59,7 +60,7 @@ trap cleanup EXIT
 git clone --quiet --depth 1 --branch "$REPO_REF" "$REPO_URL" "$CLONE_DIR"
 
 if [[ ! -x "$CLONE_DIR/scripts/install-project.sh" ]]; then
-  echo "BLOCKED: installer script missing or not executable in cloned starter pack."
+  echo "BLOCKED: installer script missing or not executable in the cloned dev harness."
   exit 1
 fi
 

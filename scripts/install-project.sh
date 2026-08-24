@@ -82,6 +82,19 @@ PROGRESS_REL_FILES=(
   ".agent/LEARNINGS.md"
 )
 
+# Working state stays local. HANDOFF.md is intentionally excluded because it is
+# the shared continuity record for everyone developing in the repository.
+LOCAL_STATE_REL_FILES=(
+  ".claude/history.md"
+  ".agent/PLAN.md"
+  ".agent/CONTEXT.md"
+  ".agent/TASKS.md"
+  ".agent/REVIEW.md"
+  ".agent/TEST.md"
+  ".agent/WIKI.md"
+  ".agent/LEARNINGS.md"
+)
+
 detect_node_pm() {
   local dir="$1"
   local pkg="$dir/package.json"
@@ -351,20 +364,32 @@ copy_with_backup() {
   LAST_COPY_STATUS=1
 }
 
-ensure_progress_ignored() {
+ensure_state_ignore_policy() {
   local gitignore="$TARGET_DIR/.gitignore"
-  local header="# Local agent continuity files (keep local; do not commit)"
+  local old_header="# Local agent continuity files (keep local; do not commit)"
+  local header="# Local agent working state; HANDOFF.md is shared with the team"
+  local shared_handoff=".agent/HANDOFF.md"
+  local removals=("$old_header" "$shared_handoff")
+  local removal
   local rel
-  local added=0
+  local line
+  local keep_line
+  local updated=0
+  local tmp
 
   if [[ "$DRY_RUN" -eq 1 ]]; then
     if [[ ! -e "$gitignore" ]]; then
       echo "DRY_RUN create: $gitignore"
     fi
+    for removal in "${removals[@]}"; do
+      if [[ -f "$gitignore" ]] && grep -Fxq "$removal" "$gitignore"; then
+        echo "DRY_RUN remove: $gitignore :: $removal"
+      fi
+    done
     if [[ ! -f "$gitignore" ]] || ! grep -Fxq "$header" "$gitignore"; then
       echo "DRY_RUN append: $gitignore :: $header"
     fi
-    for rel in "${PROGRESS_REL_FILES[@]}"; do
+    for rel in "${LOCAL_STATE_REL_FILES[@]}"; do
       if [[ ! -f "$gitignore" ]] || ! grep -Fxq "$rel" "$gitignore"; then
         echo "DRY_RUN append: $gitignore :: $rel"
       fi
@@ -375,61 +400,67 @@ ensure_progress_ignored() {
   if [[ ! -e "$gitignore" ]]; then
     touch "$gitignore"
     echo "Created: $gitignore"
+    updated=1
+  fi
+
+  for removal in "${removals[@]}"; do
+    if grep -Fxq "$removal" "$gitignore"; then
+      updated=1
+    fi
+  done
+
+  if [[ "$updated" -eq 1 && -s "$gitignore" ]]; then
+    tmp="$(mktemp "${gitignore}.tmp.XXXXXX")"
+    while IFS= read -r line || [[ -n "$line" ]]; do
+      keep_line=1
+      for removal in "${removals[@]}"; do
+        if [[ "$line" == "$removal" ]]; then
+          keep_line=0
+          break
+        fi
+      done
+      if [[ "$keep_line" -eq 1 ]]; then
+        printf '%s\n' "$line" >>"$tmp"
+      fi
+    done <"$gitignore"
+    mv "$tmp" "$gitignore"
   fi
 
   if ! grep -Fxq "$header" "$gitignore"; then
     if [[ -s "$gitignore" ]]; then
-      printf "\n" >>"$gitignore"
+      printf '\n' >>"$gitignore"
     fi
-    printf "%s\n" "$header" >>"$gitignore"
-    added=1
+    printf '%s\n' "$header" >>"$gitignore"
+    updated=1
   fi
 
-  for rel in "${PROGRESS_REL_FILES[@]}"; do
+  for rel in "${LOCAL_STATE_REL_FILES[@]}"; do
     if grep -Fxq "$rel" "$gitignore"; then
       continue
     fi
-    printf "%s\n" "$rel" >>"$gitignore"
-    added=1
+    printf '%s\n' "$rel" >>"$gitignore"
+    updated=1
   done
 
-  if [[ "$added" -eq 1 ]]; then
-    echo "Updated: $gitignore (local continuity rules)"
+  if [[ "$updated" -eq 1 ]]; then
+    echo "Updated: $gitignore (HANDOFF.md shared; other agent state local)"
   else
-    echo "Unchanged: $gitignore (local continuity rules already present)"
+    echo "Unchanged: $gitignore (shared handoff policy already present)"
   fi
 }
 
-warn_if_progress_files_tracked() {
-  local rel
-  local tracked=()
-  local quoted=()
-
+warn_if_handoff_ignored() {
   if ! git -C "$TARGET_DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     return 0
   fi
 
-  for rel in "${PROGRESS_REL_FILES[@]}"; do
-    if git -C "$TARGET_DIR" ls-files --error-unmatch "$rel" >/dev/null 2>&1; then
-      tracked+=("$rel")
-    fi
-  done
-
-  if [[ "${#tracked[@]}" -eq 0 ]]; then
+  if ! git -C "$TARGET_DIR" check-ignore -q ".agent/HANDOFF.md"; then
     return 0
   fi
 
-  for rel in "${tracked[@]}"; do
-    quoted+=("$(printf '%q' "$rel")")
-  done
-
   echo ""
-  echo "WARNING: local continuity files are tracked in git and can still be committed:"
-  for rel in "${tracked[@]}"; do
-    echo "  - $rel"
-  done
-  echo "To keep local copies but untrack them, run:"
-  echo "  git -C \"$TARGET_DIR\" rm --cached ${quoted[*]}"
+  echo "WARNING: .agent/HANDOFF.md is still ignored by a broader custom rule."
+  echo "Review $TARGET_DIR/.gitignore and narrow the matching rule so the team can track the shared handoff."
 }
 
 replace_placeholders() {
@@ -480,7 +511,7 @@ copy_with_backup "$REPO_ROOT/skills/closing-sprint-and-syncing-state/SKILL.md" "
 copy_with_backup "$REPO_ROOT/skills/running-novice-safe-git-cycle/SKILL.md" "$TARGET_DIR/.claude/skills/running-novice-safe-git-cycle/SKILL.md" ".claude/skills/running-novice-safe-git-cycle/SKILL.md"
 copy_with_backup "$REPO_ROOT/skills/applying-simplicity-ladder/SKILL.md" "$TARGET_DIR/.claude/skills/applying-simplicity-ladder/SKILL.md" ".claude/skills/applying-simplicity-ladder/SKILL.md"
 copy_with_backup "$REPO_ROOT/skills/scaling-up-with-graphify/SKILL.md" "$TARGET_DIR/.claude/skills/scaling-up-with-graphify/SKILL.md" ".claude/skills/scaling-up-with-graphify/SKILL.md"
-ensure_progress_ignored
+ensure_state_ignore_policy
 
 if [[ "$DRY_RUN" -eq 0 ]]; then
   replace_placeholders "$TARGET_DIR/AGENTS.md"
@@ -503,14 +534,14 @@ echo "  LINT_COMMAND=$LINT_COMMAND"
 echo "  TYPECHECK_COMMAND=$TYPECHECK_COMMAND"
 echo "  BUILD_COMMAND=$BUILD_COMMAND"
 echo "  SOURCE_FILE_COUNT=$SRC_COUNT"
-warn_if_progress_files_tracked
+warn_if_handoff_ignored
 
 if [[ "$SRC_COUNT" -gt "$SCALE_THRESHOLD" ]]; then
   echo ""
   echo "NOTE: large codebase detected ($SRC_COUNT source files, threshold $SCALE_THRESHOLD)."
   echo "  This looks like an existing/large repo. Turn on Tier 2 'Scale mode' so the agent"
   echo "  queries an index instead of re-reading files every session:"
-  echo "    - In Claude Code, run: /possiblaw-starter:scale"
+  echo "    - In Claude Code, run: /possibnow-dev-harness:scale"
   echo "    - Reference: docs/workflows/graphify.md and docs/workflows/token-management.md"
   echo "  (The SessionStart hook will also remind you until Scale mode is on.)"
 fi

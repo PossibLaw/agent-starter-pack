@@ -96,10 +96,10 @@
   <rect x="14" y="14" width="772" height="592" rx="6" fill="none" stroke="#132c49" stroke-width="1"/>
 
   <!-- Title -->
-  <text class="title" x="400" y="68" text-anchor="middle">POSSIBLAW</text>
+  <text class="title" x="400" y="68" text-anchor="middle">POSSIBNOW</text>
 
   <!-- Subtitle -->
-  <text class="subtitle" x="400" y="95" text-anchor="middle">Agent Starter Pack</text>
+  <text class="subtitle" x="400" y="95" text-anchor="middle">Dev Harness</text>
 
   <!-- Tagline lines -->
   <text class="tagline" x="400" y="120" text-anchor="middle">AI-assisted delivery made consistent. Planning, testing, review, handoff.</text>
@@ -147,18 +147,18 @@
   <line class="table-line" x1="40" y1="366" x2="760" y2="366"/>
 
   <!-- Row 6 -->
-  <text class="cell-file" x="50" y="386">.agent/TASKS.md</text>
-  <text class="cell-desc" x="260" y="386">Execution checklist — in-progress, done, blocked</text>
+  <text class="cell-file" x="50" y="386">.agent/WIKI.md</text>
+  <text class="cell-desc" x="260" y="386">Tier-2 wiki config — vault path, sync rules (opt-in)</text>
   <line class="table-line" x1="40" y1="396" x2="760" y2="396"/>
 
   <!-- Row 7 -->
   <text class="cell-file" x="50" y="416">.agent/HANDOFF.md</text>
-  <text class="cell-desc" x="260" y="416">Memory. Session baton-pass for continuity.</text>
+  <text class="cell-desc" x="260" y="416">Shared baton — committed with every change</text>
   <line class="table-line" x1="40" y1="426" x2="760" y2="426"/>
 
   <!-- Row 8 -->
-  <text class="cell-file" x="50" y="446">.agent/CONTEXT.md</text>
-  <text class="cell-desc" x="260" y="446">Active context — assumptions, constraints, facts</text>
+  <text class="cell-file" x="50" y="446">docs/roles/*</text>
+  <text class="cell-desc" x="260" y="446">Canonical role contracts — planner, reviewer, QA, docs</text>
   <line class="table-line" x1="40" y1="456" x2="760" y2="456"/>
 
   <!-- Row 9 -->

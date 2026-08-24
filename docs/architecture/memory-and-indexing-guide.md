@@ -1,6 +1,6 @@
 # Memory and Indexing Decision Guide
 
-Use this guide to decide which persistence layer should own a fact, when to turn on optional memory/indexing tools, and how Graphify fits into the Starter Pack.
+Use this guide to decide which persistence layer should own a fact, when to turn on optional memory/indexing tools, and how Graphify fits into the PossibNow Dev Harness.
 
 Status: draft decision guide
 Last reviewed: 2026-06-29
@@ -8,7 +8,7 @@ Graphify source reviewed: https://github.com/safishamsi/graphify
 
 ## Short Version
 
-The Starter Pack should stay file-first, and it runs in two tiers: **Tier 1 (Starter, default)** is the everyday file-based workflow; **Tier 2 (Scale, opt-in via `/possiblaw-starter:scale`)** adds Graphify indexing and wiki orientation as a codebase grows.
+The Dev Harness should stay file-first, and it runs in two tiers: **Tier 1 (Starter, default)** is the everyday file-based workflow; **Tier 2 (Scale, opt-in via `/possibnow-dev-harness:scale`)** adds Graphify indexing and wiki orientation as a codebase grows.
 
 Canonical memory is the local, reviewable file set:
 - `.agent/PLAN.md` (goal, assumptions, and task checklist — the former CONTEXT and TASKS are folded in here)
@@ -20,7 +20,7 @@ Optional layers must be additive:
 - `.agent/LEARNINGS.md` captures reusable process observations only when learning mode is enabled, and a lesson is promoted only after it recurs at least twice or the user confirms it (validation-gated).
 - Wiki mode (Tier 2) accelerates orientation, but source code and tests remain authoritative.
 - Graphify (Tier 2) is an optional wiki/indexing backend that can generate a graph report, graph JSON, cache, visualization, and optional wiki pages.
-- Claude Code native memory is outside the Starter Pack contract and should not become the repo source of truth.
+- Claude Code native memory is outside the Dev Harness contract and should not become the repo source of truth.
 - A retrieval backend such as MemPalace is a deferred future option over completed local artifacts; it is not shipped today.
 
 Default recommendation: keep the single HANDOFF continuity file on, keep learnings/wiki/Graphify (Tier 2) off until a repo has enough repeated context load pain to justify them.
@@ -115,11 +115,11 @@ Keep manual wiki pages citation-heavy:
 
 ### Graphify
 
-Graphify should fit as an optional wiki backend, not a replacement for the Starter Pack workflow.
+Graphify should fit as an optional wiki backend, not a replacement for the Dev Harness workflow.
 
 From the upstream README reviewed on 2026-04-10, Graphify can read a folder of code, docs, papers, screenshots, diagrams, and images, then produce `graphify-out/` with a graph visualization, `GRAPH_REPORT.md`, `graph.json`, and cache. It supports `.graphifyignore`, labels relationships as extracted/inferred/ambiguous, has query/path/explain commands, can generate an agent-crawlable wiki with `--wiki`, and has assistant install commands for Codex and Claude Code. It also documents always-on assistant hooks and git hooks.
 
-Starter Pack policy should narrow that:
+Dev Harness policy should narrow that:
 - Graphify is allowed only when `.agent/WIKI.md` sets `Wiki backend: graphify`.
 - Use Graphify output for orientation and focused graph queries.
 - Do not install always-on assistant hooks without explicit user approval.
@@ -136,7 +136,7 @@ Recommended default generated-output policy:
 
 ### Claude Code Native Memory
 
-Claude Code memory can be useful for stable personal preferences, but it should not be part of the Starter Pack's repo memory model.
+Claude Code memory can be useful for stable personal preferences, but it should not be part of the Dev Harness's repo memory model.
 
 Use it for:
 - user-level communication preferences
@@ -227,7 +227,7 @@ Do not depend on it for repo continuity. It is not shared, reviewable, or guaran
 
 ```yaml
 memory_model:
-  tier: 1 # 1 (Starter, default) | 2 (Scale, opt-in via /possiblaw-starter:scale)
+  tier: 1 # 1 (Starter, default) | 2 (Scale, opt-in via /possibnow-dev-harness:scale)
   source_of_truth:
     - source_code
     - tests
@@ -258,12 +258,12 @@ Use these before adding or enabling a memory/indexing layer:
 
 If any answer is unclear, keep the layer off.
 
-## Proposed Starter Pack Direction
+## Proposed Dev Harness Direction
 
 1. Keep the file-based contract pipeline as canonical (Tier 1).
-2. Keep learnings, manual wiki, and Graphify default-off; gate Graphify/wiki behind Tier 2 (`/possiblaw-starter:scale`). A retrieval backend (e.g. MemPalace) stays a deferred future option, not shipped today.
+2. Keep learnings, manual wiki, and Graphify default-off; gate Graphify/wiki behind Tier 2 (`/possibnow-dev-harness:scale`). A retrieval backend (e.g. MemPalace) stays a deferred future option, not shipped today.
 3. Add `Wiki backend: manual | graphify` to `.agent/WIKI.md`.
 4. Treat Graphify as a backend for wiki/index generation, with no always-on hooks unless explicitly approved.
-5. Do not add Ix to the Starter Pack for now.
+5. Do not add Ix to the Dev Harness for now.
 6. Prefer pruning duplicate memory over adding another backend.
 7. Require generated indexes to cite source files and be verified before they influence implementation.

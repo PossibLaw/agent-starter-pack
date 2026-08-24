@@ -1,5 +1,5 @@
 {
-  "description": "PossibLaw guardrails — blocks destructive commands and protects sensitive files",
+  "description": "PossibNow Dev Harness guardrails — blocks destructive commands, protects sensitive files, and keeps the shared .agent/HANDOFF.md in every commit",
   "hooks": {
     "PreToolUse": [
       {

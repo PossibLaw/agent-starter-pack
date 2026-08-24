@@ -4,7 +4,7 @@
 
 Align handoff, changelog, and user-facing documentation with validated behavior so the written record matches what actually shipped.
 
-This role is the starter-pack normalization of documentation-and-release flows inspired by `document-release` in `garrytan/gstack`.
+This role is the PossibNow Dev Harness normalization of documentation-and-release flows inspired by `document-release` in `garrytan/gstack`.
 
 ## When To Use
 

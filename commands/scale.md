@@ -4,7 +4,7 @@ argument-hint: [optional path or note]
 allowed-tools: Bash, Read, Edit, Write
 ---
 
-# /possiblaw-starter:scale
+# /possibnow-dev-harness:scale
 
 Switch this repo into **Scale mode (Tier 2)**. Use it when the codebase has grown
 large (roughly 40–50+ source files) or you are working inside an existing large

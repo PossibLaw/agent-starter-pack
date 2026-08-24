@@ -4,7 +4,7 @@
 
 Perform a structured, read-only quality review focused on correctness, regressions, maintainability, and evidence quality.
 
-This role is the starter-pack normalization of review-style flows inspired by `review` in `garrytan/gstack`.
+This role is the PossibNow Dev Harness normalization of review-style flows inspired by `review` in `garrytan/gstack`.
 
 ## When To Use
 

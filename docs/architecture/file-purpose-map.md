@@ -35,13 +35,15 @@
 - `scripts/set-learning-mode.sh`: updates `.agent/PLAN.md` learning mode (`OFF`, `CAPTURE`, `APPLY`).
 
 ## Plugin Components (top-level)
-- `.claude-plugin/plugin.json`: Claude Code plugin manifest (`possiblaw-starter`).
-- `commands/init.md`: `/possiblaw-starter:init` — scaffolds project files into the current repo.
-- `commands/scale.md`: `/possiblaw-starter:scale` — raises the repo to Tier 2 (Scale mode: Graphify + wiki).
-- `commands/guardrails.md`: `/possiblaw-starter:guardrails` — views active Tier-1 safety hooks.
+- `.claude-plugin/plugin.json`: Claude Code plugin manifest (`possibnow-dev-harness`).
+- `commands/init.md`: `/possibnow-dev-harness:init` — scaffolds project files into the current repo.
+- `commands/scale.md`: `/possibnow-dev-harness:scale` — raises the repo to Tier 2 (Scale mode: Graphify + wiki).
+- `commands/guardrails.md`: `/possibnow-dev-harness:guardrails` — views active Tier-1 safety hooks.
 - `skills/applying-simplicity-ladder/SKILL.md`: the always-on simplicity-ladder procedure.
 - `skills/scaling-up-with-graphify/SKILL.md`: Tier-2 procedure for indexing a larger codebase.
 - `agents/*.md`: host-agnostic specialist agents promoted to the top level.
+- `hooks/hooks.json`: Tier-1 Claude runtime hooks, on by default with the plugin; `hooks/tier2-hooks.json` is the opt-in Tier-2 set.
+- `scripts/guardrails/*`: hook implementations — destructive-command blocker and shared-handoff commit guard (`validate-bash.py`), protected-file check, format check, and the Tier-2 helpers; unit tests live in `tests/guardrails/`.
 
 ## Repository Docs
 - `docs/architecture/memory-and-indexing-guide.md`: decision guide for repo memory layers, optional indexing, and Graphify fit.

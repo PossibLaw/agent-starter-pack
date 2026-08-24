@@ -7,6 +7,7 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 REQUIRED_FILES=(
   "README.md"
   "CHANGELOG.md"
+  ".agent/HANDOFF.md"
   ".claude-plugin/plugin.json"
   "commands/init.md"
   "commands/guardrails.md"
@@ -92,12 +93,82 @@ for rel in "${FORBIDDEN_PATTERNS[@]}"; do
   fi
 done
 
+if git -C "$REPO_ROOT" check-ignore -q .agent/HANDOFF.md; then
+  echo "BLOCKED: root .agent/HANDOFF.md must be trackable for team continuity"
+  exit 1
+fi
+if ! git -C "$REPO_ROOT" check-ignore -q .agent/PLAN.md; then
+  echo "BLOCKED: root .agent/PLAN.md must remain local and ignored"
+  exit 1
+fi
+
 for script in "$REPO_ROOT/scripts/bootstrap-project.sh" "$REPO_ROOT/scripts/install-project.sh" "$REPO_ROOT/scripts/install-global.sh" "$REPO_ROOT/scripts/verify-pack.sh" "$REPO_ROOT/scripts/set-learning-mode.sh"; do
   if [[ ! -x "$script" ]]; then
     echo "BLOCKED: script is not executable: ${script#$REPO_ROOT/}"
     exit 1
   fi
 done
+
+# Installer policy: HANDOFF.md is shared, while local state and unrelated ignore rules stay intact.
+INSTALL_TEST_ROOT="$(mktemp -d "${TMPDIR:-/tmp}/possiblaw-install-test.XXXXXX")"
+trap 'rm -rf "$INSTALL_TEST_ROOT"' EXIT
+INSTALL_TEST_TARGET="$INSTALL_TEST_ROOT/target"
+mkdir -p "$INSTALL_TEST_TARGET"
+git -C "$INSTALL_TEST_TARGET" init -q
+printf '%s\n' \
+  '.env*' \
+  '.agent/private-notes.md' \
+  '# Local agent continuity files (keep local; do not commit)' \
+  '.claude/history.md' \
+  '.agent/PLAN.md' \
+  '.agent/CONTEXT.md' \
+  '.agent/TASKS.md' \
+  '.agent/REVIEW.md' \
+  '.agent/TEST.md' \
+  '.agent/HANDOFF.md' \
+  '.agent/WIKI.md' \
+  '.agent/LEARNINGS.md' >"$INSTALL_TEST_TARGET/.gitignore"
+
+"$REPO_ROOT/scripts/install-project.sh" "$INSTALL_TEST_TARGET" >/dev/null
+
+if git -C "$INSTALL_TEST_TARGET" check-ignore -q .agent/HANDOFF.md; then
+  echo "BLOCKED: installer still gitignores shared continuity file: .agent/HANDOFF.md"
+  exit 1
+fi
+
+for rel in .agent/PLAN.md .agent/REVIEW.md .agent/TEST.md .agent/WIKI.md .agent/LEARNINGS.md .env.local .agent/private-notes.md; do
+  if ! git -C "$INSTALL_TEST_TARGET" check-ignore -q "$rel"; then
+    echo "BLOCKED: installer failed to preserve local/unrelated ignore rule: $rel"
+    exit 1
+  fi
+done
+
+INSTALL_FRESH_TARGET="$INSTALL_TEST_ROOT/fresh-target"
+mkdir -p "$INSTALL_FRESH_TARGET"
+git -C "$INSTALL_FRESH_TARGET" init -q
+"$REPO_ROOT/scripts/install-project.sh" "$INSTALL_FRESH_TARGET" >/dev/null
+if git -C "$INSTALL_FRESH_TARGET" check-ignore -q .agent/HANDOFF.md; then
+  echo "BLOCKED: fresh install gitignores shared continuity file: .agent/HANDOFF.md"
+  exit 1
+fi
+if ! git -C "$INSTALL_FRESH_TARGET" check-ignore -q .agent/PLAN.md; then
+  echo "BLOCKED: fresh install exposes local working state: .agent/PLAN.md"
+  exit 1
+fi
+
+INSTALL_CUSTOM_TARGET="$INSTALL_TEST_ROOT/custom-target"
+mkdir -p "$INSTALL_CUSTOM_TARGET"
+git -C "$INSTALL_CUSTOM_TARGET" init -q
+printf '%s\n' '.agent/' >"$INSTALL_CUSTOM_TARGET/.gitignore"
+CUSTOM_INSTALL_OUTPUT="$("$REPO_ROOT/scripts/install-project.sh" "$INSTALL_CUSTOM_TARGET")"
+if ! git -C "$INSTALL_CUSTOM_TARGET" check-ignore -q .agent/HANDOFF.md; then
+  echo "BLOCKED: installer unexpectedly removed a broader custom ignore rule"
+  exit 1
+fi
+if [[ "$CUSTOM_INSTALL_OUTPUT" != *"WARNING: .agent/HANDOFF.md is still ignored by a broader custom rule."* ]]; then
+  echo "BLOCKED: installer did not warn about broader custom rule hiding .agent/HANDOFF.md"
+  exit 1
+fi
 
 has_rg=0
 if command -v rg >/dev/null 2>&1; then
@@ -118,7 +189,7 @@ if [[ -n "$unexpected" ]]; then
   exit 1
 fi
 
-# Stale references that must not survive the v3 refresh (scoped to the active pack + harness files).
+# Stale references that must not survive the v3 refresh / v4 rename (scoped to the active pack + harness files).
 forbid_text() {
   local pattern="$1"
   local hits
@@ -137,6 +208,10 @@ forbid_text() {
 forbid_text "mempalace-ingest"
 forbid_text ".claude/history.md"
 forbid_text "run-checkpoint.ps1"
+forbid_text "Local Continuity Files (Do Not Commit)"
+forbid_text "continuity stays local"
+forbid_text "possiblaw-starter"
+forbid_text "Agent Starter Pack"
 
 require_text() {
   local file="$1"
@@ -161,6 +236,7 @@ for f in CLAUDE.md AGENTS.md; do
   require_text "$REPO_ROOT/packs/project/$f" "## Vendor References" "missing vendor section in packs/project/$f"
   require_text "$REPO_ROOT/packs/project/$f" "## Contract Pipeline (Required)" "missing contract pipeline section in packs/project/$f"
   require_text "$REPO_ROOT/packs/project/$f" "## Continuity Checkpoint Contract" "missing checkpoint section in packs/project/$f"
+  require_text "$REPO_ROOT/packs/project/$f" "## Shared Handoff and Local Working State" "missing shared handoff policy in packs/project/$f"
   require_text "$REPO_ROOT/packs/project/$f" "## Two Tiers" "missing two-tier model in packs/project/$f"
   require_text "$REPO_ROOT/packs/project/$f" "## Token Discipline (Always On)" "missing token discipline section in packs/project/$f"
   require_text "$REPO_ROOT/packs/project/$f" "## Simplicity Ladder (Always On)" "missing simplicity ladder section in packs/project/$f"
@@ -190,6 +266,7 @@ require_text "$REPO_ROOT/packs/project/.agent/PLAN.md" "$STOP_MARKER" "missing n
 require_text "$REPO_ROOT/packs/project/.agent/TEST.md" "artifact_type: test" "missing test artifact_type in packs/project/.agent/TEST.md"
 require_text "$REPO_ROOT/packs/project/.agent/REVIEW.md" "artifact_type: review" "missing review artifact_type in packs/project/.agent/REVIEW.md"
 require_text "$REPO_ROOT/packs/project/.agent/HANDOFF.md" "artifact_type: handoff" "missing handoff artifact_type in packs/project/.agent/HANDOFF.md"
+require_text "$REPO_ROOT/packs/project/.agent/HANDOFF.md" "shared, version-controlled continuity record" "missing shared continuity policy in packs/project/.agent/HANDOFF.md"
 require_text "$REPO_ROOT/packs/project/.agent/HANDOFF.md" "## Sprint / Git Cycle" "missing sprint git section in packs/project/.agent/HANDOFF.md"
 require_text "$REPO_ROOT/packs/project/.agent/HANDOFF.md" "## Session Timeline (Newest First)" "missing merged session timeline in packs/project/.agent/HANDOFF.md"
 require_text "$REPO_ROOT/packs/project/.agent/HANDOFF.md" "$STOP_MARKER" "missing newest-first stop marker in packs/project/.agent/HANDOFF.md"
@@ -203,8 +280,13 @@ require_text "$REPO_ROOT/skills/applying-simplicity-ladder/SKILL.md" "name: appl
 require_text "$REPO_ROOT/skills/scaling-up-with-graphify/SKILL.md" "name: scaling-up-with-graphify" "missing scale mode skill metadata"
 
 # Plugin manifest
-require_text "$REPO_ROOT/.claude-plugin/plugin.json" '"name": "possiblaw-starter"' "missing plugin name in .claude-plugin/plugin.json"
-require_text "$REPO_ROOT/.claude-plugin/plugin.json" '"version": "3.0.0"' "plugin.json not bumped to version 3.0.0"
+require_text "$REPO_ROOT/.claude-plugin/plugin.json" '"name": "possibnow-dev-harness"' "missing plugin name in .claude-plugin/plugin.json"
+require_text "$REPO_ROOT/.claude-plugin/plugin.json" '"version": "4.0.0"' "plugin.json not bumped to version 4.0.0"
+
+# Shared handoff commit guard (Claude runtime) and its tests
+require_text "$REPO_ROOT/scripts/guardrails/validate-bash.py" "def check_handoff_commit" "missing shared-handoff commit guard in scripts/guardrails/validate-bash.py"
+require_text "$REPO_ROOT/tests/guardrails/test_validate_bash.py" "test_commit_blocked_when_handoff_untracked" "missing shared-handoff commit guard tests in tests/guardrails/test_validate_bash.py"
+require_text "$REPO_ROOT/hooks/hooks.json" "validate-bash.py" "validate-bash hook not wired in hooks/hooks.json"
 
 agent_md_count="$(find "$REPO_ROOT/agents" -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')"
 if [[ "$agent_md_count" -lt 8 ]]; then
@@ -218,5 +300,22 @@ if [[ ! -x "$REPO_ROOT/scripts/guardrails/validate-bash.py" ]]; then
 fi
 require_text "$REPO_ROOT/packs/global/claude/.claude/CLAUDE.md" "For vendor setup/API/security guidance, verify against official vendor docs and cite source date." "missing vendor recency rule in packs/global/claude/.claude/CLAUDE.md"
 require_text "$REPO_ROOT/packs/global/codex/.codex/AGENTS.md" "For vendor setup/API/security guidance, verify against official vendor docs and cite source date." "missing vendor recency rule in packs/global/codex/.codex/AGENTS.md"
+
+# Guardrail unit tests: run with the first python3 that has pytest; otherwise report the gap.
+PYTEST_PY=""
+for candidate in python3 /usr/bin/python3 /opt/homebrew/bin/python3; do
+  if command -v "$candidate" >/dev/null 2>&1 && "$candidate" -c 'import pytest' >/dev/null 2>&1; then
+    PYTEST_PY="$candidate"
+    break
+  fi
+done
+if [[ -n "$PYTEST_PY" ]]; then
+  if ! (cd "$REPO_ROOT" && "$PYTEST_PY" -m pytest tests/guardrails -q -p no:cacheprovider); then
+    echo "BLOCKED: guardrail unit tests failed (tests/guardrails)"
+    exit 1
+  fi
+else
+  echo "NOTE: pytest not found for any python3 candidate; guardrail unit tests skipped (UNCONFIRMED)"
+fi
 
 echo "DONE: verification passed"

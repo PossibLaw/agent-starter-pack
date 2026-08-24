@@ -1,6 +1,6 @@
 ---
 name: Security Reviewer
-description: Thin Claude wrapper for the starter-pack security reviewer role. Use for attacker-minded review of auth, data access, input handling, API surfaces, and runtime risk. Strictly read-only.
+description: Thin Claude wrapper for the PossibNow Dev Harness security reviewer role. Use for attacker-minded review of auth, data access, input handling, API surfaces, and runtime risk. Strictly read-only.
 agent: true
 ---
 

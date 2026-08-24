@@ -20,7 +20,7 @@ memory:
 
 # HANDOFF
 
-This is the single continuity file. The **current baton** (where we are + what's next) lives at the top. The **session timeline** (newest-first, dated) lives below the STOP marker. There is no separate history file — keep both here. Never create sidecar continuity files.
+This is the shared, version-controlled continuity record, committed with every change it describes — stage it (`git add .agent/HANDOFF.md`) before each commit so teammates and other coding agents inherit the current baton. The **current baton** (where we are + what's next) lives at the top. The **session timeline** (newest-first, dated) lives below the STOP marker. There is no separate history file — keep both here. Never create sidecar continuity files.
 
 On resume: read from the top and stop at the STOP marker. Read the timeline below it only when you explicitly need history.
 
