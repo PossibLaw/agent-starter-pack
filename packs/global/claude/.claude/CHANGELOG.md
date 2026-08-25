@@ -1,5 +1,11 @@
 # Changelog
 
+## [2026-08-24] - Tier 2 Scale mode pointer
+**Changed:** Added one Context Management bullet to `~/.claude/CLAUDE.md`: offer Tier 2 Scale mode (the `scaling-up-with-graphify` skill) in repos with roughly 40–50+ source files; never install upstream Graphify hooks, watch mode, git hooks, or the MCP server without explicit approval.
+**Reason:** The Graphify workflow lives in the project layer; a repo without the project pack had no path to it. The graph itself stays per-repo.
+**Impact:** Any repo can be offered indexing on demand; no automatic behavior changes.
+**Decided:** CONFIRMED
+
 ## [2026-03-01] - Vendor Recency Verification Rule
 **Changed:** Added an explicit vendor rule in `~/.claude/CLAUDE.md`: verify vendor setup/API/security guidance against official vendor docs and cite source date.
 **Reason:** Reduce stale guidance risk for vendor integrations and security-sensitive configuration instructions.
