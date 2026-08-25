@@ -23,20 +23,28 @@ Follow the `scaling-up-with-graphify` skill end to end. The full reference is
 2. **Ask before installing anything.** Get the user's approval first.
 3. **Install the Graphify CLI** (package `graphifyy` — double-y is correct; CLI is
    `graphify`): `uv tool install graphifyy` (preferred), or `pipx install graphifyy`,
-   or `pip install graphifyy`.
-4. **Build the index** with `/graphify .` at the repo root. Run inside the IDE
-   session: no API key needed, and tree-sitter extraction is local so code never
-   leaves the machine.
-5. **Query instead of re-reading:** `/graphify query "..."`, `/graphify path "A" "B"`,
-   `/graphify explain "Thing"`, and read the pre-summarized wiki layer first at
-   `graphify-out/wiki/index.md`. Optional MCP server: `/graphify ./ --mcp`.
-6. **Record the mode:** set `Tier: 2 (Scale)` and `Scale mode: ON` in
-   `.agent/HANDOFF.md`, and `Wiki backend: graphify` in `.agent/WIKI.md`.
+   or `pip install graphifyy`. Confirm with `graphify --version`.
+4. **Prepare exclusions, then build** from the repo root with the CLI directly (the
+   upstream `/graphify` slash skill is not needed and installs hooks): write
+   `.graphifyignore` (baseline in the doc; exclude prose and media, keep `tests/`),
+   add `graphify-out/` to `.gitignore`, then run `graphify update .` followed by
+   `graphify export wiki`. No API key needed; tree-sitter extraction is local so
+   code never leaves the machine. Use `--force` after editing `.graphifyignore`.
+5. **Query instead of re-reading:** `graphify affected "path"` (dependents and the
+   tests that cover them), `graphify explain "path"`, `graphify query "..."
+   --context call --budget 900`, `graphify path "A" "B" --undirected`,
+   `graphify god-nodes`; read the wiki layer first at `graphify-out/wiki/index.md`.
+6. **Keep it fresh:** `graphify update .` then `graphify export wiki` after every
+   merge to `main`. Branches are not in the graph until they merge.
+7. **Record the mode:** set `Tier: 2 (Scale)` and `Scale mode: ON` in
+   `.agent/HANDOFF.md` with the rebuild rule and the query commands, and
+   `Wiki backend: graphify` in `.agent/WIKI.md`.
 
 ## Contract
 
-- Ask before installing the tool or any optional integration (MCP server, watch
-  mode, git hooks). Never install always-on tooling without explicit approval.
+- Ask before installing the tool or any optional integration (the upstream slash
+  skill and its PreToolUse hooks, MCP server, watch mode, git hooks). Never install
+  always-on tooling without explicit approval.
 - Treat all graph/wiki output as advisory — verify against source before
   implementing. If they disagree, the source code wins.
 

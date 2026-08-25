@@ -158,6 +158,7 @@ Supporting specialists (not canonical roles — use when a canonical role is not
 - For small projects, stay in Tier 1. When the codebase grows large (roughly 40–50+ source files) or you start working inside an existing large codebase, switch on Scale mode with `/possibnow-dev-harness:scale`.
 - Scale mode builds a queryable index of the code (Graphify) so you query the index instead of re-reading files, and configures `.agent/WIKI.md`. See `docs/workflows/graphify.md`.
 - Record `Tier: 2 (Scale)` and `Scale mode: ON` in `.agent/HANDOFF.md` when enabled.
+- When Scale mode is ON: after every merge to `main`, run `graphify update .` then `graphify export wiki`; query with `graphify affected`, `graphify explain`, `graphify query ... --context call`, and `graphify path ... --undirected` (table and rules in `docs/workflows/graphify.md`). Graph output is advisory; source wins. The upstream slash skill, its hooks, watch mode, and the MCP server stay off unless the user approves.
 
 ## Optional Wiki Mode (Tier 2, Default OFF)
 - Configure vault and wiki paths in `.agent/WIKI.md` before first use.

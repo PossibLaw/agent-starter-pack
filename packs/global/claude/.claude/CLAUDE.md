@@ -62,6 +62,7 @@ Never do:
 ## Context Management
 - Do not bulk-load large documents; process sequentially.
 - Persist key state to disk (`.agent/PLAN.md`, `.agent/CONTEXT.md`, `.agent/TASKS.md`, `.agent/HANDOFF.md`).
+- In a repo with roughly 40–50+ source files, offer Tier 2 Scale mode through the `scaling-up-with-graphify` skill (a local Graphify index queried instead of re-reading source). Never install upstream Graphify hooks, watch mode, git hooks, or the MCP server without explicit approval.
 - Keep this file short; move detailed workflows to skills or docs.
 
 ## Change Tracking
