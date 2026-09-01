@@ -81,8 +81,12 @@ def test_blocked_commands(command):
         "git rebase -i feature",
         "git push --force origin feature-branch",
         "rm -r ./build",
-        "chmod 644 file.txt",
-        "chmod +x script.sh",
+        "chmod -R 755 .",
+        "chmod o+w shared.txt",
+        "chmod a+w tmp",
+        "chmod 666 data.db",
+        "chmod 4755 ./bin/tool",
+        "chmod u+s ./bin/tool",
     ],
     ids=lambda c: c[:40],
 )
@@ -102,6 +106,12 @@ def test_escalated_commands(command):
 @pytest.mark.parametrize(
     "command",
     [
+        "chmod 644 file.txt",
+        "chmod +x script.sh",
+        "chmod 000 lanes-window.json",
+        "chmod 600 keyfile",
+        "chmod u+w notes.md",
+        "chmod 755 bin",
         "ls -la",
         "git status",
         "npm install",

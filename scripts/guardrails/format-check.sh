@@ -9,7 +9,7 @@ INPUT=$(cat)
 FILE_PATH=$(echo "$INPUT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('tool_input',{}).get('file_path',''))" 2>/dev/null || true)
 
 if [ -z "$FILE_PATH" ] || [ ! -f "$FILE_PATH" ]; then
-    echo '{"hookSpecificOutput":{"suppressOutput":true}}'
+    echo '{"suppressOutput":true}'
     exit 0
 fi
 
@@ -26,5 +26,5 @@ elif [ -f "$PROJECT_DIR/pyproject.toml" ] && grep -q '\[tool\.black\]' "$PROJECT
     black "$FILE_PATH" >/dev/null 2>&1 || true
 fi
 
-echo '{"hookSpecificOutput":{"suppressOutput":true}}'
+echo '{"suppressOutput":true}'
 exit 0
