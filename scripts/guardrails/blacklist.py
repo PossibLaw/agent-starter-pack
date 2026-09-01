@@ -25,7 +25,15 @@ ESCALATE_PATTERNS = [
     r"git\s+rebase",
     r"git\s+push\s+--force(?!\s+origin\s+(main|master))",
     r"rm\s+-r(?!f)\s",
-    r"chmod\s+(?!777)",
+    # chmod: escalate only genuinely risky forms — recursive, world-writable
+    # (others get write), setuid/setgid. Scoped changes (644, 755, 600, 000,
+    # +x, u+w) pass silently; 777 and -R 777 stay hard-blocked above.
+    r"chmod\s+-R\s",
+    r"chmod\s+\S*[oa]\+w",
+    r"chmod\s+(-[a-zA-Z]+\s+)*\+w\b",
+    r"chmod\s+\S*\+s\b",
+    r"chmod\s+(-[a-zA-Z]+\s+)*[2467][0-7]{3}\b",
+    r"chmod\s+(-[a-zA-Z]+\s+)*[0-7]{2,3}[2367]\b",
 ]
 
 # Files that should never be written to
